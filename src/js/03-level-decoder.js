@@ -1,37 +1,60 @@
-function decodeLevel(encodedString) {
+function decodeLevel(worldLayers) {
   const levelData = [];
-  let characterInitialX = 10;
-  let characterInitialY = 5;
+  const characterInitialX = 10;
+  const characterInitialY = 5;
   let tileIndex = 0;
 
-  // Regex pattern to match the tile, optional orientation, and optional count
-  const regex = /([A-Z\-])([xyz]?)(\d*)/g;
-  let match;
-
-  while ((match = regex.exec(encodedString)) !== null) {
-    const tileChar = match[1]; // The tile symbol (e.g., A, B, or -)
-    const orientationSymbol = match[2] || ''; // Optional orientation symbol
-    const tileCount = parseInt(match[3] || '1', 10); // Optional tile count, default to 1
-    const tileName = tileChar === '-' ? null : getTileName(tileChar); // Convert tileChar to tileName or handle empty
-    const orientation = getOrientationFromSymbol(orientationSymbol); // Get orientation from symbol
-
-    for (let i = 0; i < tileCount; i++) {
-      let x = (tileIndex % (LEVEL_WIDTH - 2)) + 1;
-      let y = Math.floor(tileIndex / (LEVEL_WIDTH - 2)) + 1;
-      if (tileName) {
-        // add crate and boulder tiles at the end to remain on top of the other tiles
-        levelData[['crate', 'boulder'].includes(tileName) ? 'push' : 'unshift']({ tile: tileName, x, y, orientation });
+  for (const [layerName, encodedString] of Object.entries(worldLayers)) {
+    if (/^[\d,\s]+$/.test(encodedString)) {
+      // Nouveau format binaire compressé (vide/plein)
+      const runs = encodedString.split(',').map((s) => parseInt(s.trim(), 10));
+      let isFilled = false; // commence par vide
+      for (const count of runs) {
+        for (let i = 0; i < count; i++) {
+          const x = tileIndex % WORLD_WIDTH;
+          const y = Math.floor(tileIndex / WORLD_WIDTH);
+          if (isFilled) {
+            levelData.push({ tile: layerName, x, y });
+          }
+          tileIndex++;
+        }
+        isFilled = !isFilled;
       }
-      ++tileIndex;
+    } else {
+      // Ancien format (ex: 5A3B10-)
+      const regex = /([A-Z\-])([xyz]?)(\d*)/g;
+      let match;
+      while ((match = regex.exec(encodedString)) !== null) {
+        const tileChar = match[1];
+        const orientationSymbol = match[2] || '';
+        const tileCount = parseInt(match[3] || '1', 10);
+        const tileName = tileChar === '-' ? null : getTileName(tileChar);
+        const orientation = getOrientationFromSymbol(orientationSymbol);
+        for (let i = 0; i < tileCount; i++) {
+          const x = tileIndex % WORLD_WIDTH;
+          const y = Math.floor(tileIndex / WORLD_WIDTH);
+          if (tileName) {
+            levelData[['crate', 'boulder'].includes(tileName) ? 'push' : 'unshift']({
+              tile: tileName,
+              x,
+              y,
+              orientation,
+            });
+          }
+          tileIndex++;
+        }
+      }
     }
-  }
 
-  const level = {
+    // On reset tileIndex pour chaque layer, pour que tous utilisent la même grille
+    tileIndex = 0;
+  }
+  console.log(`Decoded level data: ${JSON.stringify(levelData)}`);
+  return {
     characterInitialX,
     characterInitialY,
     levelData,
   };
-  return level;
 }
 
 /**

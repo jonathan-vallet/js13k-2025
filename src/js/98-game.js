@@ -1,21 +1,12 @@
 function setZoomFactor() {
+  console.log('Setting zoom factor...', window.innerWidth, window.innerHeight, WORLD_WIDTH, WORLD_HEIGHT, TILE_SIZE);
   zoomFactor = Math.min(
-    Math.floor(window.innerWidth / (LEVEL_WIDTH * TILE_SIZE)),
-    Math.floor((window.innerHeight * 0.89) / (LEVEL_HEIGHT * TILE_SIZE)),
+    Math.floor(window.innerWidth / (WORLD_WIDTH * TILE_SIZE)),
+    Math.floor((window.innerHeight * 0.89) / (WORLD_HEIGHT * TILE_SIZE)),
   );
-  canvas.width = LEVEL_WIDTH * TILE_SIZE * zoomFactor;
-  canvas.height = LEVEL_HEIGHT * TILE_SIZE * zoomFactor;
-  uiCanvas.width = canvas.width;
-  uiCanvas.height = TILE_SIZE * 1.1 * zoomFactor; // 2 tiles high
-
-  // background canvas has same ratio than canvas but cover window size
-  if (window.innerWidth / window.innerHeight > LEVEL_WIDTH / LEVEL_HEIGHT) {
-    backgroundCanvas.width = window.innerWidth;
-    backgroundCanvas.height = window.innerWidth * (LEVEL_HEIGHT / LEVEL_WIDTH);
-  } else {
-    backgroundCanvas.height = window.innerHeight;
-    backgroundCanvas.width = window.innerHeight * (LEVEL_WIDTH / LEVEL_HEIGHT);
-  }
+  console.log('Zoom factor set to:', zoomFactor);
+  canvas.width = WORLD_WIDTH * TILE_SIZE * zoomFactor;
+  canvas.height = WORLD_HEIGHT * TILE_SIZE * zoomFactor;
 }
 
 function initGame() {
@@ -25,37 +16,14 @@ function initGame() {
 
 window.addEventListener('resize', () => {
   setZoomFactor();
-  drawLevelBackground('sand', 'rock');
+  drawLevelBackground('grass');
 });
-
-function switchMode(mode) {
-  document.body.classList.remove(currentScreen);
-  document.body.classList.add(mode);
-
-  // Reset key events to avoid input while switching screens
-  document.removeEventListener('keydown', handleKeyDown);
-  document.removeEventListener('keyup', handleKeyUp);
-  setTimeout(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-  }, 300);
-
-  currentScreen = mode;
-  if (currentScreen === 'game') {
-    initGame();
-  }
-}
 
 function loadGame() {
   // Adjust the canvas size to fit the level size
   ctx.imageSmoothingEnabled = false;
-  uiCtx.imageSmoothingEnabled = false;
-  backgroundCtx.imageSmoothingEnabled = false;
   setZoomFactor();
-
-  switchMode(currentScreen);
-
-  requestAnimationFrame(animate);
+  drawLevelBackground('grass');
 }
 
 loadGame();

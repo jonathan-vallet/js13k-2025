@@ -7,27 +7,16 @@
  * Refresh the canvas by redrawing the level and the character
  */
 function refreshCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-  if (currentScreen === 'menu') {
-    drawStartScreen();
-  }
-  if (currentScreen === 'characterSelection') {
-    drawCharacterSelectionScreen();
-  }
-  if (currentScreen === 'game') {
-    drawLevel(1);
-    drawCharacter();
-  }
-  refreshUI();
+  console.log('Refreshing canvas...', COLOR_SETS[seasonList[currentSeason]]);
+  drawLevel();
 }
 
 /**
  * Draw the level background and elements
  */
-function drawLevel(levelIndex) {
+function drawLevel() {
   // draw background image
-  ctx.drawImage(backgroundCanvas, 0, 0, canvas.width, canvas.height);
-  drawLevelElements(levels[levelIndex].levelData);
+  drawLevelElements(world.levelData);
 }
 
 /**
@@ -35,25 +24,24 @@ function drawLevel(levelIndex) {
  * @param {string} backgroundTileName - The name of the background tile
  * @param {string} borderTileName - The name of the border tile
  */
-function drawLevelBackground(backgroundTileName, borderTileName, context = ctx) {
+function drawLevelBackground(backgroundTileName, context = ctx) {
+  context.fillStyle = COLOR_SETS[seasonList[currentSeason]][0]; // Use the first color
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
   const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
   const backgroundColors = TILE_DATA[backgroundTileName].colors;
-  const borderTile = TILE_DATA[borderTileName].tiles[0];
-  const borderColors = TILE_DATA[borderTileName].colors;
-
-  for (let y = 0; y < LEVEL_HEIGHT; y++) {
-    for (let x = 0; x < LEVEL_WIDTH; x++) {
+  for (let y = 0; y < WORLD_HEIGHT; y++) {
+    for (let x = 0; x < WORLD_WIDTH; x++) {
       // Draw the background tile at every position
-      drawTile(backgroundTile, backgroundColors, x, y, { context });
+      if (((x - 812347 * y) * 928371 * (x + 156468 + y)) % 17 === 0) {
+        drawTile(backgroundTile, backgroundColors, x, y, { context });
+      }
     }
   }
 
   // Draw all static elements
   if (currentScreen === 'game') {
-    drawLevelElements(levels[currentLevel].levelData, true);
-  }
-  if (context === ctx) {
-    backgroundCtx.drawImage(canvas, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+    drawLevelElements(world.levelData, true);
   }
 }
 
@@ -65,17 +53,16 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
   levelData.forEach((element) => {
     const tile = TILE_DATA[element.tile];
 
-    // If drawing static elements, draw a key-holder under each key
-    if (isDrawingStatic && element.tile === 'key') {
-      const keyHolderTile = TILE_DATA['key-holder'];
-      const keyHolderFrame = keyHolderTile.tiles[0]; // Assume the key-holder has only one frame
-      const keyHolderColors = keyHolderTile.colors;
-      drawTile(keyHolderFrame, keyHolderColors, element.x, element.y, { context });
-    }
-
     if (currentScreen === 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
       return;
     }
+
+    if (['water', 'road'].includes(element.tile)) {
+      const { type, orientation } = getTileTypeAndOrientation(element, levelData);
+      element.animationFrame = type; // 0 à 3 = coin/bord/intérieur/plein
+      element.orientation = orientation; // 0 à 3 pour les rotations
+    }
+
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
     const colors = element.color || TILE_DATA[element.tile].colors;
     const x = element.x;
@@ -142,4 +129,77 @@ function drawTile(tile, colors, x, y, options = {}) {
   }
 
   context.restore();
+}
+
+function getTileTypeAndOrientation(element, levelData) {
+  let x = element.x;
+  let y = element.y;
+  const isSameTile = (tx, ty) => levelData.some((e) => e.x === tx && e.y === ty && e.tile === element.tile);
+
+  const n = isSameTile(x, y - 1);
+  const s = isSameTile(x, y + 1);
+  const w = isSameTile(x - 1, y);
+  const e = isSameTile(x + 1, y);
+  const nw = isSameTile(x - 1, y - 1);
+  const ne = isSameTile(x + 1, y - 1);
+  const sw = isSameTile(x - 1, y + 1);
+  const se = isSameTile(x + 1, y + 1);
+
+  let type = 3; // plein par défaut
+  let orientation = 0;
+
+  const neighbors = { nw, ne, sw, se, n, s, e, w };
+
+  // 1. Tous les voisins sont water → plein
+  if (Object.values(neighbors).every(Boolean)) {
+    return { type: 3, orientation: 0 };
+  }
+
+  // 2. Coin intérieur : un seul vide parmi les coins
+  const corners = [
+    { key: 'nw', orientation: 0 },
+    { key: 'ne', orientation: 1 },
+    { key: 'se', orientation: 2 },
+    { key: 'sw', orientation: 3 },
+  ];
+
+  const emptyCorners = corners.filter((c) => !neighbors[c.key]);
+  const filledEdges = [n, s, e, w].filter(Boolean).length;
+
+  if (emptyCorners.length === 1 && filledEdges === 4) {
+    const { orientation } = emptyCorners[0];
+    return { type: 2, orientation };
+  }
+
+  // 3. Bord : un seul côté vide parmi N/S/E/W
+  const cardinal = [
+    { key: 'n', orientation: 0 },
+    { key: 'e', orientation: 1 },
+    { key: 's', orientation: 2 },
+    { key: 'w', orientation: 3 },
+  ];
+
+  const emptyCardinal = cardinal.filter((c) => !neighbors[c.key]);
+  const filledCardinal = cardinal.filter((c) => neighbors[c.key]);
+
+  if (emptyCardinal.length === 1 && filledCardinal.length === 3) {
+    const { orientation } = emptyCardinal[0];
+    return { type: 1, orientation };
+  }
+
+  // 4. Coin extérieur : deux côtés adjacents + leur coin rempli
+  if (n && w && nw) {
+    return { type: 0, orientation: 2 };
+  }
+  if (n && e && ne) {
+    return { type: 0, orientation: 3 };
+  }
+  if (s && e && se) {
+    return { type: 0, orientation: 0 };
+  }
+  if (s && w && sw) {
+    return { type: 0, orientation: 1 };
+  }
+
+  return { type, orientation };
 }
