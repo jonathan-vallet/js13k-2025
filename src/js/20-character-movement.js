@@ -3,6 +3,10 @@ function handleGameKeydown(key) {
   if (key && !keyStack.includes(key) && ['up', 'down', 'left', 'right'].includes(key)) {
     keyStack.push(key);
   }
+
+  if (key === 'action') {
+    tryLaunchFireball();
+  }
 }
 
 function handleGameKeyup(key) {
@@ -32,14 +36,8 @@ function mapKeyToDirection(key) {
     case 'd':
       return 'right';
     case 'Enter':
+    case ' ':
       return 'action';
-    case ' ': // for steam controller
-    case 'Control': // for steam controller
-    case 'e':
-      return 'undo';
-    case 'Alt':
-    case 'r':
-      return 'reset';
     case 'Escape':
       return 'menu';
     default:

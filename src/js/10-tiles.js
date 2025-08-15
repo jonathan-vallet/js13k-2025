@@ -70,7 +70,8 @@ function removeTile(tileName, x, y) {
  * @param {object} [options] - Additional options for the tile
  */
 function addTile(tile, x, y, options = {}) {
-  levels[currentLevel].levelData[options.isUnder ? 'unshift' : 'push']({ tile, x, y, ...options });
+  world.levelData[options.isUnder ? 'unshift' : 'push']({ tile, x, y, ...options });
+  return world.levelData[options.isUnder ? 0 : world.levelData.length - 1];
 }
 
 /**
@@ -112,7 +113,7 @@ function tryMoveTile(tileName, x, y, dx, dy) {
         for (let i = 1; i < distance; i++) {
           setTimeout(() => {
             playActionSound(tileName);
-          }, TILE_CELL_MOVE_DURATION * i);
+          }, TILE_CELL_MOVE_DURATION[tileName] * i);
         }
         return true;
       }
@@ -122,6 +123,44 @@ function tryMoveTile(tileName, x, y, dx, dy) {
   return false;
 }
 
+/**
+ * Start the animation of a crate moving from one position to another
+ * @param {number} deltaTime - The time elapsed since the last frame
+ */
+function animateTile(deltaTime) {
+  tileMoveElapsedTime += deltaTime;
+
+  const totalDistance = Math.abs(tileMoveStartX - tileMoveTargetX) + Math.abs(tileMoveStartY - tileMoveTargetY);
+  let moveDuration = TILE_CELL_MOVE_DURATION[movingTile.tile] * totalDistance;
+  const progress = min(tileMoveElapsedTime / moveDuration, 1);
+
+  movingTile.x = tileMoveStartX + (tileMoveTargetX - tileMoveStartX) * progress;
+  movingTile.y = tileMoveStartY + (tileMoveTargetY - tileMoveStartY) * progress;
+
+  if (progress >= 1) {
+    movingTile.x = tileMoveTargetX;
+    movingTile.y = tileMoveTargetY;
+    tileMoveElapsedTime = 0;
+
+    // When a fireball hit a bush
+    if (movingTile.tile === 'fireball') {
+      const deltaX = tileMoveTargetX - tileMoveStartX;
+      const deltaY = tileMoveTargetY - tileMoveStartY;
+
+      // Calculate the next position that the fireball would move to if it continued in the same direction
+      const nextX = movingTile.x + (deltaX !== 0 ? Math.sign(deltaX) : 0);
+      const nextY = movingTile.y + (deltaY !== 0 ? Math.sign(deltaY) : 0);
+
+      // Check if the next position contains a bush
+      const nextTile = getTileAt(nextX, nextY);
+      if (nextTile && nextTile.tile === 'bush' && !nextTile.triggered) {
+        nextTile.triggered = true;
+        animateTileRemoval('bush', null, null, nextTile.orientation);
+      }
+    }
+    movingTile = null; // Reset moving tile after the animation
+  }
+}
 /**
  * Start the animation of a crate moving from one position to another
  * @param {number} crateX - The x-coordinate of the crate
@@ -136,55 +175,6 @@ function startTileAnimation(tile, targetX, targetY) {
   tileMoveTargetX = targetX;
   tileMoveTargetY = targetY;
   tileMoveElapsedTime = 0;
-}
-
-/**
- * Remove a block and recursively check the adjacent block in the direction of the block's orientation.
- * @param {number} x - The x-coordinate of the block
- * @param {number} y - The y-coordinate of the block
- * @param {number} dx - The x-direction of movement (based on block orientation)
- * @param {number} dy - The y-direction of movement (based on block orientation)
- */
-function removeConnectedBlocks(x, y, dx, dy) {
-  // Remove the current block
-  animateTileRemoval('block-trigger', x, y);
-  animateTileRemoval('block', x, y);
-  playActionSound('block');
-
-  // Calculate the position of the next block in the same direction
-  const nextX = x + dx;
-  const nextY = y + dy;
-
-  // Check if the next position contains another block
-  const nextTile = getTileAt(nextX, nextY)?.tile;
-  if (nextTile === 'block') {
-    // Get the orientation of the next block
-    const nextBlockElement = levels[currentLevel].levelData.find(
-      (element) => element.x === nextX && element.y === nextY && element.tile === 'block',
-    );
-    if (nextBlockElement) {
-      const nextBlockOrientation = nextBlockElement.orientation || ORIENTATION_UP;
-
-      // Calculate the new dx and dy based on the next block's orientation
-      let newDx = 0;
-      let newDy = 0;
-
-      if (nextBlockOrientation === ORIENTATION_LEFT) {
-        newDx = -1;
-      } else if (nextBlockOrientation === ORIENTATION_RIGHT) {
-        newDx = 1;
-      } else if (nextBlockOrientation === ORIENTATION_UP) {
-        newDy = -1;
-      } else if (nextBlockOrientation === ORIENTATION_DOWN) {
-        newDy = 1;
-      }
-
-      // After a short delay, remove the next block and continue recursively in the new direction
-      setTimeout(() => {
-        removeConnectedBlocks(nextX, nextY, newDx, newDy);
-      }, 120); // delay for visual effect
-    }
-  }
 }
 
 /**

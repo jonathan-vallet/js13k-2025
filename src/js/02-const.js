@@ -83,11 +83,17 @@ const TILE_DATA = {
     rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
     colors: COLOR_SETS.cat,
   },
+  fireball: {
+    rle: '32LLLLLLLLLLLBPLPKM\\MJMhMIMZfZMHMfZfMHMYhYMHMe\\eMHMYhYMHMe\\eMHMZfZMHMfZfMIM\\MJMhMKPLPLLLLLLLLLLLB',
+    colors: COLOR_SETS.fall,
+  },
 };
 
 const ANIMATION_INTERVAL = {
-  flag: 200,
-  spawn: 600,
+  fireball: 100,
+};
+const TILE_CELL_MOVE_DURATION = {
+  fireball: 100,
 };
 
 // Game constants

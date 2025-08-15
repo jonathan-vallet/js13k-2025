@@ -75,7 +75,7 @@ function updateAnimations(deltaTime) {
         if (canMoveTo(nextX, characterY)) {
           characterX = nextX;
           hasMovedHorizontally = true;
-        } else {
+        } else if (!isCharacterFalling) {
           // If cannot move but is near a free tile, try to move vertically
           if (canMoveTo(nextX, characterY + 5)) {
             characterY += 1;
@@ -90,7 +90,7 @@ function updateAnimations(deltaTime) {
       if (!hasMovedVertically) {
         if (canMoveTo(characterX, nextY)) {
           characterY = nextY;
-        } else if (!hasMovedHorizontally) {
+        } else if (!hasMovedHorizontally && !isCharacterFalling) {
           if (canMoveTo(characterX + 5, nextY)) {
             characterX += 1;
           } else if (canMoveTo(characterX - 5, nextY)) {
@@ -126,6 +126,10 @@ function updateAnimations(deltaTime) {
       // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);
     }
+  }
+
+  if (movingTile) {
+    animateTile(deltaTime);
   }
 }
 
@@ -166,8 +170,8 @@ function updateFallAnimation(timestamp) {
     characterScale = 1;
 
     // Respawn 3 pixels en arrière
-    const respawnX = fallTargetX - fallDx * TILE_SIZE * 0.7;
-    const respawnY = fallTargetY - fallDy * TILE_SIZE * 0.7;
+    const respawnX = Math.floor(fallTargetX - fallDx * TILE_SIZE * 0.7);
+    const respawnY = Math.floor(fallTargetY - fallDy * TILE_SIZE * 0.7);
     respawnCharacter(respawnX, respawnY);
   }
 }
