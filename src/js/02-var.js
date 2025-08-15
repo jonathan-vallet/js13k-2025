@@ -32,4 +32,3 @@ let fallDx = 0;
 let fallDy = 0;
 
 let collectedCatsNumber = 0;
-let movingTile = null;

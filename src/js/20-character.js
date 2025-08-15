@@ -166,14 +166,11 @@ function tryPerformCharacterAction() {
 }
 
 function tryLaunchFireball() {
-  let dx = characterDirection === ORIENTATION_RIGHT ? 1 : characterDirection === ORIENTATION_LEFT ? -1 : 0;
-  let dy = characterDirection === ORIENTATION_DOWN ? 1 : characterDirection === ORIENTATION_UP ? -1 : 0;
+  let { dx, dy } = getDirectionOffsets(characterDirection);
   let x = characterX / TILE_SIZE + (dx * 0.5 || 0.1);
   let y = characterY / TILE_SIZE + dy * 0.5;
 
   let fireballTile = addTile('fireball', x, y);
-  let distance = 10;
-
-  startTileAnimation(fireballTile, x + distance * dx, y + distance * dy);
+  fireballTile.moveDirection = characterDirection;
   return true;
 }

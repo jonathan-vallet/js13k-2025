@@ -75,109 +75,6 @@ function addTile(tile, x, y, options = {}) {
 }
 
 /**
- * Move a tile if possible (crate, boulder)
- * @param {number} x - The x-coordinate of the crate
- * @param {number} y - The y-coordinate of the crate
- * @param {number} dx - The x-direction of movement
- * @param {number} dy - The y-direction of movement
- * @returns {boolean} - True if the crate was moved, false otherwise
- */
-function tryMoveTile(tileName, x, y, dx, dy) {
-  let maxDistance = 1;
-  if (tileName === 'boulder') {
-    maxDistance = LEVEL_WIDTH;
-  }
-
-  let distance = 0;
-  while (distance < maxDistance) {
-    let checkedX = x + (distance + 1) * dx;
-    let checkedY = y + (distance + 1) * dy;
-    let tileAtNewPosition = getTileAt(checkedX, checkedY)?.tile || null;
-    if (
-      isInLevelBounds(checkedX, checkedY) &&
-      (tileAtNewPosition === null ||
-        ['arrow', 'hole', 'trap', 'hole-filled', 'switch-off', 'switch-trigger', 'spikes'].includes(tileAtNewPosition))
-    ) {
-      distance++;
-    } else {
-      break;
-    }
-  }
-
-  if (distance > 0) {
-    // Update the crate's position in levelData
-    let levelData = levels[currentLevel].levelData;
-    for (const element of levelData) {
-      if (element.x === x && element.y === y && element.tile === tileName) {
-        startTileAnimation(element, x + distance * dx, y + distance * dy);
-        for (let i = 1; i < distance; i++) {
-          setTimeout(() => {
-            playActionSound(tileName);
-          }, TILE_CELL_MOVE_DURATION[tileName] * i);
-        }
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-/**
- * Start the animation of a crate moving from one position to another
- * @param {number} deltaTime - The time elapsed since the last frame
- */
-function animateTile(deltaTime) {
-  tileMoveElapsedTime += deltaTime;
-
-  const totalDistance = Math.abs(tileMoveStartX - tileMoveTargetX) + Math.abs(tileMoveStartY - tileMoveTargetY);
-  let moveDuration = TILE_CELL_MOVE_DURATION[movingTile.tile] * totalDistance;
-  const progress = min(tileMoveElapsedTime / moveDuration, 1);
-
-  movingTile.x = tileMoveStartX + (tileMoveTargetX - tileMoveStartX) * progress;
-  movingTile.y = tileMoveStartY + (tileMoveTargetY - tileMoveStartY) * progress;
-
-  if (progress >= 1) {
-    movingTile.x = tileMoveTargetX;
-    movingTile.y = tileMoveTargetY;
-    tileMoveElapsedTime = 0;
-
-    // When a fireball hit a bush
-    if (movingTile.tile === 'fireball') {
-      const deltaX = tileMoveTargetX - tileMoveStartX;
-      const deltaY = tileMoveTargetY - tileMoveStartY;
-
-      // Calculate the next position that the fireball would move to if it continued in the same direction
-      const nextX = movingTile.x + (deltaX !== 0 ? Math.sign(deltaX) : 0);
-      const nextY = movingTile.y + (deltaY !== 0 ? Math.sign(deltaY) : 0);
-
-      // Check if the next position contains a bush
-      const nextTile = getTileAt(nextX, nextY);
-      if (nextTile && nextTile.tile === 'bush' && !nextTile.triggered) {
-        nextTile.triggered = true;
-        animateTileRemoval('bush', null, null, nextTile.orientation);
-      }
-    }
-    movingTile = null; // Reset moving tile after the animation
-  }
-}
-/**
- * Start the animation of a crate moving from one position to another
- * @param {number} crateX - The x-coordinate of the crate
- * @param {number} crateY - The y-coordinate of the crate
- * @param {number} dx - The x-direction of movement
- * @param {number} dy - The y-direction of movement
- */
-function startTileAnimation(tile, targetX, targetY) {
-  movingTile = tile;
-  tileMoveStartX = tile.x;
-  tileMoveStartY = tile.y;
-  tileMoveTargetX = targetX;
-  tileMoveTargetY = targetY;
-  tileMoveElapsedTime = 0;
-}
-
-/**
  * Animate the removal of one or more tiles by scaling them down to 0
  * @param {string} tileName - The name of the tile to remove (e.g., "block", "gong")
  * @param {number|null} x - The x-coordinate of the tile to remove, or null to remove all matching tiles
@@ -236,4 +133,11 @@ function invertSwitches(orientation) {
       }
     }
   });
+}
+
+function getDirectionOffsets(direction) {
+  return {
+    dx: direction === ORIENTATION_RIGHT ? 1 : direction === ORIENTATION_LEFT ? -1 : 0,
+    dy: direction === ORIENTATION_DOWN ? 1 : direction === ORIENTATION_UP ? -1 : 0,
+  };
 }

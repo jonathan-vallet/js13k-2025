@@ -86,14 +86,9 @@ const TILE_DATA = {
   fireball: {
     rle: '32LLLLLLLLLLLBPLPKM\\MJMhMIMZfZMHMfZfMHMYhYMHMe\\eMHMYhYMHMe\\eMHMZfZMHMfZfMIM\\MJMhMKPLPLLLLLLLLLLLB',
     colors: COLOR_SETS.fall,
+    animationSpeed: 100,
+    moveSpeed: 8,
   },
-};
-
-const ANIMATION_INTERVAL = {
-  fireball: 100,
-};
-const TILE_CELL_MOVE_DURATION = {
-  fireball: 100,
 };
 
 // Game constants

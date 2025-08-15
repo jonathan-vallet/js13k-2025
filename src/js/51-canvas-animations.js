@@ -26,13 +26,22 @@ function animate(timestamp) {
  */
 function updateAnimations(deltaTime) {
   world.levelData.forEach((tile) => {
+    // Checks tiles which have multiple frames to animate them
     if (TILE_DATA[tile.tile].tiles.length > 1) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
-      const interval = ANIMATION_INTERVAL[tile.tile];
+      const interval = TILE_DATA[tile.tile].animationSpeed;
       if (tile.elapsed >= interval) {
         tile.animationFrame = (tile.animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
         tile.elapsed = 0;
       }
+    }
+
+    // Checks tiles which have a direction to move
+    if (typeof tile.moveDirection !== 'undefined') {
+      let { dx, dy } = getDirectionOffsets(tile.moveDirection);
+      let moveSpeed = TILE_DATA[tile.tile].moveSpeed || 1;
+      tile.x += (dx * moveSpeed) / deltaTime;
+      tile.y += (dy * moveSpeed) / deltaTime;
     }
   });
 
@@ -126,10 +135,6 @@ function updateAnimations(deltaTime) {
       // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);
     }
-  }
-
-  if (movingTile) {
-    animateTile(deltaTime);
   }
 }
 
