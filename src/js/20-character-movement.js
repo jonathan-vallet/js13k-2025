@@ -33,6 +33,10 @@ function mapKeyToDirection(key) {
       return 'right';
     case 'Enter':
       return 'action';
+    case ' ': // for steam controller
+    case 'Control': // for steam controller
+    case 'e':
+      return 'undo';
     case 'Alt':
     case 'r':
       return 'reset';

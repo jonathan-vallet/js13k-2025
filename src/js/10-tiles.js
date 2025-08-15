@@ -1,4 +1,11 @@
 /**
+ * Get the tile coordinates from a pixel value
+ * @param {number} val - The pixel value
+ * @returns {number} - The tile coordinate
+ */
+const getTileCoord = (val) => Math.floor(val / TILE_SIZE);
+
+/**
  * Get the tile at the specified position
  * @param {number} x - The x-coordinate
  * @param {number} y - The y-coordinate
@@ -6,7 +13,7 @@
  */
 function getTileAt(x, y, type = [], levelIndex = currentLevel) {
   let lastTileAt = null;
-  let levelData = levels[levelIndex].levelData;
+  let levelData = world.levelData;
   for (const element of levelData) {
     if (element.x === x && element.y === y) {
       if (type.length > 0) {
@@ -29,7 +36,7 @@ function getTileAt(x, y, type = [], levelIndex = currentLevel) {
  */
 function getAllTiles(type = [], levelIndex = currentLevel) {
   let lastTileAt = [];
-  let levelData = levels[levelIndex].levelData;
+  let levelData = world.levelData;
   for (const element of levelData) {
     if (type.length > 0) {
       if (type.includes(element.tile)) {
@@ -102,6 +109,11 @@ function tryMoveTile(tileName, x, y, dx, dy) {
     for (const element of levelData) {
       if (element.x === x && element.y === y && element.tile === tileName) {
         startTileAnimation(element, x + distance * dx, y + distance * dy);
+        for (let i = 1; i < distance; i++) {
+          setTimeout(() => {
+            playActionSound(tileName);
+          }, TILE_CELL_MOVE_DURATION * i);
+        }
         return true;
       }
     }
@@ -137,6 +149,7 @@ function removeConnectedBlocks(x, y, dx, dy) {
   // Remove the current block
   animateTileRemoval('block-trigger', x, y);
   animateTileRemoval('block', x, y);
+  playActionSound('block');
 
   // Calculate the position of the next block in the same direction
   const nextX = x + dx;
@@ -229,6 +242,7 @@ function invertSwitches(orientation) {
       let tileAt = getTileAt(tile.x, tile.y, ['crate', 'boulder']);
       if (tileAt) {
         animateTileRemoval(tileAt.tile, tile.x, tile.y);
+        playActionSound('fall');
       }
     }
   });

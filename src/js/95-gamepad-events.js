@@ -6,8 +6,10 @@ const gamepadButtonMapping = {
   14: 'left', // D-Pad Left
   15: 'right', // D-Pad Right
   0: 'action', // Bouton A
+  1: 'undo', // Bouton B
   2: 'reset', // Bouton X
   4: 'reset', // Left Bumper
+  5: 'undo', // Right Bumper
   9: 'menu', // Start button
 };
 

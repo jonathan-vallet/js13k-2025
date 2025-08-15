@@ -5,38 +5,46 @@
  */
 
 // Initialize the character on the grid at the start of the game
-let characterScale;
+let characterScale = 1;
 let characterDirection; // Track the current direction
-let characterInitialX;
-let characterInitialY;
-let characterX;
-let characterY;
+let characterX = characterInitialX * TILE_SIZE;
+let characterY = characterInitialY * TILE_SIZE;
+let characterSpeed = 1; // en pixels par frame
 let isCharacterMoving;
 let characterMoveStartX = characterX;
 let characterMoveStartY = characterY;
 let characterMoveTargetX = characterX;
 let characterMoveTargetY = characterY;
-let characterMoveFrame;
+let characterMoveFrame = 0; // Frame of the character sprite to show
 let characterMoveElapsedTime;
 
-let isCharacterReturningToSpawn; // Flag to track if the character is returning to spawn
 let characterReturnStartTime; // Start time for the character return animation
 let characterRespawnStartX, characterRespawnStartY; // Start position for the character respawn
 let characterRespawnTargetX, characterRespawnTargetY; // Target position for the character respawn
-
-// Initialize the step counter
-let stepsPerformed = 0;
 
 /**
  * Draw the character sprite on the canvas
  */
 function drawCharacter() {
-  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame + 9 * characterData.gender]; // Use the current frame
+  const { offsetX, offsetY } = getCameraOffset();
+
+  const drawX = characterX - offsetX * TILE_SIZE;
+  const drawY = characterY - offsetY * TILE_SIZE;
+
+  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame + 9 * characterData.gender];
   const characterColors = TILE_DATA['characters'].colors;
-  drawTile(characterTile, characterColors, characterX, characterY, {
+  ctx.save();
+  ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
+  if (characterScale !== 1) {
+    ctx.translate(drawX, drawY);
+  } else {
+    ctx.translate(Math.floor(drawX), Math.floor(drawY));
+  }
+  drawTile(characterTile, characterColors, 0, 0, {
     scale: characterScale,
     flipHorizontally: characterDirection === ORIENTATION_RIGHT,
   });
+  ctx.restore();
 }
 
 /**
@@ -47,90 +55,79 @@ function drawCharacter() {
  * @param {number} dy - The y-direction of movement
  * @returns {boolean} - True if the character can move to this position, false otherwise
  */
-function canMoveTo(x, y, dx = 0, dy = 0) {
-  if (movingTile || isCharacterMoving || isCharacterReturningToSpawn) {
-    return false; // Cannot move while the character or crate is moving
-  }
+function canMoveTo(x, y) {
+  const map = collisionMaps[currentSeason];
+  const blockingTiles = ['tree'];
+  const fallTiles = ['hole', 'water'];
 
-  // Check grid boundaries (excluding the border)
-  if (!isInLevelBounds(x, y)) {
-    return false;
-  }
+  // --- 1. Collision bloquante (plus stricte)
+  const padBlock = COLLISION_PADDING.wall;
+  const cornersBlock = getCorners(x, y, padBlock);
 
-  const tileElement = getTileAt(x, y);
-  const tileAtTarget = tileElement?.tile || null;
+  for (const { x: cx, y: cy } of cornersBlock) {
+    const tileX = Math.floor(cx / TILE_SIZE);
+    const tileY = Math.floor(cy / TILE_SIZE);
 
-  // Block movement if the tile is being removed
-  if (tileElement && tileElement.isBeingRemoved) {
-    return false;
-  }
+    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) return false;
 
-  let hasPerformedAction = tryPerformAction(x, y, dx, dy, tileElement);
-
-  if (hasPerformedAction) {
-    saveActionHistory();
-  }
-
-  // If the tile is a not a free space, return false
-  if (
-    ![
-      null,
-      'arrow',
-      'key',
-      'key-holder',
-      'flag',
-      'trap',
-      'hole',
-      'spikes',
-      'hole-filled',
-      'switch-trigger',
-      'switch-off',
-    ].includes(tileAtTarget)
-  ) {
-    if (hasPerformedAction) {
-      ++stepsPerformed;
-      handlePostMoveEvents(characterX, characterY, hasPerformedAction);
+    const tile = map[tileY][tileX];
+    if (blockingTiles.includes(tile)) {
+      return false;
     }
-    return false;
+  }
+
+  // --- 2. Détection de chute (plus souple)
+  const padHole = COLLISION_PADDING.hole;
+  const cornersHole = getCorners(x, y, padHole);
+
+  for (const { x: cx, y: cy } of cornersHole) {
+    const tileX = Math.floor(cx / TILE_SIZE);
+    const tileY = Math.floor(cy / TILE_SIZE);
+
+    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) continue;
+
+    const tile = map[tileY][tileX];
+    if (fallTiles.includes(tile)) {
+      triggerFallAnimation(x, y);
+      return false;
+    }
   }
 
   return true;
 }
 
-/**
- * Move the character
- * @param {number} dx - The x-direction of movement
- * @param {number} dy - The y-direction of movement
- */
-function moveCharacter(dx, dy, direction) {
-  if (isCharacterMoving || movingTile || isCharacterReturningToSpawn) {
-    return; // Prevent movement while returning to spawn or if already moving
-  }
+function getCorners(x, y, padding) {
+  return [
+    { x: x + padding.sides, y: y + padding.top },
+    { x: x + TILE_SIZE - padding.sides, y: y + padding.top },
+    { x: x + padding.sides, y: y + TILE_SIZE - padding.bottom },
+    { x: x + TILE_SIZE - padding.sides, y: y + TILE_SIZE - padding.bottom },
+  ];
+}
 
-  const newX = characterX + dx;
-  const newY = characterY + dy;
-  setCharacterDirection(direction);
-  // Check if the character can move to the new position
-  if (canMoveTo(newX, newY, dx, dy)) {
-    saveActionHistory();
-    // Start the movement animation
-    isCharacterMoving = true;
-    characterMoveStartX = characterX;
-    characterMoveStartY = characterY;
-    characterMoveTargetX = newX;
-    characterMoveTargetY = newY;
-    characterMoveElapsedTime = 0;
+function triggerFallAnimation(targetX, targetY) {
+  isCharacterFalling = true;
+  isFallingAnimationActive = true;
+  fallAnimationStartTime = performance.now();
+
+  fallStartX = characterX;
+  fallStartY = characterY;
+
+  // Calcule la direction de chute
+  fallDx = Math.sign(targetX - characterX);
+  fallDy = Math.sign(targetY - characterY);
+
+  // Cible de l'animation visuelle de chute
+  fallTargetX = characterX + fallDx * TILE_SIZE * 0.5;
+  fallTargetY = characterY + fallDy * TILE_SIZE * 0.5;
+  if (fallDy > 0) {
+    fallTargetY += TILE_SIZE * 0.2;
   }
 }
 
-function respawnCharacter(respawnX = null, respawnY = null) {
-  isCharacterReturningToSpawn = true;
-  // After the delay, start the return to spawn animation
-  characterRespawnStartX = characterX;
-  characterRespawnStartY = characterY;
-  characterRespawnTargetX = respawnX || characterInitialX;
-  characterRespawnTargetY = respawnY || characterInitialY;
-  characterReturnStartTime = performance.now();
+function respawnCharacter(targetX, targetY) {
+  characterX = targetX;
+  characterY = targetY;
 }
 
 function setCharacterDirection(direction) {
@@ -161,6 +158,7 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
     case 'trap':
       // Transform the trap into a hole when the character moves away
       if (!hasPerformedAction && tileAtCurrentPosition?.tile !== 'hole') {
+        playActionSound('trap');
         tileAtPreviousPosition.tile = 'hole';
       }
       break;
@@ -173,14 +171,16 @@ function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
     case 'hole':
     case 'spikes':
       respawnCharacter(lastX, lastY);
-      --stepsPerformed;
+      playActionSound('fall');
       break;
     case 'switch-trigger':
+      // If player reaches last step, don't invert the switches as he will respawn
       invertSwitches(tileAtCurrentPosition.orientation);
       break;
     case 'key':
       // Pick up the key
       removeTile('key', characterX, characterY);
+      playActionSound('key');
       ++collectedKeysNumber;
       break;
   }

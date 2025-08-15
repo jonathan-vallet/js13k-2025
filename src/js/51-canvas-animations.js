@@ -11,10 +11,7 @@ function animate(timestamp) {
   const deltaTime = timestamp - lastFrameTime;
 
   updateAnimations(deltaTime);
-
-  if (isCharacterReturningToSpawn) {
-    returnCharacterToSpawn();
-  }
+  updateFallAnimation(timestamp);
 
   refreshCanvas();
   lastFrameTime = timestamp;
@@ -25,200 +22,132 @@ function animate(timestamp) {
 
 /**
  * Update the animation frames of all animated tiles
+ * @param {number} deltaTime - The time elapsed since the last frame
  */
 function updateAnimations(deltaTime) {
-  let levelData = levels[currentLevel].levelData;
-  levelData.forEach((tile) => {
-    // Handle regular animation (frame changes)
+  world.levelData.forEach((tile) => {
     if (TILE_DATA[tile.tile].tiles.length > 1) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const interval = ANIMATION_INTERVAL[tile.tile];
       if (tile.elapsed >= interval) {
         tile.animationFrame = (tile.animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
-        tile.elapsed = 0; // Reset elapsed time
-      }
-    }
-
-    // Handle tile removal animation
-    if (tile.isBeingRemoved) {
-      tile.elapsed = (tile.elapsed || 0) + deltaTime;
-      const duration = tile.removalDuration || DEFAULT_REMOVAL_DURATION;
-      tile.scale = max(1 - tile.elapsed / duration, 0); // Reduce scale over time
-
-      if (tile.scale <= 0) {
-        removeTile(tile.tile, tile.x, tile.y);
-        tile.isBeingRemoved = false;
-        if (tile.removeCallback) {
-          tile.removeCallback();
-        }
+        tile.elapsed = 0;
       }
     }
   });
 
-  // Handle character movement if no other animation is in progress
-  if (!isCharacterMoving && keyStack.length > 0 && !isCharacterReturningToSpawn) {
-    const direction = keyStack[keyStack.length - 1]; // Get the most recent key pressed
+  if (!isCharacterFalling && keyStack.length > 0) {
+    const pressedKeys = new Set(keyStack);
+    let dx = 0;
+    let dy = 0;
 
-    switch (direction) {
-      case 'up':
-        moveCharacter(0, -1, ORIENTATION_UP);
-        break;
-      case 'down':
-        moveCharacter(0, 1, ORIENTATION_DOWN);
-        break;
-      case 'left':
-        moveCharacter(-1, 0, ORIENTATION_LEFT);
-        break;
-      case 'right':
-        moveCharacter(1, 0, ORIENTATION_RIGHT);
-        break;
+    if (keyStack.length > 0) {
+      // Regarde les deux dernières touches pressées
+      const directions = keyStack.slice(-2).reverse(); // plus récente en premier
+
+      for (const dir of directions) {
+        switch (dir) {
+          case 'left':
+            if (dx === 0) dx = -1;
+            break;
+          case 'right':
+            if (dx === 0) dx = 1;
+            break;
+          case 'up':
+            if (dy === 0) dy = -1;
+            break;
+          case 'down':
+            if (dy === 0) dy = 1;
+            break;
+        }
+      }
     }
-  }
 
-  // Handle character movement animation
-  if (isCharacterMoving) {
-    playCharacterAnimation(deltaTime);
-  }
+    // Normalise le vecteur pour éviter la double vitesse en diagonale
+    if (dx !== 0 || dy !== 0) {
+      const length = Math.hypot(dx, dy);
+      dx /= length;
+      dy /= length;
 
-  if (movingTile) {
-    animateTile(deltaTime);
+      const nextX = characterX + dx * characterSpeed;
+      const nextY = characterY + dy * characterSpeed;
+
+      if (canMoveTo(nextX, characterY)) {
+        characterX = nextX;
+      }
+      if (canMoveTo(characterX, nextY)) {
+        characterY = nextY;
+      }
+
+      // 🔁 Orientation : selon la dernière direction pressée
+      for (let i = keyStack.length - 1; i >= 0; i--) {
+        switch (keyStack[i]) {
+          case 'left':
+            setCharacterDirection(ORIENTATION_LEFT);
+            i = -1;
+            break;
+          case 'right':
+            setCharacterDirection(ORIENTATION_RIGHT);
+            i = -1;
+            break;
+          case 'up':
+            setCharacterDirection(ORIENTATION_UP);
+            i = -1;
+            break;
+          case 'down':
+            setCharacterDirection(ORIENTATION_DOWN);
+            i = -1;
+            break;
+        }
+      }
+
+      // Mets à jour l’animation du personnage
+      updateCharacterWalkAnimation(deltaTime);
+    } else {
+    }
   }
 }
 
-/**
- * Move the character to the specified position with animation
- * @param {number} deltaTime - The time elapsed since the last frame
- */
-function playCharacterAnimation(deltaTime) {
-  characterMoveElapsedTime += deltaTime;
-  const progress = min(characterMoveElapsedTime / CHARACTER_MOVE_DURATION, 1);
+let walkAnimationTimer = 0;
+let walkFrameIndex = 0;
+const WALK_FRAME_INTERVAL = 120;
 
-  // Interpolate the character's position
-  characterX = characterMoveStartX + (characterMoveTargetX - characterMoveStartX) * progress;
-  characterY = characterMoveStartY + (characterMoveTargetY - characterMoveStartY) * progress;
+function updateCharacterWalkAnimation(deltaTime) {
+  walkAnimationTimer += deltaTime;
+  const base = getMoveFrameFromDirection(characterDirection);
+  const sequence = [base + 3, base, base + 6, base];
 
-  // Determine the character's movement direction
-  let characterFrameDirection = getMoveFrameFromDirection(characterDirection);
+  if (walkAnimationTimer >= WALK_FRAME_INTERVAL) {
+    walkAnimationTimer = 0;
 
-  // Determine which frame to show based on the progress
-  const phase = Math.floor(progress * 3); // Divide the animation into 4 phases (0 to 3)
-  switch (phase) {
-    case 0:
-      characterMoveFrame = characterFrameDirection + 3; // Second frame (3, 4, 5)
-      break;
-    case 1:
-      characterMoveFrame = characterFrameDirection; // First frame (0, 1, 2 depending on direction)
-      break;
-    case 2:
-      characterMoveFrame = characterFrameDirection + 6; // Final frame (6, 7, 8)
-      break;
+    // Fait tourner l'index (0 → 1 → 2 → 0 → ...)
+    walkFrameIndex = (walkFrameIndex + 1) % sequence.length;
   }
 
-  if (progress >= 1) {
-    isCharacterMoving = false;
-    characterX = characterMoveTargetX;
-    characterY = characterMoveTargetY;
-    characterMoveElapsedTime = 0;
-    characterMoveFrame = characterFrameDirection; // Reset to the default frame
-    handlePostMoveEvents(characterMoveStartX, characterMoveStartY);
-  }
+  characterMoveFrame = sequence[walkFrameIndex];
 }
 
-function returnCharacterToSpawn() {
-  // Handle character return to spawn animation
-  const elapsedTime = performance.now() - characterReturnStartTime;
-  const progress = min(elapsedTime / CHARACTER_RESPAWN_DURATION, 1);
+function updateFallAnimation(timestamp) {
+  if (!isFallingAnimationActive) return;
 
-  // First part: scale down at the current position
-  if (progress < 0.5) {
-    characterScale = 1 - progress * 2; // Scale down from 1 to 0
-    characterX = characterRespawnStartX;
-    characterY = characterRespawnStartY;
-  } else {
-    // Second part: scale up at the spawn position
-    characterScale = (progress - 0.5) * 2; // Scale up from 0 to 1
-    characterX = characterRespawnTargetX;
-    characterY = characterRespawnTargetY;
-    if (characterRespawnTargetX === characterInitialX && characterRespawnTargetY === characterInitialY) {
-      setCharacterDirection(ORIENTATION_DOWN); // Reset the character direction
-    }
-  }
+  const elapsed = timestamp - fallAnimationStartTime;
+  const progress = clamp(elapsed / FALL_ANIMATION_DURATION, 0, 1);
 
-  // Terminer l'animation lorsque le progress atteint 1
+  // Déplacement progressif vers le trou
+  characterX = fallStartX + (fallTargetX - fallStartX) * progress;
+  characterY = fallStartY + (fallTargetY - fallStartY) * progress;
+  // Échelle du perso
+  characterScale = 1 - progress;
+
   if (progress >= 1) {
-    isCharacterReturningToSpawn = false;
-    characterX = characterRespawnTargetX;
-    characterY = characterRespawnTargetY;
+    isFallingAnimationActive = false;
+    isCharacterFalling = false;
     characterScale = 1;
-  }
-}
 
-/**
- * Start the animation of a crate moving from one position to another
- * @param {number} deltaTime - The time elapsed since the last frame
- */
-function animateTile(deltaTime) {
-  tileMoveElapsedTime += deltaTime;
-
-  const totalDistance = Math.abs(tileMoveStartX - tileMoveTargetX) + Math.abs(tileMoveStartY - tileMoveTargetY);
-  let moveDuration = TILE_CELL_MOVE_DURATION * totalDistance;
-  const progress = min(tileMoveElapsedTime / moveDuration, 1);
-
-  if (movingTile.tile === 'boulder') {
-    // Calculate the rotation based on progress and total distance
-    const fullRotations = totalDistance; // Each cell results in a full rotation (4 steps)
-    const rotationPerCell = 4; // 0, 1, 2, 3 for a full rotation
-    const totalRotationSteps = fullRotations * rotationPerCell;
-
-    // Calculate current rotation step based on progress
-    const currentRotationStep = Math.floor(progress * totalRotationSteps) % rotationPerCell;
-
-    // Set the orientation of the boulder based on the current rotation step
-    movingTile.orientation = currentRotationStep; // 0, 1, 2, or 3
-  }
-
-  movingTile.x = tileMoveStartX + (tileMoveTargetX - tileMoveStartX) * progress;
-  movingTile.y = tileMoveStartY + (tileMoveTargetY - tileMoveStartY) * progress;
-
-  if (progress >= 1) {
-    movingTile.x = tileMoveTargetX;
-    movingTile.y = tileMoveTargetY;
-    tileMoveElapsedTime = 0;
-
-    // Specific logic for different tile types
-    // When a crate reaches a hole or a trap, replace it with a filled hole
-    if (movingTile.tile === 'crate') {
-      checkCrateInHole(movingTile);
-    }
-    // When a boulder or crate reaches a switch trigger, invert the switches
-    if (['crate', 'boulder'].includes(movingTile.tile)) {
-      let switchTrigger = getTileAt(tileMoveTargetX, tileMoveTargetY, ['switch-trigger']);
-      if (switchTrigger) {
-        invertSwitches(switchTrigger.orientation);
-      }
-      // When a crate reaches a switch-on tile, remove it
-      let switchOn = getTileAt(tileMoveTargetX, tileMoveTargetY, ['switch-on']);
-      if (switchOn) {
-        animateTileRemoval(movingTile.tile, tileMoveTargetX, tileMoveTargetY);
-      }
-    }
-    // When a boulder hit a gong trigger
-    if (movingTile.tile === 'boulder') {
-      const deltaX = tileMoveTargetX - tileMoveStartX;
-      const deltaY = tileMoveTargetY - tileMoveStartY;
-
-      // Calculate the next position that the boulder would move to if it continued in the same direction
-      const nextX = movingTile.x + (deltaX !== 0 ? Math.sign(deltaX) : 0);
-      const nextY = movingTile.y + (deltaY !== 0 ? Math.sign(deltaY) : 0);
-
-      // Check if the next position contains a gong-trigger
-      const nextTile = getTileAt(nextX, nextY);
-      if (nextTile && nextTile.tile === 'gong-trigger' && !nextTile.triggered) {
-        nextTile.triggered = true;
-        animateTileRemoval('gong', null, null, nextTile.orientation);
-      }
-    }
-    movingTile = null; // Reset moving tile after the animation
+    // Respawn 3 pixels en arrière
+    const respawnX = fallTargetX - fallDx * TILE_SIZE * 0.7;
+    const respawnY = fallTargetY - fallDy * TILE_SIZE * 0.7;
+    respawnCharacter(respawnX, respawnY);
   }
 }
 
@@ -228,5 +157,6 @@ function checkCrateInHole(crate) {
     removeTile(holeTileAtPosition.tile, crate.x, crate.y);
     removeTile('crate', crate.x, crate.y);
     addTile('hole-filled', crate.x, crate.y, { isUnder: true });
+    playActionSound('fall');
   }
 }

@@ -18,9 +18,12 @@ function handleInput(input) {
   if (currentScreen === 'characterSelection') {
     handleCharacterSelectionKeydown(input);
   }
-  if (input === 'menu') {
-    switchMode('menu');
+  if (currentScreen === 'levelSelector') {
+    handleLevelSelectionKeydown(input);
   }
+  // if (input === 'menu') {
+  //   switchMode('menu');
+  // }
 }
 
 function handleRelease(input) {
