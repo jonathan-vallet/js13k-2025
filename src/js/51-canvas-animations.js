@@ -65,10 +65,6 @@ function updateAnimations(deltaTime) {
 
     // Normalise le vecteur pour éviter la double vitesse en diagonale
     if (dx !== 0 || dy !== 0) {
-      const length = Math.hypot(dx, dy);
-      dx /= length;
-      dy /= length;
-
       const nextX = characterX + dx * characterSpeed;
       const nextY = characterY + dy * characterSpeed;
       let hasMovedHorizontally = false;
@@ -125,9 +121,10 @@ function updateAnimations(deltaTime) {
         }
       }
 
+      tryPerformCharacterAction();
+
       // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);
-    } else {
     }
   }
 }
@@ -172,15 +169,5 @@ function updateFallAnimation(timestamp) {
     const respawnX = fallTargetX - fallDx * TILE_SIZE * 0.7;
     const respawnY = fallTargetY - fallDy * TILE_SIZE * 0.7;
     respawnCharacter(respawnX, respawnY);
-  }
-}
-
-function checkCrateInHole(crate) {
-  const holeTileAtPosition = getTileAt(crate.x, crate.y, ['hole', 'trap']);
-  if (holeTileAtPosition) {
-    removeTile(holeTileAtPosition.tile, crate.x, crate.y);
-    removeTile('crate', crate.x, crate.y);
-    addTile('hole-filled', crate.x, crate.y, { isUnder: true });
-    playActionSound('fall');
   }
 }

@@ -56,7 +56,7 @@ function getAllTiles(type = [], levelIndex = currentLevel) {
  * @param {number} [y] - The y-coordinate of the tile to remove.
  */
 function removeTile(tileName, x, y) {
-  levels[currentLevel].levelData = levels[currentLevel].levelData.filter((element) => {
+  world.levelData = world.levelData.filter((element) => {
     // Remove tile if it matches the name and, if provided, coordinates
     return element.tile !== tileName || element.x !== x || element.y !== y;
   });

@@ -147,41 +147,20 @@ function getMoveFrameFromDirection(direction) {
   }
 }
 
-/**
- * Handle action that triggers when the character moves to a new position
- */
-function handlePostMoveEvents(lastX, lastY, hasPerformedAction) {
-  const tileAtPreviousPosition = getTileAt(lastX, lastY, ['trap', 'switch-trigger']);
-  const tileAtCurrentPosition = getTileAt(characterX, characterY);
+function tryPerformCharacterAction() {
+  // Falling detection (more lenient)
+  const padHole = COLLISION_PADDING.hole;
+  const cornersHole = getCorners(characterX, characterY, padHole);
 
-  switch (tileAtPreviousPosition?.tile) {
-    case 'trap':
-      // Transform the trap into a hole when the character moves away
-      if (!hasPerformedAction && tileAtCurrentPosition?.tile !== 'hole') {
-        playActionSound('trap');
-        tileAtPreviousPosition.tile = 'hole';
-      }
-      break;
-    case 'switch-trigger':
-      invertSwitches(tileAtPreviousPosition.orientation);
-      break;
-  }
+  for (const { x: cx, y: cy } of cornersHole) {
+    const tileX = Math.floor(cx / TILE_SIZE);
+    const tileY = Math.floor(cy / TILE_SIZE);
 
-  switch (tileAtCurrentPosition?.tile) {
-    case 'hole':
-    case 'spikes':
-      respawnCharacter(lastX, lastY);
-      playActionSound('fall');
-      break;
-    case 'switch-trigger':
-      // If player reaches last step, don't invert the switches as he will respawn
-      invertSwitches(tileAtCurrentPosition.orientation);
-      break;
-    case 'key':
-      // Pick up the key
-      removeTile('key', characterX, characterY);
-      playActionSound('key');
-      ++collectedKeysNumber;
-      break;
+    const tile = getTileAt(tileX, tileY, ['cat']);
+    if (tile) {
+      removeTile('cat', tileX, tileY);
+      ++collectedCatsNumber;
+      return false;
+    }
   }
 }

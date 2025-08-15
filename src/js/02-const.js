@@ -82,7 +82,6 @@ const TILE_DATA = {
   cat: {
     rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
     colors: COLOR_SETS.cat,
-    isStatic: true,
   },
 };
 

@@ -30,3 +30,5 @@ let fallTargetX = 0;
 let fallTargetY = 0;
 let fallDx = 0;
 let fallDy = 0;
+
+let collectedCatsNumber = 0;

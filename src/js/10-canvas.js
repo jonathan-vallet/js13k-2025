@@ -28,6 +28,12 @@ function drawLevel() {
     DISPLAY_WIDTH * TILE_SIZE * zoomFactor,
     DISPLAY_HEIGHT * TILE_SIZE * zoomFactor,
   );
+
+  ctx.save();
+  ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
+  ctx.translate(Math.round(-offsetX * TILE_SIZE), Math.round(-offsetY * TILE_SIZE)); // Décale la vue
+  drawLevelElements(world.levelData, false, ctx);
+  ctx.restore();
 }
 
 /**

@@ -49,7 +49,7 @@ function decodeLevel(worldLayers) {
     // On reset tileIndex pour chaque layer, pour que tous utilisent la même grille
     tileIndex = 0;
   }
-  console.log(`Decoded level data: ${JSON.stringify(levelData)}`);
+
   return {
     characterInitialX,
     characterInitialY,
