@@ -11,56 +11,7 @@ const cleanCSS = require('gulp-clean-css');
 const replace = require('gulp-replace');
 
 // Define replacements for shortening the code
-const replacements = {
-  // html elements
-  gameBackgroundCanvas: 'gBC',
-  gameCanvas: 'gC',
-  editorCanvas: 'eC',
-  uiCanvas: 'uC',
-
-  // Character parameters
-  skin: 's',
-  hair: 'h',
-  outfit: 'o',
-  gender: 'g',
-
-  // colors
-  blueGreen: 'bG',
-  green: 'g',
-  bronze: 'br',
-  silver: 'si',
-  gold: 'go',
-  purple: 'p',
-  sand: 's',
-
-  // object properties
-  canChangeOrientation: 'cCO',
-  useOrientationForColor: 'uOFC',
-  colors: 'co',
-  isStatic: 'iS',
-  orientation: 'o',
-  rle: 'r',
-  characterData: 'cD',
-  levelData: 'lD',
-  collectedKeysNumber: 'cKN',
-  characterX: 'cX',
-  characterY: 'cY',
-  characterDirection: 'cDi',
-  characterInitialX: 'cIX',
-  characterInitialY: 'cIY',
-  limit: 'l',
-
-  // Music player
-  numChannels: 'nC',
-  songData: 'sD',
-  patternLen: 'pL',
-  endPattern: 'eP',
-  rowLen: 'rL',
-
-  // Menu names
-  characterSelection: 'cS',
-  newGame: 'nG',
-};
+const replacements = {};
 
 // Chemins de fichiers
 const paths = {

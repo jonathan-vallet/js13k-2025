@@ -36,7 +36,7 @@ function generateCollisionMapForSeason(seasonName) {
   for (const tile of world.levelData) {
     let seasonTile = getSeasonalTile(tile.tile, seasonName);
     const tileData = TILE_DATA[seasonTile];
-    if (!tileData || !tileData.isStatic) continue;
+    if (!tileData) continue;
 
     const size = tileData.size || [1, 1];
 

@@ -40,8 +40,28 @@ function updateAnimations(deltaTime) {
     if (typeof tile.moveDirection !== 'undefined') {
       let { dx, dy } = getDirectionOffsets(tile.moveDirection);
       let moveSpeed = TILE_DATA[tile.tile].moveSpeed || 1;
-      tile.x += (dx * moveSpeed) / deltaTime;
-      tile.y += (dy * moveSpeed) / deltaTime;
+      let nextX = tile.x + (dx * moveSpeed) / deltaTime;
+      let nextY = tile.y + (dy * moveSpeed) / deltaTime;
+
+      tile.x = nextX;
+      tile.y = nextY;
+
+      let destinationTile = getTileAtDestination(tile.tile, nextX * TILE_SIZE, nextY * TILE_SIZE, false);
+      if (destinationTile) {
+        console.log('stopeped by', destinationTile);
+        tile.moveDirection = undefined; // Stop moving if blocked
+
+        if (tile.tile === 'fireball') {
+          // Remove fireball from the world
+          removeTile('fireball', tile.x, tile.y);
+          if (destinationTile.tile === 'bush') {
+            removeTile('bush', destinationTile.x, destinationTile.y);
+            Object.keys(collisionMaps).forEach((season) => {
+              collisionMaps[season][destinationTile.y][destinationTile.x] = null;
+            });
+          }
+        }
+      }
     }
   });
 
@@ -81,15 +101,15 @@ function updateAnimations(deltaTime) {
 
       // Check horizontal movement
       if (characterX !== nextX) {
-        if (canMoveTo(nextX, characterY)) {
+        if (!getTileAtDestination('characters', nextX, characterY)) {
           characterX = nextX;
           hasMovedHorizontally = true;
         } else if (!isCharacterFalling) {
           // If cannot move but is near a free tile, try to move vertically
-          if (canMoveTo(nextX, characterY + 5)) {
+          if (!getTileAtDestination('characters', nextX, characterY + 5)) {
             characterY += 1;
             hasMovedVertically = true;
-          } else if (canMoveTo(nextX, characterY - 5)) {
+          } else if (!getTileAtDestination('characters', nextX, characterY - 5)) {
             characterY -= 1;
             hasMovedVertically = true;
           }
@@ -97,12 +117,12 @@ function updateAnimations(deltaTime) {
       }
 
       if (!hasMovedVertically) {
-        if (canMoveTo(characterX, nextY)) {
+        if (!getTileAtDestination('characters', characterX, nextY)) {
           characterY = nextY;
         } else if (!hasMovedHorizontally && !isCharacterFalling) {
-          if (canMoveTo(characterX + 5, nextY)) {
+          if (!getTileAtDestination('characters', characterX + 5, nextY)) {
             characterX += 1;
-          } else if (canMoveTo(characterX - 5, nextY)) {
+          } else if (!getTileAtDestination('characters', characterX - 5, nextY)) {
             characterX -= 1;
           }
         }

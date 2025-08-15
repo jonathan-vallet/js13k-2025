@@ -49,20 +49,21 @@ function drawCharacter() {
 
 /**
  * Check if the character can move to the specified position
+ * @param {string} tileName - The name of the tile
  * @param {number} x - The x-coordinate
  * @param {number} y - The y-coordinate
  * @param {number} dx - The x-direction of movement
  * @param {number} dy - The y-direction of movement
- * @returns {boolean} - True if the character can move to this position, false otherwise
+ * @returns {tile || null} - The tile at the destination or null if not blocked
  */
-function canMoveTo(x, y) {
+function getTileAtDestination(tileName, x, y, canFall = true) {
   const map = collisionMaps[currentSeason];
   const blockingTiles = ['tree', 'bush'];
   const fallTiles = ['hole', 'water'];
 
   // Blocking tiles
-  const padBlock = COLLISION_PADDING.wall;
-  const cornersBlock = getCorners(x, y, padBlock);
+  const collisionPadding = TILE_DATA[tileName].collisionPadding || [0, 0, 0, 0];
+  const cornersBlock = getCorners(x, y, collisionPadding);
 
   for (const { x: cx, y: cy } of cornersBlock) {
     const tileX = Math.floor(cx / TILE_SIZE);
@@ -72,13 +73,17 @@ function canMoveTo(x, y) {
 
     const tile = map[tileY][tileX];
     if (blockingTiles.includes(tile)) {
-      return false;
+      return { x: tileX, y: tileY, tile }; // Return the blocking tile
     }
   }
 
+  if (!canFall) {
+    return null; // If falling is not allowed, we stop here
+  }
+
   // Falling detection (more lenient)
-  const padHole = COLLISION_PADDING.hole;
-  const cornersHole = getCorners(x, y, padHole);
+  const holePadding = TILE_DATA[tileName].holePadding || [0, 0, 0, 0];
+  const cornersHole = getCorners(x, y, holePadding);
 
   for (const { x: cx, y: cy } of cornersHole) {
     const tileX = Math.floor(cx / TILE_SIZE);
@@ -89,19 +94,19 @@ function canMoveTo(x, y) {
     const tile = map[tileY][tileX];
     if (fallTiles.includes(tile)) {
       triggerFallAnimation(x, y);
-      return false;
+      return { x: tileX, y: tileY, tile };
     }
   }
 
-  return true;
+  return null;
 }
 
 function getCorners(x, y, padding) {
   return [
-    { x: x + padding.sides, y: y + padding.top },
-    { x: x + TILE_SIZE - padding.sides, y: y + padding.top },
-    { x: x + padding.sides, y: y + TILE_SIZE - padding.bottom },
-    { x: x + TILE_SIZE - padding.sides, y: y + TILE_SIZE - padding.bottom },
+    { x: x + padding[3], y: y + padding[0] },
+    { x: x + TILE_SIZE - padding[1], y: y + padding[0] },
+    { x: x + padding[3], y: y + TILE_SIZE - padding[2] },
+    { x: x + TILE_SIZE - padding[1], y: y + TILE_SIZE - padding[2] },
   ];
 }
 
@@ -149,7 +154,7 @@ function getMoveFrameFromDirection(direction) {
 
 function tryPerformCharacterAction() {
   // Falling detection (more lenient)
-  const padHole = COLLISION_PADDING.hole;
+  const padHole = TILE_DATA['characters'].holePadding;
   const cornersHole = getCorners(characterX, characterY, padHole);
 
   for (const { x: cx, y: cy } of cornersHole) {
