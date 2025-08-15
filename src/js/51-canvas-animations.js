@@ -71,12 +71,36 @@ function updateAnimations(deltaTime) {
 
       const nextX = characterX + dx * characterSpeed;
       const nextY = characterY + dy * characterSpeed;
+      let hasMovedHorizontally = false;
+      let hasMovedVertically = false;
 
-      if (canMoveTo(nextX, characterY)) {
-        characterX = nextX;
+      // Check horizontal movement
+      if (characterX !== nextX) {
+        if (canMoveTo(nextX, characterY)) {
+          characterX = nextX;
+          hasMovedHorizontally = true;
+        } else {
+          // If cannot move but is near a free tile, try to move vertically
+          if (canMoveTo(nextX, characterY + 5)) {
+            characterY += 1;
+            hasMovedVertically = true;
+          } else if (canMoveTo(nextX, characterY - 5)) {
+            characterY -= 1;
+            hasMovedVertically = true;
+          }
+        }
       }
-      if (canMoveTo(characterX, nextY)) {
-        characterY = nextY;
+
+      if (!hasMovedVertically) {
+        if (canMoveTo(characterX, nextY)) {
+          characterY = nextY;
+        } else if (!hasMovedHorizontally) {
+          if (canMoveTo(characterX + 5, nextY)) {
+            characterX += 1;
+          } else if (canMoveTo(characterX - 5, nextY)) {
+            characterX -= 1;
+          }
+        }
       }
 
       // 🔁 Orientation : selon la dernière direction pressée

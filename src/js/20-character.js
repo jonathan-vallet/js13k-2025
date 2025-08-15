@@ -57,10 +57,10 @@ function drawCharacter() {
  */
 function canMoveTo(x, y) {
   const map = collisionMaps[currentSeason];
-  const blockingTiles = ['tree'];
+  const blockingTiles = ['tree', 'bush'];
   const fallTiles = ['hole', 'water'];
 
-  // --- 1. Collision bloquante (plus stricte)
+  // Blocking tiles
   const padBlock = COLLISION_PADDING.wall;
   const cornersBlock = getCorners(x, y, padBlock);
 
@@ -76,7 +76,7 @@ function canMoveTo(x, y) {
     }
   }
 
-  // --- 2. Détection de chute (plus souple)
+  // Falling detection (more lenient)
   const padHole = COLLISION_PADDING.hole;
   const cornersHole = getCorners(x, y, padHole);
 

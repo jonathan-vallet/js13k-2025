@@ -25,6 +25,7 @@ let COLOR_SETS = {
   blueGreen: ['#024d53', '#599dbc', '#72d1c7', '#a9ffe6'],
   water: ['#87c7df', '#986b41', '#bd8e64', '#d7b588'],
   ice: ['#0038d0', '#50b0f8', '#f8f8f8'],
+  cat: ['#000', '#222', '#666', '#e54350'],
   grass: ['#ddb982', '#d6af74', '#34ac5c', '#55c768'],
   spring: ['#000', '#f8f8b0', '#d8f850', '#58e000', '#b0f838', '#60c800', '#e8c040'],
   summer: ['#000', '#f8f870', '#a0f820', '#28a800', '#a0f820', '#308800', '#c08018'],
@@ -71,6 +72,16 @@ const TILE_DATA = {
   ice: {
     rle: '16OYMYeZeYNZMYOYMYeYfYN\\OYMYeYfYN\\OYMYeYfYN\\OYMYeYfYNYeZOYM[fZMYeZO[MYfZMYeZO[MYgYMYeZO[MZfYMYeZO[MZfYMYeZMYM^eZM[NYMZM[eZM[NYMZM^NZNYNYM^NZNYNYM^NZN',
     colors: COLOR_SETS.ice,
+    isStatic: true,
+  },
+  bush: {
+    rle: '16LJOLAMrNHOfqeqNEMqiqfqMCMqhqiqMCMiqiMBMZqgrerMCMYqeqjrMBMqgYrZqeqMBMqfYqeqZfqMBMe[qf[eMDM[f\\eMEM[e\\MH^LI',
+    colors: [0, 4, 5, 6],
+    isStatic: true,
+  },
+  cat: {
+    rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
+    colors: COLOR_SETS.cat,
     isStatic: true,
   },
 };
