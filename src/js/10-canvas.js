@@ -73,6 +73,46 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
       element.orientation = orientation; // 0 à 3 pour les rotations
     }
 
+    if (['wall'].includes(element.tile)) {
+      const { type, orientation } = getWallTypeAndOrientation(element, levelData);
+      element.animationFrame = type; // 0 à 3 = coin/bord/intérieur/plein
+      element.orientation = orientation; // 0 à 3 pour les rotations
+      const belowX = element.x;
+      const belowY = element.y + 1;
+      if (!getTileAt(belowX, belowY)) {
+        const leftWall = getTileAt(element.x - 1, element.y)?.tile === 'wall';
+        const rightWall = getTileAt(element.x + 1, element.y)?.tile === 'wall';
+
+        // choix de la tuile et flip éventuel
+        let thicknessFrameIndex = 5; // par défaut le segment (gauche+droite)
+        let flipHorizontally = false;
+
+        if (!leftWall && rightWall) {
+          thicknessFrameIndex = 4; // coin gauche
+        } else if (leftWall && !rightWall) {
+          thicknessFrameIndex = 4; // coin droit = coin gauche + miroir
+          flipHorizontally = true;
+        } else if (!leftWall && !rightWall) {
+          // isolé: on peut garder 5 (petit segment), ou 4 selon ton art.
+          thicknessFrameIndex = 6;
+        }
+
+        const thicknessFrame = tile.tiles[thicknessFrameIndex];
+        const colors = element.color || tile.colors;
+        const scale = element.scale || 1;
+        const useOrientationForColor = tile.useOrientationForColor;
+
+        // Variante plus sûre : passer un flag flipHorizontally (à gérer dans drawTile)
+        drawTile(thicknessFrame, colors, belowX, belowY, {
+          orientation: ORIENTATION_UP,
+          scale, // normal
+          flipHorizontally,
+          useOrientationForColor,
+          context,
+        });
+      }
+    }
+
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
     let colors = element.color || TILE_DATA[displayedTile].colors;
     const seasonColors = COLOR_SETS[currentSeason];
@@ -237,4 +277,41 @@ function getTileTypeAndOrientation(element, levelData) {
   }
 
   return { type, orientation };
+}
+
+function getWallTypeAndOrientation(element, levelData) {
+  const { x, y, tile } = element;
+  const isSame = (tx, ty) => levelData.some((e) => e.x === tx && e.y === ty && e.tile === tile);
+
+  const n = isSame(x, y - 1) ? 1 : 0;
+  const e = isSame(x + 1, y) ? 1 : 0;
+  const s = isSame(x, y + 1) ? 1 : 0;
+  const w = isSame(x - 1, y) ? 1 : 0;
+
+  const bits = n + e + s + w;
+
+  // 1 voisin => bord
+  if (bits === 1) {
+    return { type: 0, orientation: e ? 0 : s ? 1 : w ? 2 : 3 };
+  }
+
+  // segment droit
+  if (e && w && !n && !s) return { type: 1, orientation: 0 }; // horizontal
+  if (n && s && !e && !w) return { type: 1, orientation: 1 }; // vertical
+
+  // T (3 voisins) => orientation = côté manquant
+  if (bits === 3) {
+    return { type: 2, orientation: !n ? 0 : !e ? 1 : !s ? 2 : 3 };
+  }
+
+  // coin (2 voisins adjacents)
+  if (bits === 2) {
+    if (e && s) return { type: 3, orientation: 3 }; // ES
+    if (s && w) return { type: 3, orientation: 0 }; // SW
+    if (w && n) return { type: 3, orientation: 1 }; // WN
+    if (n && e) return { type: 3, orientation: 2 }; // NE
+  }
+
+  // fallback (ex: 4 voisins) : côté horizontal
+  return { type: 1, orientation: 0 };
 }

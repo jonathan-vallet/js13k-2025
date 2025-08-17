@@ -31,6 +31,7 @@ let COLOR_SETS = {
   summer: ['#000', '#f8f870', '#a0f820', '#28a800', '#a0f820', '#308800', '#c08018'],
   fall: ['#000', '#f8f8b8', '#f8d000', '#d8a000', '#f8a050', '#e00000', '#e8a070'],
   winter: ['#000', '#f8f8f8', '#d8d8f8', '#a0a0f8', '#f8f8f8', '#50e0e8', '#e0b8c0'],
+  wall: ['#000', '#e8e0f0', '#b888d0', '#904070'],
 };
 
 // CAUTION! If new assets are added, push them at the end of the object, or it will break RLE
@@ -90,6 +91,11 @@ const TILE_DATA = {
     animationSpeed: 100,
     moveSpeed: 4,
     collisionPadding: [8, 8, 8, 8],
+  },
+  wall: {
+    rle: '112eqXXXXXqePpphPlPqMeddddbeMqMqNexewewerMqNewNqNe[ppppkZeOqMexewewerNqMewMqO[qXXXXRqeZPqexewewerOqexPZqMqpppphqMqeYQpphPlQYeMqfYeYmqgYgqgYeYkYkYjYfqMeYNqNtewewewMqNweNqNYeMjqfYplqfYhqfYhqfYjMeYOqMtewewewNqMweMqOYeMeqkqgYkYoqkqkqhqeMeYPuewewewOxeqPYeMgYpfqkqppeYgMeYMYOpphYOlOYMYeMqiYgqpppmMeYNYNexewewerMYNewNYNYeqMqeYfqkqfYhqfYjYjYlYgYgMeYNqYXXRqYVYqNZeqMrpphqjqlqkMeYNrdd]MrbrNqZeqXXPpPlqeMeYNrppiMrnrOqZpphqMgYfYgMqfqMgYiMeYNrppiMrnrMeNdd^eqMlMqeZeqMlMeYMqMqppiqMqnqMreXXRqYeMlMeYrYeMlMeYMeqXXReqXqe',
+    colors: COLOR_SETS.wall,
+    isStatic: true,
   },
 };
 

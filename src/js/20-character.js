@@ -58,7 +58,7 @@ function drawCharacter() {
  */
 function getTileAtDestination(tileName, x, y, canFall = true) {
   const map = collisionMaps[currentSeason];
-  const blockingTiles = ['tree', 'bush'];
+  const blockingTiles = ['tree', 'bush', 'wall'];
   const fallTiles = ['hole', 'water'];
 
   // Blocking tiles

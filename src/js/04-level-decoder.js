@@ -36,7 +36,9 @@ function generateCollisionMapForSeason(seasonName) {
   for (const tile of world.levelData) {
     let seasonTile = getSeasonalTile(tile.tile, seasonName);
     const tileData = TILE_DATA[seasonTile];
-    if (!tileData) continue;
+    if (!tileData) {
+      continue;
+    }
 
     const size = tileData.size || [1, 1];
 
@@ -47,6 +49,9 @@ function generateCollisionMapForSeason(seasonName) {
 
         if (x < WORLD_WIDTH && y < WORLD_HEIGHT) {
           map[y][x] = seasonTile;
+        }
+        if (seasonTile === 'wall') {
+          map[y + 1][x] = 'wall';
         }
       }
     }
