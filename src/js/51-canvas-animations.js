@@ -61,7 +61,6 @@ function updateAnimations(deltaTime) {
         }
         if (tile.tile === 'follow-trap') {
           tile.moveDirection = null; // Stop moving if blocked
-          tile.isTriggered = false;
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
         }
@@ -73,7 +72,6 @@ function updateAnimations(deltaTime) {
           } else {
             tile.isReturning = false;
             tile.moveDirection = null;
-            tile.isTriggered = false;
           }
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);

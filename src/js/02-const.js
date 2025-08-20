@@ -22,6 +22,7 @@ let COLOR_SETS = {
   fall: ['#000', '#f8f8b8', '#f8d000', '#d8a000', '#f8a050', '#e00000', '#e8a070'],
   winter: ['#000', '#f8f8f8', '#d8d8f8', '#a0a0f8', '#f8f8f8', '#50e0e8', '#e0b8c0'],
   wall: ['#000', '#e8e0f0', '#b888d0', '#904070'],
+  heart: ['#000', '#ff0000', '#ffffff'],
 };
 
 // CAUTION! If new assets are added, push them at the end of the object, or it will break RLE
@@ -98,6 +99,10 @@ const TILE_DATA = {
     returningMoveSpeed: 0.75,
     collisionPadding: [1, 1, 1, 1],
   },
+  heart: {
+    rle: '16LLLLDNCNHMZMAMZMFM\\M\\MEMaMEMaMFM_MHM]MJM[MLMYMLBMLLLLH',
+    colors: COLOR_SETS.heart,
+  },
 };
 
 // Game constants
@@ -115,6 +120,3 @@ const ORIENTATION_LEFT = 4;
 
 const BLOCKING_TILES = ['tree', 'bush', 'wall'];
 const HOLE_PADDING = [11, 7, 5, 7];
-
-const BLADE_TRAPS_LIST_PER_ROW = [];
-const BLADE_TRAPS_LIST_PER_COL = [];

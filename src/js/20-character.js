@@ -28,7 +28,15 @@ function drawCharacter() {
   const drawY = characterY - offsetY * TILE_SIZE;
 
   const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame];
-  const characterColors = TILE_DATA['characters'].colors;
+  let characterColors = TILE_DATA['characters'].colors;
+
+  if (isInvulnerable) {
+    const now = performance.now();
+    if (Math.floor((now - invulnerabilityStartTime) / 200) % 2 === 0) {
+      characterColors = COLOR_SETS['winter']; // palette de ton choix
+    }
+  }
+
   ctx.save();
   ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
   if (characterScale !== 1) {
@@ -42,8 +50,6 @@ function drawCharacter() {
   });
   ctx.restore();
 }
-
-function drawLife() {}
 
 /**
  * Check if the character can move to the specified position
@@ -74,7 +80,7 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   }
 
   if (!canFall) {
-    return null; // If falling is not allowed, we stop here
+    return null; // If falling is not allowed (for traps and fireballs), we stop here
   }
 
   // Falling detection (more lenient)
@@ -183,14 +189,12 @@ function tryTriggerTrap() {
     let tileY = getTileCoord(y);
     // Checks if path is clear between character and traps to trigger them
     TRAP_LIST.forEach((trap) => {
-      if (trap.isTriggered) {
+      if (trap.moveDirection) {
         return;
       }
       if (trap.x === tileX && isRowClear(tileX, tileY, trap.y)) {
-        trap.isTriggered = true;
         trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
-        trap.isTriggered = true;
         trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
         console.log('Triggered trap:', trap);
       }

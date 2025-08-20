@@ -20,6 +20,9 @@ let characterInitialY = 5 * TILE_SIZE;
 let characterLife = 3;
 let characterMaxLife = 3;
 let isCharacterFalling = false;
+let isInvulnerable = false;
+let invulnerabilityStartTime = 0; // Start time for invulnerability
+const INVULNERABILITY_FRAME_DURATION = 1500;
 
 const collisionMaps = {};
 

@@ -10,6 +10,7 @@ function refreshCanvas() {
   ctx.imageSmoothingEnabled = false;
   drawLevel();
   drawCharacter();
+  checkTrapDamage();
   drawLife();
 }
 
