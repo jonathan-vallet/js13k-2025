@@ -1,7 +1,7 @@
 // Canvas variables
-const canvas = $('#gameCanvas');
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const backgroundCanvas = $('#gameBackgroundCanvas');
+const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
 
 const seasonCanvasList = {}; // ex: { summer: canvas, winter: canvas, ... }
@@ -17,6 +17,8 @@ let currentLevel = 0; // Current level index
 
 let characterInitialX = 5 * TILE_SIZE;
 let characterInitialY = 5 * TILE_SIZE;
+let characterLife = 3;
+let characterMaxLife = 3;
 let isCharacterFalling = false;
 
 const collisionMaps = {};

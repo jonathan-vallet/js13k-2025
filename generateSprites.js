@@ -41,9 +41,7 @@ function encodePngToRLE(filePath) {
             } else if (r === 0 && g === 0 && b === 255) {
               currentPixel = 4; // Blue
             } else {
-              console.log(
-                `Couleur inconnue: r=${r}, g=${g}, b=${b} au pixel (${x}, ${y}) dans ${filePath}`,
-              );
+              console.log(`Couleur inconnue: r=${r}, g=${g}, b=${b} au pixel (${x}, ${y}) dans ${filePath}`);
               continue;
             }
 
@@ -52,20 +50,12 @@ function encodePngToRLE(filePath) {
               runLength++;
               if (runLength === COLORS_PER_GROUP) {
                 // Limit the run length to 12
-                rleString += String.fromCharCode(
-                  START_CHAR_CODE +
-                    lastPixel * COLORS_PER_GROUP +
-                    (runLength - 1),
-                );
+                rleString += String.fromCharCode(START_CHAR_CODE + lastPixel * COLORS_PER_GROUP + (runLength - 1));
                 runLength = 0;
               }
             } else {
               if (lastPixel !== null && runLength > 0) {
-                rleString += String.fromCharCode(
-                  START_CHAR_CODE +
-                    lastPixel * COLORS_PER_GROUP +
-                    (runLength - 1),
-                );
+                rleString += String.fromCharCode(START_CHAR_CODE + lastPixel * COLORS_PER_GROUP + (runLength - 1));
               }
               lastPixel = currentPixel;
               runLength = 1;
@@ -75,9 +65,7 @@ function encodePngToRLE(filePath) {
 
         // Add the last run of pixels
         if (lastPixel !== null && runLength > 0) {
-          rleString += String.fromCharCode(
-            START_CHAR_CODE + lastPixel * COLORS_PER_GROUP + (runLength - 1),
-          );
+          rleString += String.fromCharCode(START_CHAR_CODE + lastPixel * COLORS_PER_GROUP + (runLength - 1));
         }
 
         resolve(rleString);
@@ -93,12 +81,7 @@ function encodeRun(color, length) {
   if (length < 1 || length > 12) {
     throw new Error(`Run length ${length} out of bounds for color ${color}`);
   }
-  console.log(
-    color,
-    length,
-    START_CHAR_CODE,
-    String.fromCharCode(START_CHAR_CODE + (length - 1)),
-  );
+  console.log(color, length, START_CHAR_CODE, String.fromCharCode(START_CHAR_CODE + (length - 1)));
 
   return String.fromCharCode(START_CHAR_CODE + (length - 1));
 }
@@ -111,9 +94,7 @@ async function generateRLEForPngFiles() {
   const files = fs.readdirSync(INPUT_DIR);
 
   // Filter PNG files
-  const pngFiles = files.filter(
-    (file) => path.extname(file).toLowerCase() === '.png',
-  );
+  const pngFiles = files.filter((file) => path.extname(file).toLowerCase() === '.png');
 
   // Process each PNG file
   for (const file of pngFiles) {

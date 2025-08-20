@@ -37,9 +37,9 @@ function updateAnimations(deltaTime) {
     }
 
     // Checks tiles which have a direction to move
-    if (typeof tile.moveDirection !== 'undefined') {
+    if (tile.moveDirection) {
       let { dx, dy } = getDirectionOffsets(tile.moveDirection);
-      let moveSpeed = TILE_DATA[tile.tile].moveSpeed || 1;
+      let moveSpeed = TILE_DATA[tile.tile][tile.isReturning ? 'returningMoveSpeed' : 'moveSpeed'] || 1;
       let nextX = tile.x + (dx * moveSpeed) / deltaTime;
       let nextY = tile.y + (dy * moveSpeed) / deltaTime;
 
@@ -48,10 +48,8 @@ function updateAnimations(deltaTime) {
 
       let destinationTile = getTileAtDestination(tile.tile, nextX * TILE_SIZE, nextY * TILE_SIZE, false);
       if (destinationTile) {
-        console.log('stopeped by', destinationTile);
-        tile.moveDirection = undefined; // Stop moving if blocked
-
         if (tile.tile === 'fireball') {
+          tile.moveDirection = null; // Stop moving if blocked
           // Remove fireball from the world
           removeTile('fireball', tile.x, tile.y);
           if (destinationTile.tile === 'bush') {
@@ -61,12 +59,30 @@ function updateAnimations(deltaTime) {
             });
           }
         }
+        if (tile.tile === 'follow-trap') {
+          tile.moveDirection = null; // Stop moving if blocked
+          tile.isTriggered = false;
+          tile.x = Math.round(tile.x);
+          tile.y = Math.round(tile.y);
+        }
+        if (tile.tile === 'blade-trap') {
+          if (!tile.isReturning) {
+            tile.isReturning = true;
+            // Moves in opposite direction
+            tile.moveDirection = (tile.moveDirection + 2) % 4;
+          } else {
+            tile.isReturning = false;
+            tile.moveDirection = null;
+            tile.isTriggered = false;
+          }
+          tile.x = Math.round(tile.x);
+          tile.y = Math.round(tile.y);
+        }
       }
     }
   });
 
   if (!isCharacterFalling && keyStack.length > 0) {
-    const pressedKeys = new Set(keyStack);
     let dx = 0;
     let dy = 0;
 
@@ -128,7 +144,7 @@ function updateAnimations(deltaTime) {
         }
       }
 
-      // 🔁 Orientation : selon la dernière direction pressée
+      // Set character direction from last pressed key
       for (let i = keyStack.length - 1; i >= 0; i--) {
         switch (keyStack[i]) {
           case 'left':
@@ -151,6 +167,7 @@ function updateAnimations(deltaTime) {
       }
 
       tryPerformCharacterAction();
+      tryTriggerTrap();
 
       // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);

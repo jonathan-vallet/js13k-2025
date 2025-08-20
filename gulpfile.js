@@ -39,7 +39,35 @@ gulp.task('scripts-prod', function () {
   return gulp
     .src(paths.scripts)
     .pipe(concat('bundle.js'))
-    .pipe(terser())
+    .pipe(
+      terser({
+        ecma: 2020,
+        module: false,
+        toplevel: true,
+        compress: {
+          passes: 3,
+          unsafe: true,
+          unsafe_arrows: true,
+          unsafe_methods: true,
+          unsafe_math: true, // n’écrira pas >>4 tout seul, mais aide d’autres folds
+          booleans_as_integers: true,
+          pure_getters: true,
+          hoist_vars: true,
+          hoist_props: true,
+          join_vars: true,
+          switches: true,
+          dead_code: true,
+          drop_console: true, // si tu n’as pas de logs en prod
+        },
+        mangle: {
+          toplevel: true,
+          properties: {
+            // utilise un préfixe _ sur tes props internes pour autoriser le mangle
+            regex: /^_/,
+          },
+        },
+      }),
+    )
     .pipe(gulp.dest(paths.dist))
     .on('error', function (err) {
       console.error('Error in scripts-prod task', err.toString());
@@ -58,6 +86,7 @@ gulp.task('minify-html', function () {
           collapseWhitespace: true,
           removeComments: true,
           minifyJS: true,
+          minifyCSS: true,
         }),
       )
       .on('error', reject) // Gestion des erreurs pour la minification HTML
@@ -73,7 +102,7 @@ gulp.task('minify-css', function () {
 });
 
 // Tâche pour zipper uniquement 'index.html' avec archiver
-gulp.task('zip', function (done) {
+gulp.task('make-zip', function (done) {
   const output = fs.createWriteStream(paths.zipDest);
   const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -148,7 +177,7 @@ gulp.task('watch', function () {
 });
 
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
-gulp.task('zip', gulp.series('scripts-prod', 'minify-css', 'minify-html', 'replace', 'zip'));
+gulp.task('zip', gulp.series('scripts-prod', 'minify-html', 'replace', 'make-zip'));
 
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
 gulp.task('zip-only', gulp.series('zip-html'));

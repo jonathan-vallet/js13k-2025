@@ -22,16 +22,6 @@ function startLevel(levelIndex) {
   characterY = world.characterInitialY;
 }
 
-/**
- * Check if a given position is within the bounds of the level
- * @param {number} x - The x-coordinate to check
- * @param {number} y - The y-coordinate to check
- * @returns {boolean} - Whether the position is within the level bounds
- */
-function isInLevelBounds(x, y) {
-  return x >= 1 && x < WORLD_WIDTH - 1 && y >= 1 && y < WORLD_HEIGHT - 1;
-}
-
 function preRenderSeasonBackgrounds() {
   seasonList.forEach((seasonName) => {
     currentSeason = seasonName;
@@ -43,14 +33,15 @@ function preRenderSeasonBackgrounds() {
     const ctx = canvas.getContext('2d');
     seasonCanvasList[seasonName] = canvas;
     seasonContextList[seasonName] = ctx;
-    let seasonColors = COLOR_SETS[seasonName];
 
-    ctx.fillStyle = seasonColors[1];
+    ctx.fillStyle = COLOR_SETS[seasonName][1];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const backgroundTileName = 'grass'; // Default background tile
 
     const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
-    let backgroundColors = TILE_DATA[backgroundTileName].colors.map((colorIndex) => seasonColors[colorIndex] || '#000');
+    let backgroundColors = TILE_DATA[backgroundTileName].colors.map(
+      (colorIndex) => COLOR_SETS[seasonName][colorIndex] || '#000',
+    );
 
     for (let y = 0; y < WORLD_HEIGHT; y++) {
       for (let x = 0; x < WORLD_WIDTH; x++) {
@@ -63,6 +54,15 @@ function preRenderSeasonBackgrounds() {
     // Dessine les éléments statiques
     if (currentScreen === 'game') {
       drawLevelElements(world.levelData, true, ctx);
+    }
+  });
+}
+
+const TRAP_LIST = [];
+function setTrapList() {
+  world.levelData.forEach((tile) => {
+    if (tile.tile === 'blade-trap') {
+      TRAP_LIST.push(tile);
     }
   });
 }

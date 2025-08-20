@@ -27,6 +27,7 @@ function loadGame() {
   seasonList.forEach((season) => {
     generateCollisionMapForSeason(season);
   });
+  setTrapList();
   preRenderSeasonBackgrounds();
   startLevel();
   currentSeason = seasonList[Math.floor(Math.random() * seasonList.length)];

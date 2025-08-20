@@ -1,22 +1,12 @@
-let $ = (selector) => document.querySelector(selector);
 let setLocalStorage = (key, value) => localStorage.setItem(key, value);
 let getLocalStorage = (key, defaultValue = null) => {
   const value = localStorage.getItem(key);
   return value ? JSON.parse(value) : defaultValue;
 };
 
-let min = Math.min;
-let max = Math.max;
 function clamp(value, minValue, maxValue) {
-  return max(minValue, min(maxValue, value));
+  return Math.max(minValue, Math.min(maxValue, value));
 }
-
-let characterData = getLocalStorage('characterData') || {
-  gender: 0, // 0 = boy, 1 = girl
-  skin: 0,
-  hair: 0,
-  outfit: 0,
-};
 
 let seasonList = ['spring', 'summer', 'fall', 'winter'];
 let currentSeason = 0; // Default to spring
@@ -54,7 +44,6 @@ const TILE_DATA = {
     rle: '144FPKQLPLLLLLLLLJNhNGNiNHNhNJPKQLPLPKQLPIMlMEMmMFMlMGNhNGNiNHNhNHNhNGNiNHNhNGMlMEMmMFMlMFMlMEMmMFMlMFMlMEMmMFMlMFMlMEMmMFMlMFMlMEMmMFMlMFMlMEMmMFMlMFMe[eZeMEMe]gMFMlMFMlMEMmMFMlMFMlMEMmMFMlMEMYe^eYMEM]fNEMYlYMEMeZe[eMEMe]gMFMlMFMeZe[eMEMe]gMFMlMFMZMZMZMFMYM[eMYMFMlMEMYe^eYMEM]fNEMYlYMDMYe^eYMEM]fNEMYlYMFMYMZMYMGMYM]MHMjMGMZMZMZMFMYM[eMYMFMlMFMZMZMZMFMYM[eMYMFMlMFO\\OGM\\NHO\\OFNYMZMYNFMYM]MHNhNGNYMZMYNFMYM]MHNhNFMsPsMGPqMGMsPsMDMrM\\MrMFM\\NHMrPrMEMrM\\MrMFM\\OGMrPrMDMrMrZrMrMFNsMFMrMvMrMCOqPqMqYMEQqNFMYMvOCMYqMqPqOFQsMEOvMYMCMrMvMrMFMqMrMFMrMvMrMCMZMuNYMDMZtMYMFNuMZMCMYNuMZMEMYNrMqYMEMZMuNEMYTYMGMqMYNGMYTYMEUANEOtMHUDNAUGNtMYMFUGNvNHOYMINvNHMYNrMISHMrNYMIMrNYMJSIMYNrMHMZNZMIMZNJMZNZMJOZMHMZNZMHMZOJMZOJMZNZMJOZMJPKQLPLLLLLLLLJNhNGNiNHNhNJPKQLPLPKQLPIMlMEMmMFNjNGNhNGNiNHNhNHNhNGNiNHNhNGMlMEMmMFMlMFMlMEMmMFNjNFMlMEMmMFNjNFMgYhMEMmMFMlMFMlMEMmMFMlMFMlMEMmMFMlMFMe^eMEMeZjMFMlMFMgYhMEMmMFMlMFMgYhMEMmMFMlMEMYe^eYMEM[hMeMDMYlYMEMe^eMEMeZjMFMlMFMe^eMEMeZjMFMlMFMeYMZMYeMFMYMYgMYMeMDMgNgMEMYe^eYMEM[hMeMDMYlYMDMYe^eYMEM[hMeMDMYlYMFMYMZMYMGMYMYfZMfMEMeMfMeMGMeYMZMYeMFMYMYgMYMeMDMgNgMFMeYMZMYeMFMYMYgMYMeMDMgNgMGN\\NHM\\NfMFNhNHMYMZMYMGMYMYfZMfMEMeMfMeMHMYMZMYMGMYMYfZMfMEMeMfMeMGMrPrMHSeMEMqMhMqMFMqM\\MqMGM\\NfMEMqMhMqMFMqM\\MqMGM\\NfMEMqMhMqMFMsZsMGMqNqMANFMrMfMrMFMqQqNHSfMDMqMgPFNqQqMGTfMDMqNgOEMYNtNYMFMrMYMHMYNqNqNYMEOtMZMFMrYNYODMZNeQEMZMtOGMsMZOEQeNZMCMZNtNZMFMqMYMGMZNtNZMCMZMtPFM[PFPqNqMZMDPtMZMEMYMrNYMFMZMqNqPDOZNZOGMZNHOZNZOEOYNZMIOqYMIMZNYOGMZNYOGMZNqNGOYNZMIMYNYMKMYMLMYNYMKOYMJMYNYMJMYOKMYOJMYOYMKOYME',
     colors: ['#000', '#e3b38d', '#dfa245', '#017949'],
     collisionPadding: [10, 4, 2, 4],
-    holePadding: [11, 7, 5, 7],
   },
   tree: {
     rle: '32GYXQYKYOe\\eOe\\eOYHYMe\\hZi\\eMeFeOeYgagYePDNe[gdf[eNBeMe[gdYf\\eMYAMe\\gdYg\\NeMe\\gdYg\\eNf\\h[f^g]eNf]m[i\\fNg\\ph]fOf_fZhZe\\eZePgYeaf`eYfNeMeMgdZe[gMeMePhYe[e_fZgQeNfMhYf[eZlNeNfNeMlZlMeNfNgOhMnMfOgOhNgMiMhMeNhNqMeMgRgOfPgMeMqPlQePjQqOpnOqNsNfMpMhNsOrSgOgTrNqNqMqAuPqPvMrMtMqC|uArNrAqMqCsMrDtMtArMrAqMqAsPqDsPuMrBMsOrMrBtMrOvBqOvMvNtPrGwNrOzKuPvH',
@@ -97,9 +86,19 @@ const TILE_DATA = {
     colors: COLOR_SETS.wall,
     isStatic: true,
   },
+  spikes: {
+    rle: '32LGMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLLLEMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLJ',
+    animationSpeed: 1000,
+    colors: COLOR_SETS.wall,
+  },
+  'blade-trap': {
+    rle: '16ENBNIMYMBMYMGMZMBMZMEMZePeZMCMZeMhMeZMAMZeMjMeZReMfMeQCNeMfMeNFNjNCRhSZfRfZMAMZfPfZMCMZePeZMEMZMBMZMGMYMBMYMINBNE',
+    colors: COLOR_SETS.wall,
+    moveSpeed: 3,
+    returningMoveSpeed: 0.75,
+    collisionPadding: [1, 1, 1, 1],
+  },
 };
-
-const DEFAULT_REMOVAL_DURATION = 400;
 
 // Game constants
 const TILE_SIZE = 16; // Original tile size in pixels
@@ -109,12 +108,13 @@ const DISPLAY_WIDTH = 25;
 const DISPLAY_HEIGHT = 15;
 
 // Orientation constants
-const ORIENTATION_UP = 0;
-const ORIENTATION_RIGHT = 1;
-const ORIENTATION_DOWN = 2;
-const ORIENTATION_LEFT = 3;
+const ORIENTATION_UP = 1;
+const ORIENTATION_RIGHT = 2;
+const ORIENTATION_DOWN = 3;
+const ORIENTATION_LEFT = 4;
 
-const CHARACTER_MOVE_DURATION = 300; // Duration of the character movement animation in ms
+const BLOCKING_TILES = ['tree', 'bush', 'wall'];
+const HOLE_PADDING = [11, 7, 5, 7];
 
-const viewHalfWidth = Math.floor(DISPLAY_WIDTH / 2);
-const viewHalfHeight = Math.floor(DISPLAY_HEIGHT / 2);
+const BLADE_TRAPS_LIST_PER_ROW = [];
+const BLADE_TRAPS_LIST_PER_COL = [];

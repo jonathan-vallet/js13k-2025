@@ -11,10 +11,6 @@ let characterX = characterInitialX * TILE_SIZE;
 let characterY = characterInitialY * TILE_SIZE;
 let characterSpeed = 1; // en pixels par frame
 let isCharacterMoving;
-let characterMoveStartX = characterX;
-let characterMoveStartY = characterY;
-let characterMoveTargetX = characterX;
-let characterMoveTargetY = characterY;
 let characterMoveFrame = 0; // Frame of the character sprite to show
 let characterMoveElapsedTime;
 
@@ -31,7 +27,7 @@ function drawCharacter() {
   const drawX = characterX - offsetX * TILE_SIZE;
   const drawY = characterY - offsetY * TILE_SIZE;
 
-  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame + 9 * characterData.gender];
+  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame];
   const characterColors = TILE_DATA['characters'].colors;
   ctx.save();
   ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
@@ -47,6 +43,8 @@ function drawCharacter() {
   ctx.restore();
 }
 
+function drawLife() {}
+
 /**
  * Check if the character can move to the specified position
  * @param {string} tileName - The name of the tile
@@ -58,21 +56,19 @@ function drawCharacter() {
  */
 function getTileAtDestination(tileName, x, y, canFall = true) {
   const map = collisionMaps[currentSeason];
-  const blockingTiles = ['tree', 'bush', 'wall'];
-  const fallTiles = ['hole', 'water'];
 
   // Blocking tiles
   const collisionPadding = TILE_DATA[tileName].collisionPadding || [0, 0, 0, 0];
   const cornersBlock = getCorners(x, y, collisionPadding);
 
   for (const { x: cx, y: cy } of cornersBlock) {
-    const tileX = Math.floor(cx / TILE_SIZE);
-    const tileY = Math.floor(cy / TILE_SIZE);
+    const tileX = getTileCoord(cx);
+    const tileY = getTileCoord(cy);
 
     if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) return false;
 
     const tile = map[tileY][tileX];
-    if (blockingTiles.includes(tile)) {
+    if (BLOCKING_TILES.includes(tile)) {
       return { x: tileX, y: tileY, tile }; // Return the blocking tile
     }
   }
@@ -82,19 +78,20 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   }
 
   // Falling detection (more lenient)
-  const holePadding = TILE_DATA[tileName].holePadding || [0, 0, 0, 0];
-  const cornersHole = getCorners(x, y, holePadding);
+  const cornersHole = getCorners(x, y, HOLE_PADDING);
 
   for (const { x: cx, y: cy } of cornersHole) {
-    const tileX = Math.floor(cx / TILE_SIZE);
-    const tileY = Math.floor(cy / TILE_SIZE);
+    const tileX = getTileCoord(cx);
+    const tileY = getTileCoord(cy);
 
-    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) continue;
+    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) {
+      continue;
+    }
 
     const tile = map[tileY][tileX];
-    if (fallTiles.includes(tile)) {
+    if (['hole', 'water'].includes(tile)) {
       triggerFallAnimation(x, y);
-      return { x: tileX, y: tileY, tile };
+      return { x: tileX, y: tileY, tile: tile };
     }
   }
 
@@ -153,13 +150,12 @@ function getMoveFrameFromDirection(direction) {
 }
 
 function tryPerformCharacterAction() {
-  // Falling detection (more lenient)
-  const padHole = TILE_DATA['characters'].holePadding;
-  const cornersHole = getCorners(characterX, characterY, padHole);
+  // Try picking cat
+  const cornersHole = getCorners(characterX, characterY, HOLE_PADDING);
 
   for (const { x: cx, y: cy } of cornersHole) {
-    const tileX = Math.floor(cx / TILE_SIZE);
-    const tileY = Math.floor(cy / TILE_SIZE);
+    const tileX = getTileCoord(cx);
+    const tileY = getTileCoord(cy);
 
     const tile = getTileAt(tileX, tileY, ['cat']);
     if (tile) {
@@ -177,5 +173,52 @@ function tryLaunchFireball() {
 
   let fireballTile = addTile('fireball', x, y);
   fireballTile.moveDirection = characterDirection;
+  return true;
+}
+
+function tryTriggerTrap() {
+  const corners = getCorners(characterX, characterY, TILE_DATA['characters'].collisionPadding);
+  for (const { x, y } of corners) {
+    let tileX = getTileCoord(x);
+    let tileY = getTileCoord(y);
+    // Checks if path is clear between character and traps to trigger them
+    TRAP_LIST.forEach((trap) => {
+      if (trap.isTriggered) {
+        return;
+      }
+      if (trap.x === tileX && isRowClear(tileX, tileY, trap.y)) {
+        trap.isTriggered = true;
+        trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
+      } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
+        trap.isTriggered = true;
+        trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
+        console.log('Triggered trap:', trap);
+      }
+    });
+  }
+  return false;
+}
+
+function isLineClear(y, x1, x2) {
+  if (x1 === x2) {
+    return true;
+  }
+  const map = collisionMaps[currentSeason];
+  const step = x2 > x1 ? 1 : -1;
+  for (let x = x1 + step; x !== x2; x += step) {
+    if (x < 0 || x >= WORLD_WIDTH) return false;
+    if (BLOCKING_TILES.includes(map[y][x])) return false;
+  }
+  return true;
+}
+
+function isRowClear(x, y1, y2) {
+  if (y1 === y2) return true; // rien à scanner
+  const map = collisionMaps[currentSeason];
+  const step = y2 > y1 ? 1 : -1;
+  for (let y = y1 + step; y !== y2; y += step) {
+    if (y < 0 || y >= WORLD_HEIGHT) return false;
+    if (BLOCKING_TILES.includes(map[y][x])) return false;
+  }
   return true;
 }

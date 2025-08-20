@@ -10,6 +10,7 @@ function refreshCanvas() {
   ctx.imageSmoothingEnabled = false;
   drawLevel();
   drawCharacter();
+  drawLife();
 }
 
 /**
@@ -102,7 +103,6 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
         const scale = element.scale || 1;
         const useOrientationForColor = tile.useOrientationForColor;
 
-        // Variante plus sûre : passer un flag flipHorizontally (à gérer dans drawTile)
         drawTile(thicknessFrame, colors, belowX, belowY, {
           orientation: ORIENTATION_UP,
           scale, // normal
@@ -115,11 +115,10 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
 
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
     let colors = element.color || TILE_DATA[displayedTile].colors;
-    const seasonColors = COLOR_SETS[currentSeason];
 
     // if colors are numbers, get their corresponding color from the season
     if (Array.isArray(colors)) {
-      colors = colors.map((colorIndex) => seasonColors[colorIndex] || colorIndex);
+      colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
     }
 
     const x = element.x;
@@ -179,7 +178,7 @@ function drawTile(tile, colors, x, y, options = {}) {
   if (useOrientationForColor) {
     colors = colors[orientation];
   } else {
-    context.rotate((orientation * Math.PI) / 2); // Apply rotation
+    context.rotate(((orientation - 1) * Math.PI) / 2); // Apply rotation
   }
   context.translate(-halfTileSize, -halfTileSize); // Move to the top-left corner of the tile
 
@@ -227,15 +226,15 @@ function getTileTypeAndOrientation(element, levelData) {
 
   // 1. Tous les voisins sont water → plein
   if (Object.values(neighbors).every(Boolean)) {
-    return { type: 3, orientation: 0 };
+    return { type: 3, orientation: ORIENTATION_UP };
   }
 
   // 2. Coin intérieur : un seul vide parmi les coins
   const corners = [
-    { key: 'nw', orientation: 0 },
-    { key: 'ne', orientation: 1 },
-    { key: 'se', orientation: 2 },
-    { key: 'sw', orientation: 3 },
+    { key: 'nw', orientation: ORIENTATION_UP },
+    { key: 'ne', orientation: ORIENTATION_RIGHT },
+    { key: 'se', orientation: ORIENTATION_DOWN },
+    { key: 'sw', orientation: ORIENTATION_LEFT },
   ];
 
   const emptyCorners = corners.filter((c) => !neighbors[c.key]);
@@ -248,10 +247,10 @@ function getTileTypeAndOrientation(element, levelData) {
 
   // 3. Bord : un seul côté vide parmi N/S/E/W
   const cardinal = [
-    { key: 'n', orientation: 0 },
-    { key: 'e', orientation: 1 },
-    { key: 's', orientation: 2 },
-    { key: 'w', orientation: 3 },
+    { key: 'n', orientation: ORIENTATION_UP },
+    { key: 'e', orientation: ORIENTATION_RIGHT },
+    { key: 's', orientation: ORIENTATION_DOWN },
+    { key: 'w', orientation: ORIENTATION_LEFT },
   ];
 
   const emptyCardinal = cardinal.filter((c) => !neighbors[c.key]);
@@ -264,16 +263,16 @@ function getTileTypeAndOrientation(element, levelData) {
 
   // 4. Coin extérieur : deux côtés adjacents + leur coin rempli
   if (n && w && nw) {
-    return { type: 0, orientation: 2 };
+    return { type: 0, orientation: ORIENTATION_DOWN };
   }
   if (n && e && ne) {
-    return { type: 0, orientation: 3 };
+    return { type: 0, orientation: ORIENTATION_LEFT };
   }
   if (s && e && se) {
-    return { type: 0, orientation: 0 };
+    return { type: 0, orientation: ORIENTATION_UP };
   }
   if (s && w && sw) {
-    return { type: 0, orientation: 1 };
+    return { type: 0, orientation: ORIENTATION_RIGHT };
   }
 
   return { type, orientation };
@@ -290,28 +289,34 @@ function getWallTypeAndOrientation(element, levelData) {
 
   const bits = n + e + s + w;
 
-  // 1 voisin => bord
+  // 1 neighbor: border
   if (bits === 1) {
-    return { type: 0, orientation: e ? 0 : s ? 1 : w ? 2 : 3 };
+    return {
+      type: 0,
+      orientation: e ? ORIENTATION_UP : s ? ORIENTATION_RIGHT : w ? ORIENTATION_DOWN : ORIENTATION_LEFT,
+    };
   }
 
-  // segment droit
-  if (e && w && !n && !s) return { type: 1, orientation: 0 }; // horizontal
-  if (n && s && !e && !w) return { type: 1, orientation: 1 }; // vertical
+  // 2 neighbors: segment
+  if (e && w && !n && !s) return { type: 1, orientation: ORIENTATION_UP }; // horizontal
+  if (n && s && !e && !w) return { type: 1, orientation: ORIENTATION_RIGHT }; // vertical
 
-  // T (3 voisins) => orientation = côté manquant
+  // 3 neighbors: T
   if (bits === 3) {
-    return { type: 2, orientation: !n ? 0 : !e ? 1 : !s ? 2 : 3 };
+    return {
+      type: 2,
+      orientation: !n ? ORIENTATION_UP : !e ? ORIENTATION_RIGHT : !s ? ORIENTATION_DOWN : ORIENTATION_LEFT,
+    };
   }
 
-  // coin (2 voisins adjacents)
+  // corners (2 adjacent neighbors)
   if (bits === 2) {
-    if (e && s) return { type: 3, orientation: 3 }; // ES
-    if (s && w) return { type: 3, orientation: 0 }; // SW
-    if (w && n) return { type: 3, orientation: 1 }; // WN
-    if (n && e) return { type: 3, orientation: 2 }; // NE
+    if (e && s) return { type: 3, orientation: ORIENTATION_LEFT }; // ES
+    if (s && w) return { type: 3, orientation: ORIENTATION_UP }; // SW
+    if (w && n) return { type: 3, orientation: ORIENTATION_RIGHT }; // WN
+    if (n && e) return { type: 3, orientation: ORIENTATION_DOWN }; // NE
   }
 
-  // fallback (ex: 4 voisins) : côté horizontal
-  return { type: 1, orientation: 0 };
+  // fallback
+  return { type: 1, orientation: ORIENTATION_UP };
 }
