@@ -15,9 +15,8 @@ function getCameraOffset() {
   return { offsetX: camX / TILE_SIZE, offsetY: camY / TILE_SIZE };
 }
 
-function startLevel(levelIndex) {
+function startLevel() {
   // Saves initial state of the level
-  currentLevel = levelIndex;
   characterX = characterInitialX;
   characterY = characterInitialY;
 }

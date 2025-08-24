@@ -160,6 +160,10 @@ function tryPerformCharacterAction() {
       removeTile('cat', tileX, tileY);
       ++collectedCatsNumber;
     }
+    if (getTileAt(tileX, tileY, ['orb'])) {
+      changeSeason(getTileAt(tileX, tileY, ['orb']).season);
+      removeTile('orb', tileX, tileY);
+    }
     // Sets new respawn point when checkpoint is reached
     if (getTileAt(tileX, tileY, ['checkpoint'])) {
       characterInitialX = tileX * TILE_SIZE;

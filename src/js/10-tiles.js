@@ -11,7 +11,7 @@ const getTileCoord = (val) => Math.floor(val / TILE_SIZE);
  * @param {number} y - The y-coordinate
  * @returns {string} - The name of the tile at this position or null if no element is found
  */
-function getTileAt(x, y, type = [], levelIndex = currentLevel) {
+function getTileAt(x, y, type = []) {
   let lastTileAt = null;
   let levelData = world.levelData;
   for (const element of levelData) {

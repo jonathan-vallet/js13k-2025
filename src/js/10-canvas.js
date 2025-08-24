@@ -63,6 +63,8 @@ function drawLevelBackground() {
 function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
   levelData.forEach((element) => {
     let displayedTile = getSeasonalTile(element.tile);
+    let colors;
+
     if (!displayedTile) {
       return;
     }
@@ -121,11 +123,17 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
     }
 
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
-    let colors = element.color || TILE_DATA[displayedTile].colors;
+    colors = element.color || TILE_DATA[displayedTile].colors;
 
     // if colors are numbers, get their corresponding color from the season
     if (Array.isArray(colors)) {
       colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
+    }
+
+    if (element.tile === 'orb') {
+      // Orb color is orb's season
+      const orbSeason = getTileAt(element.x, element.y, ['orb']).season;
+      colors = COLOR_SETS[orbSeason];
     }
 
     const x = element.x;
@@ -134,7 +142,6 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
     const scale = element.scale || 1;
     const useOrientationForColor = TILE_DATA[displayedTile].useOrientationForColor;
     const flipHorizontally = element.flipHorizontally;
-
     drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor, context, flipHorizontally });
   });
 }

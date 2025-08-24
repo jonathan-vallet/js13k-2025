@@ -13,10 +13,11 @@ let lastFrameTime = 0; // For animation loop
 let keyStack = []; // Stack of keys pressed
 
 let currentScreen = 'game'; // Current screen state
-let currentLevel = 0; // Current level index
 
 let characterInitialX = 22 * TILE_SIZE;
 let characterInitialY = 22 * TILE_SIZE;
+characterInitialX = 12 * TILE_SIZE;
+characterInitialY = 4 * TILE_SIZE;
 let characterMaxLife = 3;
 let characterLife = characterMaxLife;
 let isCharacterFalling = false;

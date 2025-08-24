@@ -153,6 +153,7 @@ const TILE_DATA = {
   orb: {
     rle: '32E^LLbLI\\t\\HtG[x[ExEZrfvZDrfvC[qgv[CqgvCZrgwZBrgwBZ|ZB|BZ|ZB|BZ|ZB|B[z[CzDZzZDzD[x[ExF\\t\\HtIbLL^LI',
     colors: [0, 4, 5, 6],
+    animationSpeed: 800,
   },
 };
 
