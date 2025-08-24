@@ -33,12 +33,12 @@ function drawCharacter() {
   if (isInvulnerable) {
     const now = performance.now();
     if (Math.floor((now - invulnerabilityStartTime) / 200) % 2 === 0) {
-      characterColors = COLOR_SETS['winter']; // palette de ton choix
+      characterColors = COLOR_SETS['winter'];
     }
   }
 
   ctx.save();
-  ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
+  ctx.scale(zoomFactor, zoomFactor);
   if (characterScale !== 1) {
     ctx.translate(drawX, drawY);
   } else {
@@ -102,15 +102,6 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   }
 
   return null;
-}
-
-function getCorners(x, y, padding) {
-  return [
-    { x: x + padding[3], y: y + padding[0] },
-    { x: x + TILE_SIZE - padding[1], y: y + padding[0] },
-    { x: x + padding[3], y: y + TILE_SIZE - padding[2] },
-    { x: x + TILE_SIZE - padding[1], y: y + TILE_SIZE - padding[2] },
-  ];
 }
 
 function triggerFallAnimation(targetX, targetY) {
@@ -196,7 +187,6 @@ function tryTriggerTrap() {
         trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
         trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
-        console.log('Triggered trap:', trap);
       }
     });
   }

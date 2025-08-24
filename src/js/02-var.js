@@ -15,8 +15,8 @@ let keyStack = []; // Stack of keys pressed
 let currentScreen = 'game'; // Current screen state
 let currentLevel = 0; // Current level index
 
-let characterInitialX = 5 * TILE_SIZE;
-let characterInitialY = 5 * TILE_SIZE;
+let characterInitialX = 22 * TILE_SIZE;
+let characterInitialY = 21 * TILE_SIZE;
 let characterLife = 3;
 let characterMaxLife = 3;
 let isCharacterFalling = false;

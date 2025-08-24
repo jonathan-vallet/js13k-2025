@@ -50,8 +50,8 @@ function generateCollisionMapForSeason(seasonName) {
         if (x < WORLD_WIDTH && y < WORLD_HEIGHT) {
           map[y][x] = seasonTile;
         }
-        if (seasonTile === 'wall') {
-          map[y + 1][x] = 'wall';
+        if (['wall', 'snow'].includes(seasonTile)) {
+          map[y + 1][x] = seasonTile;
         }
       }
     }

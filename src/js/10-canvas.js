@@ -59,6 +59,9 @@ function drawLevelBackground() {
 function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
   levelData.forEach((element) => {
     let displayedTile = getSeasonalTile(element.tile);
+    if (!displayedTile) {
+      return;
+    }
     if (element.tile !== displayedTile) {
       element.animationFrame = 0; // Reset frame if the tile is seasonal
       element.orientation = ORIENTATION_UP; // Ensure orientation is set
@@ -75,15 +78,14 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
       element.orientation = orientation; // 0 à 3 pour les rotations
     }
 
-    if (['wall'].includes(element.tile)) {
+    if (['wall', 'snow'].includes(element.tile)) {
       const { type, orientation } = getWallTypeAndOrientation(element, levelData);
       element.animationFrame = type; // 0 à 3 = coin/bord/intérieur/plein
       element.orientation = orientation; // 0 à 3 pour les rotations
-      const belowX = element.x;
       const belowY = element.y + 1;
-      if (!getTileAt(belowX, belowY)) {
-        const leftWall = getTileAt(element.x - 1, element.y)?.tile === 'wall';
-        const rightWall = getTileAt(element.x + 1, element.y)?.tile === 'wall';
+      if (!getTileAt(element.x, belowY)) {
+        const leftWall = getTileAt(element.x - 1, element.y)?.tile === element.tile;
+        const rightWall = getTileAt(element.x + 1, element.y)?.tile === element.tile;
 
         // choix de la tuile et flip éventuel
         let thicknessFrameIndex = 5; // par défaut le segment (gauche+droite)
@@ -98,15 +100,15 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
           // isolé: on peut garder 5 (petit segment), ou 4 selon ton art.
           thicknessFrameIndex = 6;
         }
-
         const thicknessFrame = tile.tiles[thicknessFrameIndex];
-        const colors = element.color || tile.colors;
-        const scale = element.scale || 1;
         const useOrientationForColor = tile.useOrientationForColor;
+        let colors = tile.colors;
+        if (Array.isArray(colors)) {
+          colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
+        }
 
-        drawTile(thicknessFrame, colors, belowX, belowY, {
+        drawTile(thicknessFrame, colors, element.x, belowY, {
           orientation: ORIENTATION_UP,
-          scale, // normal
           flipHorizontally,
           useOrientationForColor,
           context,
@@ -127,8 +129,9 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
     const useOrientationForColor = TILE_DATA[displayedTile].useOrientationForColor;
+    const flipHorizontally = element.flipHorizontally;
 
-    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor, context });
+    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor, context, flipHorizontally });
   });
 }
 
@@ -138,6 +141,12 @@ function getSeasonalTile(tileName, season = currentSeason) {
   }
   if (season === 'winter' && tileName === 'water') {
     return 'ice';
+  }
+  if (season !== 'winter' && tileName === 'snow') {
+    return '';
+  }
+  if (season === 'summer' && tileName === 'crack') {
+    return 'liana';
   }
 
   return tileName;

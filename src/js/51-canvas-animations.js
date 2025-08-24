@@ -27,10 +27,13 @@ function animate(timestamp) {
 function updateAnimations(deltaTime) {
   world.levelData.forEach((tile) => {
     // Checks tiles which have multiple frames to animate them
-    if (TILE_DATA[tile.tile].tiles.length > 1) {
+    if (TILE_DATA[tile.tile].animationSpeed) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const interval = TILE_DATA[tile.tile].animationSpeed;
       if (tile.elapsed >= interval) {
+        if (TILE_DATA[tile.tile].tiles.length < 2) {
+          tile.flipHorizontally = !tile.flipHorizontally;
+        }
         tile.animationFrame = (tile.animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
         tile.elapsed = 0;
       }
