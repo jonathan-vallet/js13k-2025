@@ -12,6 +12,10 @@ function refreshCanvas() {
   drawCharacter();
   checkTrapDamage();
   drawLife();
+  if (isDying) {
+    runDieAnimation();
+  }
+  updateFade();
 }
 
 /**
@@ -147,6 +151,9 @@ function getSeasonalTile(tileName, season = currentSeason) {
   }
   if (season === 'summer' && tileName === 'crack') {
     return 'liana';
+  }
+  if (season !== 'summer' && tileName === 'root') {
+    return '';
   }
 
   return tileName;

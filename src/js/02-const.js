@@ -100,7 +100,7 @@ const TILE_DATA = {
   },
   spikes: {
     rle: '32LGMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLLLEMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLJ',
-    animationSpeed: 1000,
+    animationSpeed: 1200,
     colors: COLOR_SETS.wall,
   },
   'blade-trap': {
@@ -121,7 +121,7 @@ const TILE_DATA = {
   },
   crack: {
     rle: '16eYO^OYf[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYNYeYN^MYfYe[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYN',
-    colors: COLOR_SETS.grass,
+    colors: COLOR_SETS.wall,
     isStatic: true,
   },
   liana: {
@@ -141,14 +141,27 @@ const TILE_DATA = {
     colors: [0, 4, 5, 6],
     isStatic: true,
   },
+  root: {
+    rle: '16BQFNBMerYPBMqMAN[MerYMAMeMAMYQZeNeYMAMZMCOYMYMBqNqAMBMYeqMDrAMeMAMZeqMFMYMBMZeMEPBOYMDMereMAMZNCMeYNYMAMYfYMBMYMBNAMZeYMBMYMENZNAqOqDqPqBsFtIrG',
+    colors: [0, 4, 5, 6],
+    isStatic: true,
+  },
+  checkpoint: {
+    rle: '16LLLLLLLLLLLLLLLLLLLLLD',
+    colors: [],
+  },
+  orb: {
+    rle: '32E^LLbLI\\t\\HtG[x[ExEZrfvZDrfvC[qgv[CqgvCZrgwZBrgwBZ|ZB|BZ|ZB|BZ|ZB|B[z[CzDZzZDzD[x[ExF\\t\\HtIbLL^LI',
+    colors: [0, 4, 5, 6],
+  },
 };
 
 // Game constants
 const TILE_SIZE = 16; // Original tile size in pixels
 const WORLD_WIDTH = 100;
 const WORLD_HEIGHT = 50;
-const DISPLAY_WIDTH = 25;
-const DISPLAY_HEIGHT = 15;
+const DISPLAY_WIDTH = 19;
+const DISPLAY_HEIGHT = 11;
 
-const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow'];
+const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root'];
 const HOLE_PADDING = [11, 7, 5, 7];

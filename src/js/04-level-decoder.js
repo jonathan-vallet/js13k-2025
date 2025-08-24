@@ -25,8 +25,6 @@ function decodeLevel(worldLayers) {
   }
 
   return {
-    characterInitialX,
-    characterInitialY,
     levelData,
   };
 }

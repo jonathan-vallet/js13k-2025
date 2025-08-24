@@ -96,6 +96,7 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
 
     const tile = map[tileY][tileX];
     if (['hole', 'water'].includes(tile)) {
+      takeDamage();
       triggerFallAnimation(x, y);
       return { x: tileX, y: tileY, tile: tile };
     }
@@ -154,11 +155,15 @@ function tryPerformCharacterAction() {
     const tileX = getTileCoord(cx);
     const tileY = getTileCoord(cy);
 
-    const tile = getTileAt(tileX, tileY, ['cat']);
-    if (tile) {
+    // Cat tile found: collect it
+    if (getTileAt(tileX, tileY, ['cat'])) {
       removeTile('cat', tileX, tileY);
       ++collectedCatsNumber;
-      return false;
+    }
+    // Sets new respawn point when checkpoint is reached
+    if (getTileAt(tileX, tileY, ['checkpoint'])) {
+      characterInitialX = tileX * TILE_SIZE;
+      characterInitialY = tileY * TILE_SIZE;
     }
   }
 }

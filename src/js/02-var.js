@@ -16,9 +16,9 @@ let currentScreen = 'game'; // Current screen state
 let currentLevel = 0; // Current level index
 
 let characterInitialX = 22 * TILE_SIZE;
-let characterInitialY = 21 * TILE_SIZE;
-let characterLife = 3;
+let characterInitialY = 22 * TILE_SIZE;
 let characterMaxLife = 3;
+let characterLife = characterMaxLife;
 let isCharacterFalling = false;
 let isInvulnerable = false;
 let invulnerabilityStartTime = 0; // Start time for invulnerability

@@ -30,7 +30,7 @@ function loadGame() {
   setTrapList();
   preRenderSeasonBackgrounds();
   startLevel();
-  currentSeason = seasonList[Math.floor(Math.random() * seasonList.length)];
+  currentSeason = 'spring';
   drawLevelBackground();
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
@@ -38,8 +38,24 @@ function loadGame() {
 }
 
 function changeSeason(seasonName) {
-  currentSeason = seasonName;
-  drawLevelBackground();
+  startFade(1000, () => {
+    currentSeason = seasonName;
+    drawLevelBackground();
+  });
+
+  // fin du fade-in -> déverrouille
+  const oldOnMid = fadeOnMid;
+  fadeOnMid = () => {
+    oldOnMid && oldOnMid();
+    // Après l'aller, on garde fadeOnMid pour ne pas le perdre,
+    // le déverrouillage se fera à la fin du fade-in via un petit hook :
+  };
+
+  // on “hook” la fin du fade en surveillant isFading dans updateFade()
+  // plus simple : petit timer safe (durée aller + retour)
+  setTimeout(() => {
+    isInputLocked = false;
+  }, 1000 * 2 + 20);
 }
 
 loadGame();

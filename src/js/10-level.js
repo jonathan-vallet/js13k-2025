@@ -18,8 +18,8 @@ function getCameraOffset() {
 function startLevel(levelIndex) {
   // Saves initial state of the level
   currentLevel = levelIndex;
-  characterX = world.characterInitialX;
-  characterY = world.characterInitialY;
+  characterX = characterInitialX;
+  characterY = characterInitialY;
 }
 
 function preRenderSeasonBackgrounds() {
