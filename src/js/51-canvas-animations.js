@@ -7,16 +7,34 @@
  * Main animation loop
  * @param {number} timestamp - The current timestamp
  */
-function animate(timestamp) {
-  const deltaTime = timestamp - lastFrameTime;
 
-  updateAnimations(deltaTime);
-  updateFallAnimation(timestamp);
+function animate(ts) {
+  if (!lastTimestamp) lastTimestamp = ts;
+  let frameMs = ts - lastTimestamp;
 
+  // clamp to avoid huge jumps
+  if (frameMs > 100) {
+    frameMs = 100;
+  }
+
+  lastTimestamp = ts;
+  accumulatedTime += frameMs;
+
+  // 💡 exécute 0, 1 ou plusieurs updates **avec un delta constant**
+  while (accumulatedTime >= FPS) {
+    // 👉 Si updateAnimations attend des **ms** :
+    updateAnimations(FPS);
+
+    // 👉 Si updateFallAnimation utilise un timestamp absolu, tu peux l’appeler ici
+    //    ou en dehors; comme elle est basée sur performance.now(), elle restera stable :
+    updateFallAnimation(ts);
+
+    accumulatedTime -= FPS;
+  }
+
+  // Un seul rendu par frame écran
   refreshCanvas();
-  lastFrameTime = timestamp;
   handleGamepadInput();
-
   requestAnimationFrame(animate);
 }
 
@@ -83,7 +101,7 @@ function updateAnimations(deltaTime) {
     }
   });
 
-  if (!isCharacterFalling && !isFading && !isDying && keyStack.length > 0) {
+  if (!isCharacterFalling && !isFading && !isDying && keyStack.length > 0 && !currentReadingText) {
     let dx = 0;
     let dy = 0;
 
@@ -196,7 +214,9 @@ function updateCharacterWalkAnimation(deltaTime) {
 }
 
 function updateFallAnimation(timestamp) {
-  if (!isFallingAnimationActive) return;
+  if (!isFallingAnimationActive) {
+    return;
+  }
 
   const elapsed = timestamp - fallAnimationStartTime;
   const progress = clamp(elapsed / FALL_ANIMATION_DURATION, 0, 1);

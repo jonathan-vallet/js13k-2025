@@ -1,3 +1,5 @@
+let isFireballLaunched = false;
+
 // Handle keyboard input for character movement
 function handleGameKeydown(key) {
   if (key && !keyStack.includes(key) && ['up', 'down', 'left', 'right'].includes(key)) {
@@ -5,7 +7,15 @@ function handleGameKeydown(key) {
   }
 
   if (key === 'action') {
-    tryLaunchFireball();
+    if (currentReadingText) {
+      currentReadingText = '';
+    } else {
+      tryReadSign();
+      if (currentReadingText && !isFireballLaunched) {
+        isFireballLaunched = true;
+        launchFireball();
+      }
+    }
   }
 }
 
@@ -15,6 +25,9 @@ function handleGameKeyup(key) {
     if (index !== -1) {
       keyStack.splice(index, 1); // Remove the key from the stack
     }
+  }
+  if (key === 'action') {
+    isFireballLaunched = false;
   }
 }
 

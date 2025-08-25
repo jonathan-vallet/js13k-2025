@@ -38,24 +38,17 @@ function loadGame() {
 }
 
 function changeSeason(seasonName) {
+  // Heals while changing season
+  characterLife = characterMaxLife;
+
   startFade(1000, () => {
     currentSeason = seasonName;
     drawLevelBackground();
   });
 
-  // fin du fade-in -> déverrouille
-  const oldOnMid = fadeOnMid;
-  fadeOnMid = () => {
-    oldOnMid && oldOnMid();
-    // Après l'aller, on garde fadeOnMid pour ne pas le perdre,
-    // le déverrouillage se fera à la fin du fade-in via un petit hook :
-  };
-
-  // on “hook” la fin du fade en surveillant isFading dans updateFade()
-  // plus simple : petit timer safe (durée aller + retour)
   setTimeout(() => {
     isInputLocked = false;
-  }, 1000 * 2 + 20);
+  }, 1000);
 }
 
 loadGame();

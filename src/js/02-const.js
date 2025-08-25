@@ -85,7 +85,7 @@ const TILE_DATA = {
     rle: '32LLLLLLLLLLLBPLPKM\\MJMhMIMZfZMHMfZfMHMYhYMHMe\\eMHMYhYMHMe\\eMHMZfZMHMfZfMIM\\MJMhMKPLPLLLLLLLLLLLB',
     colors: COLOR_SETS.fall,
     animationSpeed: 100,
-    moveSpeed: 4,
+    moveSpeed: 3,
     collisionPadding: [8, 8, 8, 8],
   },
   wall: {
@@ -138,7 +138,7 @@ const TILE_DATA = {
   },
   rock: {
     rle: '16F[NINerfMFYMshYNCYvYeYqfMBYsgYseYMBYqhYseZOgYfZfZMeNiZe[MeYNYgsYNYMZN[rgMZMYMYAOqhMYMfYNYqeYeYeZNeYOseYfZNYPreYMe[NYNBMeZOYNYNDOAPYE',
-    colors: [0, 4, 5, 6],
+    colors: ['#000', '#c08018', '#e0b8c0'],
     isStatic: true,
   },
   root: {
@@ -155,6 +155,11 @@ const TILE_DATA = {
     colors: [0, 4, 5, 6],
     animationSpeed: 800,
   },
+  sign: {
+    rle: '16XQpfNdZXQAO`OBMYMeNfNeMYMBMYMlMYMBMYMeMeNeMeMYMBMYMlMYMAXQpfXQEM\\MJMYfYMJMYfYMJePeE',
+    colors: ['#000', '#c08018', '#e0b8c0'],
+    isStatic: true,
+  },
 };
 
 // Game constants
@@ -164,5 +169,5 @@ const WORLD_HEIGHT = 50;
 const DISPLAY_WIDTH = 19;
 const DISPLAY_HEIGHT = 11;
 
-const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root'];
+const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign'];
 const HOLE_PADDING = [11, 7, 5, 7];

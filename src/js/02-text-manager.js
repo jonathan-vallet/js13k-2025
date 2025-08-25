@@ -36,12 +36,16 @@ const pixelArtLetters = {
   Y: '10011001111100011110',
   Z: '11110001011010001111',
   ' ': '000000000000000',
-  // ',': '000000000001001',
+  ',': '000000000100100',
   // '.': '000000000000001',
   '!': '010010010000010',
   // '/': '0000100010001000100010000',
   ':': '000010000010000',
   x: '000000101010101',
+  '^': '0010001110111110010000100', // ↑
+  v: '0010000100111110111000100', // ↓
+  '<': '0010001100111110110000100', // ←
+  '>': '0010000110111110011000100', // →
 };
 
 /**
@@ -61,7 +65,7 @@ function writeTextLine(opt) {
         const pixelIndex = y * letterWidth + x;
         if (letter[pixelIndex] === '1') {
           opt.ctx.rect(
-            (opt.x + (x + letterX + opt.hspacing * i)) * zoomFactor * opt.scale,
+            (opt.x + (x + letterX + i)) * zoomFactor * opt.scale,
             (opt.y + y) * zoomFactor * opt.scale,
             zoomFactor * opt.scale,
             zoomFactor * opt.scale,
@@ -82,32 +86,28 @@ function writeText(options) {
     x: 0,
     y: 0,
     text: '',
-    vspacing: 0,
-    hspacing: 1,
     color: '#fff',
     scale: 1,
   };
-  const opt = { ctx: ctx, ...defaultOptions, ...options }; // Merge with defaults
-  const lines = opt.text.split('\n');
+  const opt = { ...defaultOptions, ...options }; // Merge with defaults
+  const lines = opt.text.split('|');
 
-  const letterSize = 5 * zoomFactor * opt.scale;
-
+  const letterSize = 8;
   // Begin drawing
-  opt.ctx.beginPath();
+  ctx.beginPath();
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const x = opt.x;
-    const y = opt.y + (letterSize + opt.vspacing * zoomFactor * opt.scale) * i;
+    const y = opt.y + letterSize * i;
     writeTextLine({
-      ctx: opt.ctx,
+      ctx,
       x,
       y,
       text: line,
-      hspacing: opt.hspacing,
       scale: opt.scale,
     });
   }
 
-  opt.ctx.fillStyle = opt.color;
-  opt.ctx.fill();
+  ctx.fillStyle = opt.color;
+  ctx.fill();
 }

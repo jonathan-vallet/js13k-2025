@@ -21,7 +21,27 @@ const worldLayers = {
 const world = decodeLevel(worldLayers);
 addSeasonOrb(10, 4, 'winter');
 addSeasonOrb(65, 4, 'summer');
+addSign(21, 23, '^ WINTER TEMPLE');
+addSign(45, 11, '< WINTER TEMPLE|> SUMMER TEMPLE');
+addSign(29, 16, 'IN WINTER, WATER TURNS|TO ICE');
+addSign(71, 17, 'IN SUMMER, VINES LET|YOU CLIMB');
 
+/**
+ * Adds a seasonal orb to the level
+ * @param {*} x
+ * @param {*} y
+ * @param {*} season
+ */
 function addSeasonOrb(x, y, season) {
-  world.levelData.push({ tile: 'orb', x, y, season }); // Adds an orb tile at the specified coordinates
+  world.levelData.push({ tile: 'orb', x, y, season });
+}
+
+/**
+ * Adds a sign to the level
+ * @param {*} x
+ * @param {*} y
+ * @param {*} text
+ */
+function addSign(x, y, text) {
+  world.levelData.push({ tile: 'sign', x, y, text }); // Adds a sign tile at the specified coordinates
 }

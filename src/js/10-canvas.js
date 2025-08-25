@@ -16,6 +16,24 @@ function refreshCanvas() {
     runDieAnimation();
   }
   updateFade();
+  if (currentReadingText) {
+    ctx.save();
+    ctx.fillStyle = '#000';
+    ctx.fillRect(
+      40 * zoomFactor,
+      10 * zoomFactor,
+      DISPLAY_WIDTH * TILE_SIZE * zoomFactor - 80 * zoomFactor,
+      40 * zoomFactor,
+    );
+    ctx.restore();
+    writeText({
+      text: currentReadingText,
+      x: 24,
+      y: 9,
+      scale: 2,
+      color: '#fff',
+    });
+  }
 }
 
 /**

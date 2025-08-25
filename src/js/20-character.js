@@ -7,8 +7,8 @@
 // Initialize the character on the grid at the start of the game
 let characterScale = 1;
 let characterDirection; // Track the current direction
-let characterX = characterInitialX * TILE_SIZE;
-let characterY = characterInitialY * TILE_SIZE;
+let characterX;
+let characterY;
 let characterSpeed = 1; // en pixels par frame
 let isCharacterMoving;
 let characterMoveFrame = 0; // Frame of the character sprite to show
@@ -172,7 +172,7 @@ function tryPerformCharacterAction() {
   }
 }
 
-function tryLaunchFireball() {
+function launchFireball() {
   let { dx, dy } = getDirectionOffsets(characterDirection);
   let x = characterX / TILE_SIZE + (dx * 0.5 || 0.1);
   let y = characterY / TILE_SIZE + dy * 0.5;
@@ -180,6 +180,17 @@ function tryLaunchFireball() {
   let fireballTile = addTile('fireball', x, y);
   fireballTile.moveDirection = characterDirection;
   return true;
+}
+
+function tryReadSign() {
+  if (characterDirection !== ORIENTATION_UP) {
+    return;
+  }
+  const tileX = getTileCoord(characterX + TILE_SIZE / 2);
+  const tileY = getTileCoord(characterY + TILE_SIZE / 4);
+
+  const tile = getTileAt(tileX, tileY, ['sign']);
+  currentReadingText = tile?.text;
 }
 
 function tryTriggerTrap() {

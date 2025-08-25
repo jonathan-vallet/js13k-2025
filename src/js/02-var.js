@@ -11,13 +11,14 @@ const seasonContextList = {}; // stocke les contextes associés
 let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on screen size
 let lastFrameTime = 0; // For animation loop
 let keyStack = []; // Stack of keys pressed
+const FPS = 1000 / 60; // ~16.67
+let lastTimestamp = 0;
+let accumulatedTime = 0;
 
 let currentScreen = 'game'; // Current screen state
 
 let characterInitialX = 22 * TILE_SIZE;
-let characterInitialY = 22 * TILE_SIZE;
-characterInitialX = 12 * TILE_SIZE;
-characterInitialY = 4 * TILE_SIZE;
+let characterInitialY = 24 * TILE_SIZE;
 let characterMaxLife = 3;
 let characterLife = characterMaxLife;
 let isCharacterFalling = false;
@@ -38,3 +39,4 @@ let fallDx = 0;
 let fallDy = 0;
 
 let collectedCatsNumber = 0;
+let currentReadingText = '';
