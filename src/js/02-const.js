@@ -132,9 +132,10 @@ const TILE_DATA = {
   mommy: {
     rle: '16DSFOf[fMDMZMe^eMCMfNYNYMYeNBMZSYeMYMAMfM\\hMZNZMf]eMeYNfMeZfOZeNeZMeZMZeZeMAMeYePZeYeMCMjRBM_iMBMhOe\\MAM\\QhX]MAXO',
     colors: COLOR_SETS.wall,
-    animationSpeed: 600,
-    moveSpeed: 2,
+    animationSpeed: 400,
+    moveSpeed: 1.25,
     moveDirection: ORIENTATION_RIGHT,
+    collisionPadding: [1, 1, 1, 1],
   },
   rock: {
     rle: '16F[NINerfMFYMshYNCYvYeYqfMBYsgYseYMBYqhYseZOgYfZfZMeNiZe[MeYNYgsYNYMZN[rgMZMYMYAOqhMYMfYNYqeYeYeZNeYOseYfZNYPreYMe[NYNBMeZOYNYNDOAPYE',

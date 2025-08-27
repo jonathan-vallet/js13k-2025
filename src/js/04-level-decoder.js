@@ -11,8 +11,9 @@ function decodeLevel(worldLayers) {
         for (let i = 0; i < count; i++) {
           const x = tileIndex % WORLD_WIDTH;
           const y = Math.floor(tileIndex / WORLD_WIDTH);
+          const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
           if (isFilled) {
-            levelData.push({ tile: layerName, x, y });
+            levelData.push({ tile: layerName, x, y, moveDirection });
           }
           tileIndex++;
         }

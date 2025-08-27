@@ -10,7 +10,7 @@ function refreshCanvas() {
   ctx.imageSmoothingEnabled = false;
   drawLevel();
   drawCharacter();
-  checkTrapDamage();
+  checkDamages();
   drawLife();
   if (isDying) {
     runDieAnimation();

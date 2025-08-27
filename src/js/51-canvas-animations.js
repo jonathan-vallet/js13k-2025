@@ -56,10 +56,10 @@ function updateAnimations(deltaTime) {
         tile.elapsed = 0;
       }
     }
-
     // Checks tiles which have a direction to move
-    if (tile.moveDirection) {
-      let { dx, dy } = getDirectionOffsets(tile.moveDirection);
+    let moveDirection = tile.moveDirection;
+    if (moveDirection) {
+      let { dx, dy } = getDirectionOffsets(moveDirection);
       let moveSpeed = TILE_DATA[tile.tile][tile.isReturning ? 'returningMoveSpeed' : 'moveSpeed'] || 1;
       let nextX = tile.x + (dx * moveSpeed) / deltaTime;
       let nextY = tile.y + (dy * moveSpeed) / deltaTime;
@@ -89,11 +89,16 @@ function updateAnimations(deltaTime) {
           if (!tile.isReturning) {
             tile.isReturning = true;
             // Moves in opposite direction
-            tile.moveDirection = (tile.moveDirection + 2) % 4;
+            tile.moveDirection = getOppositeDirection(tile.moveDirection);
           } else {
             tile.isReturning = false;
             tile.moveDirection = null;
           }
+          tile.x = Math.round(tile.x);
+          tile.y = Math.round(tile.y);
+        }
+        if (tile.tile === 'mommy') {
+          tile.moveDirection = getOppositeDirection(tile.moveDirection);
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
         }
@@ -186,7 +191,6 @@ function updateAnimations(deltaTime) {
       }
 
       tryPerformCharacterAction();
-      tryTriggerTrap();
 
       // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);

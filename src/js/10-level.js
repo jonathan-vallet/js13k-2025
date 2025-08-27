@@ -65,3 +65,12 @@ function setTrapList() {
     }
   });
 }
+
+const ENEMY_LIST = [];
+function setEnemyList() {
+  world.levelData.forEach((tile) => {
+    if (tile.tile === 'mommy') {
+      ENEMY_LIST.push(tile);
+    }
+  });
+}

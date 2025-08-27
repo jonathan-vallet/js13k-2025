@@ -1,20 +1,4 @@
 /**
- * Get collision box applying a padding around the item
- * @param {number} x
- * @param {number} y
- * @param {Array<number>} padding
- * @returns {Array} - Array of corner points
- */
-function getCorners(x, y, padding) {
-  return [
-    { x: x + padding[3], y: y + padding[0] },
-    { x: x + TILE_SIZE - padding[1], y: y + padding[0] },
-    { x: x + padding[3], y: y + TILE_SIZE - padding[2] },
-    { x: x + TILE_SIZE - padding[1], y: y + TILE_SIZE - padding[2] },
-  ];
-}
-
-/**
  * Get the axis-aligned bounding box (AABB) for a tile
  * @param {string} tileName - The name of the tile
  * @param {number} px - The x-coordinate
@@ -31,6 +15,25 @@ function getAABB(tileName, px, py) {
   };
 }
 
+function getTileAABB(tile) {
+  return getAABB(tile.tile, tile.x * TILE_SIZE, tile.y * TILE_SIZE);
+}
+
+function getTilesInAABB(box) {
+  const minX = clamp(getTileCoord(box.l), 0, WORLD_WIDTH - 1);
+  const maxX = clamp(getTileCoord(Math.max(0, box.r - 1)), 0, WORLD_WIDTH - 1);
+  const minY = clamp(getTileCoord(box.t), 0, WORLD_HEIGHT - 1);
+  const maxY = clamp(getTileCoord(Math.max(0, box.b - 1)), 0, WORLD_HEIGHT - 1);
+
+  const out = [];
+  for (let y = minY; y <= maxY; y++) {
+    for (let x = minX; x <= maxX; x++) {
+      out.push({ x, y });
+    }
+  }
+  return out;
+}
+
 /**
  * Check if two AABBs overlap
  * @param {Object} a - The first AABB
@@ -44,7 +47,7 @@ function aabbOverlap(a, b) {
 /**
  * Check if the character is touching any traps
  */
-function checkTrapDamage() {
+function checkDamages() {
   if (isInvulnerable) {
     return;
   }
@@ -67,20 +70,57 @@ function checkTrapDamage() {
     }
   }
 
-  // Check if an active spike is hitting the character
-  const spikesCorners = getCorners(characterX, characterY, HOLE_PADDING);
+  for (const { x: tx, y: ty } of getTilesInAABB(charBox)) {
+    const tileName = collisionMaps[currentSeason][ty]?.[tx];
+    if (tileName !== 'spikes') {
+      continue;
+    }
 
-  for (const { x: cx, y: cy } of spikesCorners) {
-    const tileX = getTileCoord(cx);
-    const tileY = getTileCoord(cy);
+    // Spikes don't deal damage at it's first  frame
+    const spikeTile = getTileAt(tx, ty);
+    if (!spikeTile || (spikeTile.animationFrame || 0) === 0) {
+      continue;
+    }
 
-    const tile = collisionMaps[currentSeason][tileY][tileX];
-    if (['spikes'].includes(tile)) {
-      // Spikes don't deal damage at it's first  frame
-      if (getTileAt(tileX, tileY).animationFrame > 0) {
-        takeDamage();
-        break;
-      }
+    const spikeBox = getAABB('spikes', tx * TILE_SIZE, ty * TILE_SIZE);
+    if (aabbOverlap(charBox, spikeBox)) {
+      takeDamage();
+      break; // one hit per frame
     }
   }
+
+  for (const enemy of ENEMY_LIST) {
+    const tileX = enemy.x * TILE_SIZE;
+    const tileY = enemy.y * TILE_SIZE;
+
+    const enemyBox = getAABB('mommy', tileX, tileY);
+    if (aabbOverlap(charBox, enemyBox)) {
+      takeDamage();
+      break; // one hit per frame
+    }
+  }
+}
+
+function isLineClear(y, x1, x2) {
+  if (x1 === x2) {
+    return true;
+  }
+  const map = collisionMaps[currentSeason];
+  const step = x2 > x1 ? 1 : -1;
+  for (let x = x1 + step; x !== x2; x += step) {
+    if (x < 0 || x >= WORLD_WIDTH) return false;
+    if (BLOCKING_TILES.includes(map[y][x])) return false;
+  }
+  return true;
+}
+
+function isRowClear(x, y1, y2) {
+  if (y1 === y2) return true; // rien à scanner
+  const map = collisionMaps[currentSeason];
+  const step = y2 > y1 ? 1 : -1;
+  for (let y = y1 + step; y !== y2; y += step) {
+    if (y < 0 || y >= WORLD_HEIGHT) return false;
+    if (BLOCKING_TILES.includes(map[y][x])) return false;
+  }
+  return true;
 }

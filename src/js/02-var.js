@@ -40,3 +40,7 @@ let fallDy = 0;
 
 let collectedCatsNumber = 0;
 let currentReadingText = '';
+
+function getOppositeDirection(direction) {
+  return { 1: 3, 2: 4, 3: 1, 4: 2 }[direction];
+}

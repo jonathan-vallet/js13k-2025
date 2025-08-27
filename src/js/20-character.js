@@ -63,42 +63,33 @@ function drawCharacter() {
 function getTileAtDestination(tileName, x, y, canFall = true) {
   const map = collisionMaps[currentSeason];
 
-  // Blocking tiles
-  const collisionPadding = TILE_DATA[tileName].collisionPadding || [0, 0, 0, 0];
-  const cornersBlock = getCorners(x, y, collisionPadding);
-
-  for (const { x: cx, y: cy } of cornersBlock) {
-    const tileX = getTileCoord(cx);
-    const tileY = getTileCoord(cy);
-
-    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) return false;
-
-    const tile = map[tileY][tileX];
+  // 1) Détection de blocage via AABB + tuiles recouvertes
+  const blockBox = getAABB(tileName, x, y); // inclut le collisionPadding du tileName
+  for (const { x: tx, y: ty } of getTilesInAABB(blockBox)) {
+    if (tx < 0 || ty < 0 || tx >= WORLD_WIDTH || ty >= WORLD_HEIGHT) return false;
+    const tile = map[ty][tx];
     if (BLOCKING_TILES.includes(tile)) {
-      return { x: tileX, y: tileY, tile }; // Return the blocking tile
+      return { x: tx, y: ty, tile }; // tuile bloquante rencontrée
     }
   }
 
-  if (!canFall) {
-    return null; // If falling is not allowed (for traps and fireballs), we stop here
-  }
+  if (!canFall) return null;
 
-  // Falling detection (more lenient)
-  const cornersHole = getCorners(x, y, HOLE_PADDING);
+  // 2) Détection de chute (plus clémente) via une AABB "HOLE_PADDING"
+  const fallBox = {
+    l: x + HOLE_PADDING[3],
+    r: x + TILE_SIZE - HOLE_PADDING[1],
+    t: y + HOLE_PADDING[0],
+    b: y + TILE_SIZE - HOLE_PADDING[2],
+  };
 
-  for (const { x: cx, y: cy } of cornersHole) {
-    const tileX = getTileCoord(cx);
-    const tileY = getTileCoord(cy);
-
-    if (tileX < 0 || tileY < 0 || tileX >= WORLD_WIDTH || tileY >= WORLD_HEIGHT) {
-      continue;
-    }
-
-    const tile = map[tileY][tileX];
-    if (['hole', 'water'].includes(tile)) {
+  for (const { x: tx, y: ty } of getTilesInAABB(fallBox)) {
+    if (tx < 0 || ty < 0 || tx >= WORLD_WIDTH || ty >= WORLD_HEIGHT) continue;
+    const tile = map[ty][tx];
+    if (tile === 'hole' || tile === 'water') {
       takeDamage();
       triggerFallAnimation(x, y);
-      return { x: tileX, y: tileY, tile: tile };
+      return { x: tx, y: ty, tile };
     }
   }
 
@@ -149,18 +140,21 @@ function getMoveFrameFromDirection(direction) {
 
 function tryPerformCharacterAction() {
   // Try picking cat
-  const cornersHole = getCorners(characterX, characterY, HOLE_PADDING);
+  const interactBox = {
+    l: characterX + HOLE_PADDING[3],
+    r: characterX + TILE_SIZE - HOLE_PADDING[1],
+    t: characterY + HOLE_PADDING[0],
+    b: characterY + TILE_SIZE - HOLE_PADDING[2],
+  };
 
-  for (const { x: cx, y: cy } of cornersHole) {
-    const tileX = getTileCoord(cx);
-    const tileY = getTileCoord(cy);
-
+  for (const { x: tileX, y: tileY } of getTilesInAABB(interactBox)) {
     // Cat tile found: collect it
     if (getTileAt(tileX, tileY, ['cat'])) {
       removeTile('cat', tileX, tileY);
       ++collectedCatsNumber;
     }
     if (getTileAt(tileX, tileY, ['orb'])) {
+      characterMaxLife += 1;
       changeSeason(getTileAt(tileX, tileY, ['orb']).season);
       removeTile('orb', tileX, tileY);
     }
@@ -169,6 +163,20 @@ function tryPerformCharacterAction() {
       characterInitialX = tileX * TILE_SIZE;
       characterInitialY = tileY * TILE_SIZE;
     }
+
+    // Checks if a trap can be triggered
+    TRAP_LIST.forEach((trap) => {
+      if (trap.moveDirection) {
+        return;
+      }
+
+      // Triggers trap if character is at same row or line, and no obstacle is in between
+      if (trap.x === tileX && isRowClear(tileX, tileY, trap.y)) {
+        trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
+      } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
+        trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
+      }
+    });
   }
 }
 
@@ -191,48 +199,4 @@ function tryReadSign() {
 
   const tile = getTileAt(tileX, tileY, ['sign']);
   currentReadingText = tile?.text;
-}
-
-function tryTriggerTrap() {
-  const corners = getCorners(characterX, characterY, TILE_DATA['characters'].collisionPadding);
-  for (const { x, y } of corners) {
-    let tileX = getTileCoord(x);
-    let tileY = getTileCoord(y);
-    // Checks if path is clear between character and traps to trigger them
-    TRAP_LIST.forEach((trap) => {
-      if (trap.moveDirection) {
-        return;
-      }
-      if (trap.x === tileX && isRowClear(tileX, tileY, trap.y)) {
-        trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
-      } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
-        trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
-      }
-    });
-  }
-  return false;
-}
-
-function isLineClear(y, x1, x2) {
-  if (x1 === x2) {
-    return true;
-  }
-  const map = collisionMaps[currentSeason];
-  const step = x2 > x1 ? 1 : -1;
-  for (let x = x1 + step; x !== x2; x += step) {
-    if (x < 0 || x >= WORLD_WIDTH) return false;
-    if (BLOCKING_TILES.includes(map[y][x])) return false;
-  }
-  return true;
-}
-
-function isRowClear(x, y1, y2) {
-  if (y1 === y2) return true; // rien à scanner
-  const map = collisionMaps[currentSeason];
-  const step = y2 > y1 ? 1 : -1;
-  for (let y = y1 + step; y !== y2; y += step) {
-    if (y < 0 || y >= WORLD_HEIGHT) return false;
-    if (BLOCKING_TILES.includes(map[y][x])) return false;
-  }
-  return true;
 }

@@ -28,6 +28,7 @@ function loadGame() {
     generateCollisionMapForSeason(season);
   });
   setTrapList();
+  setEnemyList();
   preRenderSeasonBackgrounds();
   startLevel();
   currentSeason = 'spring';
