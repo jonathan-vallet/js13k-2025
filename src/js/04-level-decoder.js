@@ -1,5 +1,5 @@
 function decodeLevel(worldLayers) {
-  const levelData = [];
+  const worldData = [];
   let tileIndex = 0;
 
   for (const [layerName, encodedString] of Object.entries(worldLayers)) {
@@ -13,7 +13,7 @@ function decodeLevel(worldLayers) {
           const y = Math.floor(tileIndex / WORLD_WIDTH);
           const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
           if (isFilled) {
-            levelData.push({ tile: layerName, x, y, moveDirection });
+            worldData.push({ tile: layerName, x, y, moveDirection });
           }
           tileIndex++;
         }
@@ -25,14 +25,12 @@ function decodeLevel(worldLayers) {
     tileIndex = 0;
   }
 
-  return {
-    levelData,
-  };
+  return worldData;
 }
 
 function generateCollisionMapForSeason(seasonName) {
   const map = Array.from({ length: WORLD_HEIGHT }, () => Array.from({ length: WORLD_WIDTH }, () => null));
-  for (const tile of world.levelData) {
+  for (const tile of world) {
     let seasonTile = getSeasonalTile(tile.tile, seasonName);
     const tileData = TILE_DATA[seasonTile];
     if (!tileData) {

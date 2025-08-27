@@ -155,7 +155,9 @@ function tryPerformCharacterAction() {
     }
     if (getTileAt(tileX, tileY, ['orb'])) {
       characterMaxLife += 1;
-      changeSeason(getTileAt(tileX, tileY, ['orb']).season);
+      const unlockedSeason = getTileAt(tileX, tileY, ['orb']).season;
+      changeSeason(unlockedSeason);
+      availableSeasons.push(unlockedSeason);
       removeTile('orb', tileX, tileY);
     }
     // Sets new respawn point when checkpoint is reached
@@ -199,4 +201,20 @@ function tryReadSign() {
 
   const tile = getTileAt(tileX, tileY, ['sign']);
   currentReadingText = tile?.text;
+}
+
+/**
+ * If player is on a trigger and press action, change to next available season
+ */
+function tryChangeSeason() {
+  const charBox = getAABB('characters', characterX, characterY);
+  for (const { x: tx, y: ty } of getTilesInAABB(charBox)) {
+    const tile = getTileAt(tx, ty, ['trigger']);
+    let nextSeason = availableSeasons[(availableSeasons.indexOf(currentSeason) + 1) % availableSeasons.length];
+    if (tile) {
+      changeSeason(nextSeason);
+      return true;
+    }
+  }
+  return false;
 }

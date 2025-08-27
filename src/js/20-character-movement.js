@@ -7,15 +7,12 @@ function handleGameKeydown(key) {
   }
 
   if (key === 'action') {
-    console.log('action pressed', currentReadingText);
     if (currentReadingText) {
       currentReadingText = '';
     } else {
       tryReadSign();
-      console.log('reading sign', currentReadingText, isFireballLaunched);
-      if (!currentReadingText && !isFireballLaunched) {
+      if (!tryChangeSeason() && !currentReadingText && !isFireballLaunched) {
         isFireballLaunched = true;
-        console.log('launching fireball');
         launchFireball();
       }
     }

@@ -93,7 +93,7 @@ function checkDamages() {
     const tileX = enemy.x * TILE_SIZE;
     const tileY = enemy.y * TILE_SIZE;
 
-    const enemyBox = getAABB('mommy', tileX, tileY);
+    const enemyBox = getAABB(enemy.tile, tileX, tileY);
     if (aabbOverlap(charBox, enemyBox)) {
       takeDamage();
       break; // one hit per frame

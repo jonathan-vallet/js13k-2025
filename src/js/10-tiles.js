@@ -12,20 +12,14 @@ const getTileCoord = (val) => Math.floor(val / TILE_SIZE);
  * @returns {string} - The name of the tile at this position or null if no element is found
  */
 function getTileAt(x, y, type = []) {
-  let lastTileAt = null;
-  let levelData = world.levelData;
-  for (const element of levelData) {
-    if (element.x === x && element.y === y) {
-      if (type.length > 0) {
-        if (type.includes(element.tile)) {
-          lastTileAt = element;
-        }
-      } else {
-        lastTileAt = element;
-      }
+  // Reversed loop to get topmost element
+  for (let index = world.length - 1; index >= 0; --index) {
+    const element = world[index];
+    if (element.x === x && element.y === y && (type.length === 0 || type.includes(element.tile))) {
+      return element;
     }
   }
-  return lastTileAt;
+  return null;
 }
 
 /**
@@ -35,7 +29,7 @@ function getTileAt(x, y, type = []) {
  * @param {number} [y] - The y-coordinate of the tile to remove.
  */
 function removeTile(tileName, x, y) {
-  world.levelData = world.levelData.filter((element) => {
+  world = world.filter((element) => {
     // Remove tile if it matches the name and, if provided, coordinates
     return element.tile !== tileName || element.x !== x || element.y !== y;
   });
@@ -49,8 +43,8 @@ function removeTile(tileName, x, y) {
  * @param {object} [options] - Additional options for the tile
  */
 function addTile(tile, x, y, options = {}) {
-  world.levelData[options.isUnder ? 'unshift' : 'push']({ tile, x, y, ...options });
-  return world.levelData[options.isUnder ? 0 : world.levelData.length - 1];
+  world[options.isUnder ? 'unshift' : 'push']({ tile, x, y, ...options });
+  return world[options.isUnder ? 0 : world.length - 1];
 }
 
 function getDirectionOffsets(direction) {

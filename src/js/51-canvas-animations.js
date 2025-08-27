@@ -43,7 +43,7 @@ function animate(ts) {
  * @param {number} deltaTime - The time elapsed since the last frame
  */
 function updateAnimations(deltaTime) {
-  world.levelData.forEach((tile) => {
+  world.forEach((tile) => {
     // Checks tiles which have multiple frames to animate them
     if (TILE_DATA[tile.tile].animationSpeed) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
@@ -56,6 +56,7 @@ function updateAnimations(deltaTime) {
         tile.elapsed = 0;
       }
     }
+
     // Checks tiles which have a direction to move
     let moveDirection = tile.moveDirection;
     if (moveDirection) {
@@ -97,10 +98,28 @@ function updateAnimations(deltaTime) {
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
         }
-        if (tile.tile === 'mommy') {
+        if (['skeleton', 'mommy'].includes(tile.tile)) {
           tile.moveDirection = getOppositeDirection(tile.moveDirection);
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
+        }
+      }
+
+      // Checks if a fireball hits an enemy to remove him
+      if (tile.tile === 'fireball') {
+        const fireballBox = getAABB('fireball', tile.x * TILE_SIZE, tile.y * TILE_SIZE);
+        for (let i = ENEMY_LIST.length - 1; i >= 0; --i) {
+          const enemy = ENEMY_LIST[i];
+          const enemyBox = getAABB(enemy.tile, enemy.x * TILE_SIZE, enemy.y * TILE_SIZE);
+          if (aabbOverlap(fireballBox, enemyBox)) {
+            // retire la mommy du niveau + de la liste dynamique
+            removeTile(enemy.tile, enemy.x, enemy.y);
+            ENEMY_LIST.splice(i, 1);
+
+            // retire la fireball aussi
+            removeTile('fireball', tile.x, tile.y);
+            break;
+          }
         }
       }
     }

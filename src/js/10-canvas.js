@@ -56,7 +56,7 @@ function drawLevel() {
   ctx.save();
   ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
   ctx.translate(Math.round(-offsetX * TILE_SIZE), Math.round(-offsetY * TILE_SIZE)); // Décale la vue
-  drawLevelElements(world.levelData, false, ctx);
+  drawLevelElements(false, ctx);
   ctx.restore();
 }
 
@@ -76,10 +76,22 @@ function drawLevelBackground() {
 
 /**
  * Draw the level background elements
- * @param {Array} levelData - The level data array with tile information
+ * @param {boolean} isDrawingStatic - Whether to draw static elements
+ * @param {CanvasRenderingContext2D} context - The canvas rendering context
  */
-function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
-  levelData.forEach((element) => {
+function drawLevelElements(isDrawingStatic = false, context = ctx) {
+  const { offsetX, offsetY } = getCameraOffset();
+  const minX = (offsetX | 0) - 1,
+    minY = (offsetY | 0) - 1;
+  const maxX = minX + DISPLAY_WIDTH + 2;
+  const maxY = minY + DISPLAY_HEIGHT + 2;
+
+  world.forEach((element) => {
+    // If element is not visible on screen, skip it
+    if (!isDrawingStatic && (element.x < minX || element.x > maxX || element.y < minY || element.y > maxY)) {
+      return;
+    }
+
     let displayedTile = getSeasonalTile(element.tile);
     let colors;
 
@@ -92,36 +104,37 @@ function drawLevelElements(levelData, isDrawingStatic = false, context = ctx) {
     }
     const tile = TILE_DATA[displayedTile];
 
-    if (currentScreen === 'game' && ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic))) {
+    // Draw only static or dynamic tiles, depending on isDrawingStatic parameter
+    if ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic)) {
       return;
     }
 
     if (['water', 'road'].includes(displayedTile)) {
-      const { type, orientation } = getTileTypeAndOrientation(element, levelData);
-      element.animationFrame = type; // 0 à 3 = coin/bord/intérieur/plein
-      element.orientation = orientation; // 0 à 3 pour les rotations
+      const { type, orientation } = getTileTypeAndOrientation(element);
+      element.animationFrame = type;
+      element.orientation = orientation;
     }
 
     if (['wall', 'snow'].includes(element.tile)) {
-      const { type, orientation } = getWallTypeAndOrientation(element, levelData);
-      element.animationFrame = type; // 0 à 3 = coin/bord/intérieur/plein
-      element.orientation = orientation; // 0 à 3 pour les rotations
+      const { type, orientation } = getWallTypeAndOrientation(element);
+      element.animationFrame = type;
+      element.orientation = orientation;
       const belowY = element.y + 1;
       if (!getTileAt(element.x, belowY)) {
         const leftWall = getTileAt(element.x - 1, element.y)?.tile === element.tile;
         const rightWall = getTileAt(element.x + 1, element.y)?.tile === element.tile;
 
-        // choix de la tuile et flip éventuel
-        let thicknessFrameIndex = 5; // par défaut le segment (gauche+droite)
+        // Choose the thickness frame based on the wall's surroundings
+        let thicknessFrameIndex = 5; // default segment (left+right)
         let flipHorizontally = false;
 
         if (!leftWall && rightWall) {
-          thicknessFrameIndex = 4; // coin gauche
+          thicknessFrameIndex = 4; // left corner
         } else if (leftWall && !rightWall) {
-          thicknessFrameIndex = 4; // coin droit = coin gauche + miroir
+          thicknessFrameIndex = 4; // right corner = left corner + mirror
           flipHorizontally = true;
         } else if (!leftWall && !rightWall) {
-          // isolé: on peut garder 5 (petit segment), ou 4 selon ton art.
+          // isolated: can keep 5 (small segment), or 4 depending on your art.
           thicknessFrameIndex = 6;
         }
         const thicknessFrame = tile.tiles[thicknessFrameIndex];
@@ -244,13 +257,12 @@ function drawTile(tile, colors, x, y, options = {}) {
 /**
  * Get the tile type and orientation for a given element
  * @param {*} element - The element to check
- * @param {*} levelData - The level data array
  * @returns {Object} - An object containing the tile type and orientation
  */
-function getTileTypeAndOrientation(element, levelData) {
+function getTileTypeAndOrientation(element) {
   let x = element.x;
   let y = element.y;
-  const isSameTile = (tx, ty) => levelData.some((e) => e.x === tx && e.y === ty && e.tile === element.tile);
+  const isSameTile = (tx, ty) => world.some((e) => e.x === tx && e.y === ty && e.tile === element.tile);
 
   const n = isSameTile(x, y - 1);
   const s = isSameTile(x, y + 1);
@@ -261,17 +273,17 @@ function getTileTypeAndOrientation(element, levelData) {
   const sw = isSameTile(x - 1, y + 1);
   const se = isSameTile(x + 1, y + 1);
 
-  let type = 3; // plein par défaut
+  let type = 3; // fill by default
   let orientation = 0;
 
   const neighbors = { nw, ne, sw, se, n, s, e, w };
 
-  // 1. Tous les voisins sont water → plein
+  // Every neighbor is water: fill
   if (Object.values(neighbors).every(Boolean)) {
     return { type: 3, orientation: ORIENTATION_UP };
   }
 
-  // 2. Coin intérieur : un seul vide parmi les coins
+  // Inner corner: one empty among the corners
   const corners = [
     { key: 'nw', orientation: ORIENTATION_UP },
     { key: 'ne', orientation: ORIENTATION_RIGHT },
@@ -287,7 +299,7 @@ function getTileTypeAndOrientation(element, levelData) {
     return { type: 2, orientation };
   }
 
-  // 3. Bord : un seul côté vide parmi N/S/E/W
+  // Edge: one side empty among N/S/E/W
   const cardinal = [
     { key: 'n', orientation: ORIENTATION_UP },
     { key: 'e', orientation: ORIENTATION_RIGHT },
@@ -303,7 +315,7 @@ function getTileTypeAndOrientation(element, levelData) {
     return { type: 1, orientation };
   }
 
-  // 4. Coin extérieur : deux côtés adjacents + leur coin rempli
+  // Outer corner: two adjacent sides + their corner filled
   if (n && w && nw) {
     return { type: 0, orientation: ORIENTATION_DOWN };
   }
@@ -320,9 +332,9 @@ function getTileTypeAndOrientation(element, levelData) {
   return { type, orientation };
 }
 
-function getWallTypeAndOrientation(element, levelData) {
+function getWallTypeAndOrientation(element) {
   const { x, y, tile } = element;
-  const isSame = (tx, ty) => levelData.some((e) => e.x === tx && e.y === ty && e.tile === tile);
+  const isSame = (tx, ty) => world.some((e) => e.x === tx && e.y === ty && e.tile === tile);
 
   const n = isSame(x, y - 1) ? 1 : 0;
   const e = isSame(x + 1, y) ? 1 : 0;

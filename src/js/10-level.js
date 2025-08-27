@@ -52,14 +52,14 @@ function preRenderSeasonBackgrounds() {
 
     // Dessine les éléments statiques
     if (currentScreen === 'game') {
-      drawLevelElements(world.levelData, true, ctx);
+      drawLevelElements(true, ctx);
     }
   });
 }
 
 const TRAP_LIST = [];
 function setTrapList() {
-  world.levelData.forEach((tile) => {
+  world.forEach((tile) => {
     if (tile.tile === 'blade-trap') {
       TRAP_LIST.push(tile);
     }
@@ -68,8 +68,8 @@ function setTrapList() {
 
 const ENEMY_LIST = [];
 function setEnemyList() {
-  world.levelData.forEach((tile) => {
-    if (tile.tile === 'mommy') {
+  world.forEach((tile) => {
+    if (['skeleton', 'mommy'].includes(tile.tile)) {
       ENEMY_LIST.push(tile);
     }
   });
