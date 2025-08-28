@@ -45,9 +45,10 @@ function runDieAnimation() {
   if (!isFading) {
     startFade(1500, () => {
       // Respawn (aux coords initiales du level)
-      characterX = characterInitialX;
-      characterY = characterInitialY;
+      characterX = savedData.characterX;
+      characterY = savedData.characterY;
       characterLife = characterMaxLife;
+      currentSeason = savedData.currentSeason;
       setCharacterDirection(ORIENTATION_DOWN);
     });
 

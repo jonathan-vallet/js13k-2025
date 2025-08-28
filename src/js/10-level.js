@@ -15,12 +15,6 @@ function getCameraOffset() {
   return { offsetX: camX / TILE_SIZE, offsetY: camY / TILE_SIZE };
 }
 
-function startLevel() {
-  // Saves initial state of the level
-  characterX = characterInitialX;
-  characterY = characterInitialY;
-}
-
 function preRenderSeasonBackgrounds() {
   seasonList.forEach((seasonName) => {
     currentSeason = seasonName;

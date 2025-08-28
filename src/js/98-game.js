@@ -30,8 +30,7 @@ function loadGame() {
   setTrapList();
   setEnemyList();
   preRenderSeasonBackgrounds();
-  startLevel();
-  currentSeason = 'spring';
+  loadInitialState();
   drawLevelBackground();
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
@@ -50,6 +49,31 @@ function changeSeason(seasonName) {
   setTimeout(() => {
     isInputLocked = false;
   }, 1000);
+}
+
+function saveGame() {
+  savedData = {
+    characterX: characterX,
+    characterY: characterY,
+    currentSeason,
+    characterMaxLife,
+    availableSeasons,
+  };
+  localStorage.setItem('witchcats', JSON.stringify(savedData));
+}
+
+function loadInitialState() {
+  savedData = { ...initialData, ...loadSaveData() };
+  ({ characterX, characterY, currentSeason, characterMaxLife, availableSeasons } = savedData);
+  characterLife = characterMaxLife;
+}
+
+function loadSaveData() {
+  try {
+    return JSON.parse(localStorage.getItem('witchcats')) || {};
+  } catch {
+    return {};
+  }
 }
 
 loadGame();

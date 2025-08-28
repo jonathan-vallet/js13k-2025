@@ -162,8 +162,7 @@ function tryPerformCharacterAction() {
     }
     // Sets new respawn point when checkpoint is reached
     if (getTileAt(tileX, tileY, ['checkpoint'])) {
-      characterInitialX = tileX * TILE_SIZE;
-      characterInitialY = tileY * TILE_SIZE;
+      saveGame();
     }
 
     // Checks if a trap can be triggered

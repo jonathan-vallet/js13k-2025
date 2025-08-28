@@ -17,9 +17,15 @@ let accumulatedTime = 0;
 
 let currentScreen = 'game'; // Current screen state
 
-let characterInitialX = 22 * TILE_SIZE;
-let characterInitialY = 24 * TILE_SIZE;
-let characterMaxLife = 3;
+let initialData = {
+  characterX: 22 * TILE_SIZE,
+  characterY: 24 * TILE_SIZE,
+  currentSeason: 'spring',
+  characterMaxLife: 3,
+};
+let savedData;
+
+let characterMaxLife;
 let characterLife = characterMaxLife;
 let isCharacterFalling = false;
 let isInvulnerable = false;
