@@ -54,7 +54,7 @@ function preRenderSeasonBackgrounds() {
 const TRAP_LIST = [];
 function setTrapList() {
   world.forEach((tile) => {
-    if (tile.tile === 'blade-trap') {
+    if (['blade-trap', 'follow-trap'].includes(tile.tile)) {
       TRAP_LIST.push(tile);
     }
   });

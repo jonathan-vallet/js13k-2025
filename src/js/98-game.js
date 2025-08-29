@@ -29,9 +29,11 @@ function loadGame() {
   });
   setTrapList();
   setEnemyList();
-  preRenderSeasonBackgrounds();
   loadInitialState();
+  addSpecificWorldItems();
+  preRenderSeasonBackgrounds();
   drawLevelBackground();
+  currentSeason = savedData.currentSeason;
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
   requestAnimationFrame(animate);

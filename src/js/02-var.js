@@ -22,6 +22,7 @@ let initialData = {
   characterY: 24 * TILE_SIZE,
   currentSeason: 'spring',
   characterMaxLife: 3,
+  availableSeasons,
 };
 let savedData;
 

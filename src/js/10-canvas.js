@@ -109,6 +109,11 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
       return;
     }
 
+    // Flip the cat based on the character's position to make it face the right direction
+    if (displayedTile === 'cat') {
+      element.flipHorizontally = characterX / TILE_SIZE < element.x;
+    }
+
     if (['water', 'road'].includes(displayedTile)) {
       const { type, orientation } = getTileTypeAndOrientation(element);
       element.animationFrame = type;
@@ -138,7 +143,6 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
           thicknessFrameIndex = 6;
         }
         const thicknessFrame = tile.tiles[thicknessFrameIndex];
-        const useOrientationForColor = tile.useOrientationForColor;
         let colors = tile.colors;
         if (Array.isArray(colors)) {
           colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
@@ -147,7 +151,6 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
         drawTile(thicknessFrame, colors, element.x, belowY, {
           orientation: ORIENTATION_UP,
           flipHorizontally,
-          useOrientationForColor,
           context,
         });
       }
@@ -171,9 +174,8 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
-    const useOrientationForColor = TILE_DATA[displayedTile].useOrientationForColor;
     const flipHorizontally = element.flipHorizontally;
-    drawTile(frame, colors, x, y, { orientation, scale, useOrientationForColor, context, flipHorizontally });
+    drawTile(frame, colors, x, y, { orientation, scale, context, flipHorizontally });
   });
 }
 
@@ -191,6 +193,9 @@ function getSeasonalTile(tileName, season = currentSeason) {
     return 'liana';
   }
   if (season !== 'summer' && tileName === 'root') {
+    return '';
+  }
+  if (season !== 'fall' && tileName === 'mushroom') {
     return '';
   }
 
@@ -216,7 +221,6 @@ function drawTile(tile, colors, x, y, options = {}) {
     context = ctx,
     flipHorizontally = false,
     alpha = 1,
-    useOrientationForColor = false,
   } = options;
   context.save();
 
@@ -230,12 +234,9 @@ function drawTile(tile, colors, x, y, options = {}) {
   }
 
   context.scale(scale * scaleDirection, scale); // Apply scaling
-  if (useOrientationForColor) {
-    colors = colors[orientation];
-  } else {
-    context.rotate(((orientation - 1) * Math.PI) / 2); // Apply rotation
-  }
+  context.rotate(((orientation - 1) * Math.PI) / 2); // Apply rotation
   context.translate(-halfTileSize, -halfTileSize); // Move to the top-left corner of the tile
+  context.globalAlpha = alpha;
 
   // Draw the tile by iterating over the pixels
   for (let tileY = 0; tileY < tile.length; tileY++) {
@@ -244,7 +245,6 @@ function drawTile(tile, colors, x, y, options = {}) {
       if (pixelValue > 0) {
         // Skip transparent pixels (0)
         context.fillStyle = colors[pixelValue - 1];
-        context.globalAlpha = alpha;
         // Draw the pixel
         context.fillRect(tileX, tileY, 1, 1);
       }

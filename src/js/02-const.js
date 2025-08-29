@@ -53,7 +53,7 @@ const TILE_DATA = {
     collisionPadding: [10, 4, 0, 4],
   },
   tree: {
-    rle: '32GYXQYKYOe\\eOe\\eOYHYMe\\hZi\\eMeFeOeYgagYePDNe[gdf[eNBeMe[gdYf\\eMYAMe\\gdYg\\NeMe\\gdYg\\eNf\\h[f^g]eNf]m[i\\fNg\\ph]fOf_fZhZe\\eZePgYeaf`eYfNeMeMgdZe[gMeMePhYe[e_fZgQeNfMhYf[eZlNeNfNeMlZlMeNfNgOhMnMfOgOhNgMiMhMeNhNqMeMgRgOfPgMeMqPlQePjQqOpnOqNsNfMpMhNsOrSgOgTrNqNqMqAuPqPvMrMtMqC|uArNrAqMqCsMrDtMtArMrAqMqAsPqDsPuMrBMsOrMrBtMrOvBqOvMvNtPrGwNrOzKuPvH',
+    rle: '32FNBRAPLDMYeN[gMYfYOAOHMYjZfYgYfYMfYMGOfYfafZhMEMfdZfZjMCMgddYMBMYfYfdZhYNYMAMYeMYi`f\\hYMBMeM[gYMf[jMfZfNAN[gNfZMgYMgMfYMeOYMYNgMgYNgYMgMgYMYNePeOgPfNfOfNYNeMZNYNfNZNeOePeMYMBMe_MeM\\NZN[NZMAMfYMeYe[MZebe[eMAMfMhM\\fYMeYe[eYfYgNeOfMfYMgMiYfMfNfMANYNeMfMgNfMfMfMeRAMfYReYOeReOYeYMBMg\\QYO\\OYeYgMAMfMYfYeZfZfZf\\fMfMBOgNYgYMfNgYMgOEMfPfTfNfMIOqXRHrMtNrMrNqNtNrDrM[qMtMsMrNqYsMrBrM[qMZrNZqMsMq\\qMrAqMZsMZrMqZqMqZOqZrMqAqMrOZsMqZqMq[qPrMCtMZrO\\Nq[rMrMqDwOqZsPZqOqGwSyD',
     colors: [0, 4, 5, 6],
     isStatic: true,
     size: [2, 2],
@@ -108,6 +108,13 @@ const TILE_DATA = {
     colors: COLOR_SETS.wall,
     moveSpeed: 3,
     returningMoveSpeed: 0.75,
+    collisionPadding: [1, 1, 1, 1],
+  },
+  'follow-trap': {
+    rle: '32DPLFNHMgMLEMeMHMZeMHQCMYeMGRCNAMgRYeMFNhPeNeZNhNeMENfNfMZeRfNfODMeMfNfMYfMCNfNfOCMfMYhYMfMCOYhYOBMfYN\\NeNBMYO\\OYMAMe[TYMBNeSYMYMAMeTYNYMBNeYRZQYOf[NYMBNe[O\\eMAMZOfZMZMBNeZOiMBNZfMfYMYNBNeYMgRCSgNDNeUEVFVC',
+    colors: COLOR_SETS.wall,
+    animationSpeed: 100,
+    moveSpeed: 1.3,
     collisionPadding: [1, 1, 1, 1],
   },
   heart: {
@@ -173,14 +180,18 @@ const TILE_DATA = {
     colors: ['#000', '#c08018', '#e0b8c0'],
     isStatic: true,
   },
+  mushroom: {
+    rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMqhqMHMqhqMIRLI',
+    colors: [0, 5, 2, 6],
+  },
 };
 
 // Game constants
 const TILE_SIZE = 16; // Original tile size in pixels
 const WORLD_WIDTH = 100;
-const WORLD_HEIGHT = 50;
+const WORLD_HEIGHT = 62;
 const DISPLAY_WIDTH = 19;
 const DISPLAY_HEIGHT = 11;
 
-const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign'];
+const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign', 'mushroom'];
 const HOLE_PADDING = [11, 7, 5, 7];
