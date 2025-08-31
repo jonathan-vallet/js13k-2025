@@ -11,7 +11,7 @@ function getAABB(tileName, px, py) {
     l: px + padding[3],
     r: px + TILE_SIZE - padding[1],
     t: py + padding[0],
-    b: py + TILE_SIZE - padding[2],
+    b: py + TILE_SIZE - padding[2] + (tileName === 'witch' ? TILE_SIZE / 2 : 0),
   };
 }
 
@@ -53,7 +53,7 @@ function checkDamages() {
   }
 
   // Hitbox pixel perfect
-  const charBox = getAABB('characters', characterX, characterY);
+  const charBox = getAABB('witch', characterX, characterY);
 
   for (const trap of TRAP_LIST) {
     if (!trap.moveDirection) {

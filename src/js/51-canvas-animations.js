@@ -162,15 +162,15 @@ function updateAnimations(deltaTime) {
 
       // Check horizontal movement
       if (characterX !== nextX) {
-        if (!getTileAtDestination('characters', nextX, characterY)) {
+        if (!getTileAtDestination('witch', nextX, characterY)) {
           characterX = nextX;
           hasMovedHorizontally = true;
         } else if (!isCharacterFalling) {
           // If cannot move but is near a free tile, try to move vertically
-          if (!getTileAtDestination('characters', nextX, characterY + 5)) {
+          if (!getTileAtDestination('witch', nextX, characterY + 5)) {
             characterY += 1;
             hasMovedVertically = true;
-          } else if (!getTileAtDestination('characters', nextX, characterY - 5)) {
+          } else if (!getTileAtDestination('witch', nextX, characterY - 5)) {
             characterY -= 1;
             hasMovedVertically = true;
           }
@@ -178,12 +178,12 @@ function updateAnimations(deltaTime) {
       }
 
       if (!hasMovedVertically) {
-        if (!getTileAtDestination('characters', characterX, nextY)) {
+        if (!getTileAtDestination('witch', characterX, nextY)) {
           characterY = nextY;
         } else if (!hasMovedHorizontally && !isCharacterFalling) {
-          if (!getTileAtDestination('characters', characterX + 5, nextY)) {
+          if (!getTileAtDestination('witch', characterX + 5, nextY)) {
             characterX += 1;
-          } else if (!getTileAtDestination('characters', characterX - 5, nextY)) {
+          } else if (!getTileAtDestination('witch', characterX - 5, nextY)) {
             characterX -= 1;
           }
         }
@@ -223,19 +223,31 @@ let walkAnimationTimer = 0;
 let walkFrameIndex = 0;
 const WALK_FRAME_INTERVAL = 120;
 
-function updateCharacterWalkAnimation(deltaTime) {
-  walkAnimationTimer += deltaTime;
+function updateCharacterWalkAnimation(dt) {
+  walkAnimationTimer += dt;
   const base = getMoveFrameFromDirection(characterDirection);
-  const sequence = [base + 3, base, base + 6, base];
+  const horiz = characterDirection === ORIENTATION_LEFT || characterDirection === ORIENTATION_RIGHT;
+
+  if (horiz) {
+    // left/right: alternate frame 0/1
+    characterFlipHorizontally = characterDirection === ORIENTATION_RIGHT;
+  }
 
   if (walkAnimationTimer >= WALK_FRAME_INTERVAL) {
     walkAnimationTimer = 0;
 
-    // Fait tourner l'index (0 → 1 → 2 → 0 → ...)
-    walkFrameIndex = (walkFrameIndex + 1) % sequence.length;
+    if (horiz) {
+      // left/right: alternate frame 0/1
+      walkFrameIndex ^= 1; // toggle 0<->1
+      characterFlipHorizontally = characterDirection === ORIENTATION_RIGHT;
+    } else {
+      // up/down: don't change frame, just toggle flip
+      characterFlipHorizontally = !characterFlipHorizontally;
+    }
   }
 
-  characterMoveFrame = sequence[walkFrameIndex];
+  // frame à afficher
+  characterMoveFrame = horiz ? base + walkFrameIndex : base;
 }
 
 function updateFallAnimation(timestamp) {

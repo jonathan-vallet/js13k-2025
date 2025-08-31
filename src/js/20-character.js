@@ -6,6 +6,7 @@
 
 // Initialize the character on the grid at the start of the game
 let characterScale = 1;
+let characterFlipHorizontally = false;
 let characterDirection; // Track the current direction
 let characterX;
 let characterY;
@@ -27,8 +28,8 @@ function drawCharacter() {
   const drawX = characterX - offsetX * TILE_SIZE;
   const drawY = characterY - offsetY * TILE_SIZE;
 
-  const characterTile = TILE_DATA['characters'].tiles[characterMoveFrame];
-  let characterColors = TILE_DATA['characters'].colors;
+  const characterTile = TILE_DATA['witch'].tiles[characterMoveFrame];
+  let characterColors = TILE_DATA['witch'].colors;
 
   if (isInvulnerable) {
     const now = performance.now();
@@ -46,7 +47,7 @@ function drawCharacter() {
   }
   drawTile(characterTile, characterColors, 0, 0, {
     scale: characterScale,
-    flipHorizontally: characterDirection === ORIENTATION_RIGHT,
+    flipHorizontally: characterFlipHorizontally,
   });
   ctx.restore();
 }
@@ -79,8 +80,8 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   const fallBox = {
     l: x + HOLE_PADDING[3],
     r: x + TILE_SIZE - HOLE_PADDING[1],
-    t: y + HOLE_PADDING[0],
-    b: y + TILE_SIZE - HOLE_PADDING[2],
+    t: y + HOLE_PADDING[0] + TILE_SIZE / 3,
+    b: y + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE / 2,
   };
 
   for (const { x: tx, y: ty } of getTilesInAABB(fallBox)) {
@@ -131,10 +132,10 @@ function setCharacterDirection(direction) {
 function getMoveFrameFromDirection(direction) {
   switch (direction) {
     case ORIENTATION_UP:
-      return 2;
+      return 1;
     case ORIENTATION_RIGHT:
     case ORIENTATION_LEFT:
-      return 1;
+      return 2;
     case ORIENTATION_DOWN:
       return 0;
   }
@@ -146,7 +147,7 @@ function tryPerformCharacterAction() {
     l: characterX + HOLE_PADDING[3],
     r: characterX + TILE_SIZE - HOLE_PADDING[1],
     t: characterY + HOLE_PADDING[0],
-    b: characterY + TILE_SIZE - HOLE_PADDING[2],
+    b: characterY + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE / 2,
   };
 
   for (const { x: tileX, y: tileY } of getTilesInAABB(interactBox)) {
@@ -189,7 +190,7 @@ function tryPerformCharacterAction() {
 function launchFireball() {
   let { dx, dy } = getDirectionOffsets(characterDirection);
   let x = characterX / TILE_SIZE + (dx * 0.5 || 0.1);
-  let y = characterY / TILE_SIZE + dy * 0.5;
+  let y = characterY / TILE_SIZE - (dy < 0 ? 0.2 : dy > 0 ? -0.8 : 0) + Math.abs(dx) * 0.5;
 
   let fireballTile = addTile('fireball', x, y);
   fireballTile.moveDirection = characterDirection;
@@ -212,7 +213,7 @@ function tryReadSign() {
  * If player is on a trigger and press action, change to next available season
  */
 function tryChangeSeason() {
-  const charBox = getAABB('characters', characterX, characterY);
+  const charBox = getAABB('witch', characterX, characterY);
   for (const { x: tx, y: ty } of getTilesInAABB(charBox)) {
     const tile = getTileAt(tx, ty, ['trigger']);
     let nextSeason = availableSeasons[(availableSeasons.indexOf(currentSeason) + 1) % availableSeasons.length];

@@ -11,7 +11,50 @@ const cleanCSS = require('gulp-clean-css');
 const replace = require('gulp-replace');
 
 // Define replacements for shortening the code
-const replacements = {};
+const replacements = {
+  // element ids
+  gameBackgroundCanvas: 'gbc',
+  gameCanvas: 'gc',
+
+  // tile types
+  grass: 'g',
+  water: 'w',
+  witch: 'c',
+  tree: 'tr',
+  // wall: 'w',
+  'follow-trap': 'ft',
+  'blade-trap': 'bt',
+  spikes: 's',
+  'dungeon-ground': 'dg',
+  liana: 'l',
+  mommy: 'm',
+  skeleton: 'sk',
+  heart: 'h',
+  mushroom: 'msh',
+  // sign: 'sg',
+  tree: 'tr',
+  bush: 'b',
+  crack: 'cr',
+  rock: 'r',
+  snow: 'sn',
+  // root: 'r',
+  spring: 'sp',
+  summer: 'su',
+  fall: 'fa',
+  winter: 'wi',
+
+  // tile object properties
+  collisionPadding: '_cp',
+  isStatic: '_iS',
+  colors: '_c',
+  animationSpeed: '_aS',
+  moveSpeed: '_mS',
+  returningMoveSpeed: '_rS',
+  moveDirection: '_mD',
+  flipHorizontally: '_fH',
+  animationFrame: '_aF',
+  orientation: '_o',
+};
 
 // Chemins de fichiers
 const paths = {
