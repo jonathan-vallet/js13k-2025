@@ -27,7 +27,7 @@ function preRenderSeasonBackgrounds() {
     seasonCanvasList[seasonName] = canvas;
     seasonContextList[seasonName] = ctx;
 
-    ctx.fillStyle = COLOR_SETS[seasonName][1];
+    ctx.fillStyle = COLOR_SETS[seasonName][3];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const backgroundTileName = 'grass'; // Default background tile
 
