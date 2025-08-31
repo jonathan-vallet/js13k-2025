@@ -125,7 +125,7 @@ const TILE_DATA = {
     collisionPadding: [8, 8, 8, 8],
   },
   wall: {
-    rle: '128XqXOqXOrQqXP|M||sTxRYlYMYpeYMYplYMYkYS|M||sTxQYnMpgMpnMmYOqN|M||sNqNqNxNqNfYTqXOqXVqTYeYOYMqbqMqdYrbqMYPYMq^qMYOfMd\\MZqd[Md\\q[MfPYTqRsQtPqTYRYTYPfM_M]qZP]q[sQYtbM[MfOsfqMqpeqMqpqMqfsPsjsNqNqYqZqZMZqZqZMZMZqZq_q]q`sPYMfNs\\Md[MdZM\\sNs`sNfMYqZqZqZrYMZqZqZu^M]MdYqZMfOr\\Md[qdZM\\rPr`rOfMYMZMqNZqZNrZMZqZq[sOqPq]q^qZMfNqMq\\Md[MdZM\\qMqNqMq`qMqNfMYPZOqZMZqZOqZq]q]M`M^MZMfOYM\\MqdZMdYqM\\MYPYM`MYOfMYqZMZqZqZq]MZqZqcq^qOqRqMfPYqZqRqZqQqMq_qRqZqYRYq^qYPfM_qcqdYqOrdZMZMfOqYQiPiWiQYqPqYTYqOfYQqXRqR\\M]Rq]qZqNqMshM]MfM]MmM]MhsNslsNYjYMYphYMYhYM[q\\MYhYMYvYMfMqMr\\q]qZq]qaq]q\\rMrMr`rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]qaq]q\\qMtMq`qMrUqXRqOYfM`MfZfM`MfMYrXXXRrZrVrY',
+    rle: '112XqXOqXOrQqXP|M|sPxRYlYMYpeYMYplYMYkYS|M|sPxQYnMpgMpnMmYOqN|M|sMqNxNqNfYTqXOqXVqTYeYOYMqbqMqdYqNYMq^qMYOfMd\\MZqd[Md\\q[MfPYTqRsQtPYTYPfM_M]qZP]q[sQYtbM[MfOsfqMqpeqMqjNsjsNqNqYqZqZMZqZqZMZMZqZq_q]q`sPYMfNs\\Md[M_Ms`sNfMYqZqZqZrYMZqZqZu^M]MdYqZMfOr\\Md[q_Nr`rOfMYMZMqNZqZNrZMZqZq[sOqPq]q^qZMfNqMq\\Md[M_MqMq`qMqNfMYPZOqZMZqZOqZq]q]M`M^MZMfOYM\\MqdZM_NYM`MYOfMYqZMZqZqZq]MZqZqcq^qOqRqMfPYqZqRqZqQqMq^OYq^qYPfM_qcqdYqOrdZMZMfOqYQiPiWqYTYqOfYQqXRqR\\M]Rq]qZqNqMshM]MfM]MlMslsNYjYMYphYMYhYM[q\\MYhYMYvYMfMqMr\\q]qZq]q`qMr`rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]q`rMq`qMrUqXRqOYfM`MfZfM`MfMYrXXQYrVrY',
     colors: COLOR_SETS.wall,
     isStatic: true,
   },
