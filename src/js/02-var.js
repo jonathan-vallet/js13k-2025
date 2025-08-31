@@ -47,7 +47,13 @@ let fallDy = 0;
 
 let collectedCatsNumber = 0;
 let currentReadingText = '';
+let seasonMusicList = {};
 
 function getOppositeDirection(direction) {
   return { 1: 3, 2: 4, 3: 1, 4: 2 }[direction];
 }
+
+let musicAudio = document.createElement('audio');
+let musicplayer = new CPlayer();
+
+let isSoundActive = getLocalStorage('isSoundActive') === false ? false : true;

@@ -16,13 +16,77 @@ let COLOR_SETS = {
   water: ['#87c7df', '#986b41', '#bd8e64', '#d7b588'],
   ice: ['#0038d0', '#50b0f8', '#f8f8f8'],
   cat: ['#000', '#222', '#666', '#e54350'],
-  grass: ['#ddb982', '#d6af74', '#34ac5c', '#55c768'],
-  spring: ['#000', '#f8f8b0', '#d8f850', '#58e000', '#b0f838', '#60c800', '#e8c040'],
-  summer: ['#000', '#f8f870', '#a0f820', '#28a800', '#a0f820', '#308800', '#c08018'],
-  fall: ['#000', '#f8f8b8', '#f8d000', '#d8a000', '#f8a050', '#e00000', '#e8a070'],
-  winter: ['#000', '#f8f8f8', '#d8d8f8', '#a0a0f8', '#f8f8f8', '#50e0e8', '#e0b8c0'],
-  wall: ['#000', '#e8e0f0', '#b888d0', '#904070'],
+  spring: [
+    '#000',
+    '#76af2b',
+    '#d8f850',
+    '#58e000',
+    '#b0f838',
+    '#60c800',
+    '#e8c040',
+    '#1c495a', // water N
+    '#6e6e71', // water R
+    '#76af2b', // water G
+    '#91897f', // water B
+    '#8ec42b ',
+    '#519034',
+    '#36721b',
+    '#b9f746',
+  ],
+  summer: [
+    '#000',
+    '#e4b800',
+    '#a0f820',
+    '#28a800',
+    '#a0f820',
+    '#308800',
+    '#c08018',
+    '#632251', // water N
+    '#816d70', // water R
+    '#e4b800', // water G
+    '#aa8b7f', // water B
+    '#e4ce00 ',
+    '#c89132',
+    '#a57116',
+    '#ffe960',
+  ],
+  fall: [
+    '#000',
+    '#dc752b',
+    '#f8d000',
+    '#d8a000',
+    '#f8a050',
+    '#e00000',
+    '#e8a070',
+    '#501e4a', // water N
+    '#6e5b86', // water R
+    '#dc752b', // water G
+    '#9b7ba3', // water B
+    '#e2892c',
+    '#c16624',
+    '#a94c09',
+    '#fab770',
+  ],
+  winter: [
+    '#000',
+    '#9dace0',
+    '#d8d8f8',
+    '#a0a0f8',
+    '#f8f8f8',
+    '#50e0e8',
+    '#e0b8c0',
+    '#181d3e', // water N
+    '#cfd3e1', // water R
+    '#9dace0', // water G
+    '#aac4e1', // water B
+    '#aac4e1',
+    '#7382dd',
+    '#5666be',
+    '#c2e8f7',
+  ],
+  wall: ['#120922', '#7e4794', '#d77cd8', '#512c7d'],
   heart: ['#000', '#ff0000', '#ffffff'],
+  sign: ['#342112', '#ab513c', '#cd664e', '#632251'],
 };
 
 // Orientation constants
@@ -34,12 +98,16 @@ const ORIENTATION_LEFT = 4;
 // CAUTION! If new assets are added, push them at the end of the object, or it will break RLE
 const TILE_DATA = {
   grass: {
-    rle: '16XMeXNeZUeMYMZMeTYeMZNYUYMZMZUZM[WYMYMYWYSeXNZeXeMZMYMeTYNZMeYTZMZMYV[MZVYMYMYXOYV',
-    colors: [1, 2, 3],
+    rle: '16qDgEwBgAqDqAqArBfAqAqKeAsgufAesgrAqAgsAqfqCqgrAqBerDfrAgAeDqAeEfCfAqAeCeBfAfAfqCfBfAfqgAqgAreqerAfrfqAtfAqAeBetArfqBeDqAqDeArLeA',
+    colors: [0, 1, 11, 12],
+  },
+  plant: {
+    rle: '16qLuEsEqArCqgqEtAqfAfqCqCrgqfAqAsCqeAsAqMsAMBqAfqArMArAqMBqAeBqMBqBrMBMBqMCqBvOCMqAsBsMzCrNvArCqNrDrAqMBqMrDrCqMBMAqCrArBMHrA',
+    colors: [13, 1, 14, 12],
   },
   water: {
-    rle: '64LLKfXXOBqAvBqErFsEqeYXXOAseYgvBrerBsesAreYXXPBqf[jshrlqgYXXPAqf^NZfZM[gM[iYXXQAqeZU[O\\P^XXRAqeYXXXXXAqeYXXXXXAqfXXXXXAqfXXXXXBqeXXXXXBqYXXXXXAreXXXXXBqeYXXXXWBqeYXXXXWCqeXXXXW',
-    colors: COLOR_SETS.water,
+    rle: '64LLINYrddZLAMHNCMFMYrddZINBPCOCOFMrddZGPCPCNBM[PCMqddZHPBM[MBMYN`Oqdd[DNCMZMAMYsMAM|sdd[CNYOtMvM|sdd\\CMZzddddDMtdddd_EMqddddaBOqddddbCNqddddbEMddddbFMddddaNEMdddd`Sdddda',
+    colors: [7, 8, 9, 10],
     isStatic: true,
   },
   road: {
@@ -69,8 +137,8 @@ const TILE_DATA = {
     isStatic: true,
   },
   ice: {
-    rle: '16OYMYeZeYNZMYOYMYeYfYN\\OYMYeYfYN\\OYMYeYfYN\\OYMYeYfYNYeZOYM[fZMYeZO[MYfZMYeZO[MYgYMYeZO[MZfYMYeZO[MZfYMYeZMYM^eZM[NYMZM[eZM[NYMZM^NZNYNYM^NZNYNYM^NZN',
-    colors: COLOR_SETS.ice,
+    rle: '64LLIN[gYe[g]eYe]fLAMHNCMFMZeYeYe[g]eYe]gINBPCOCOFMeYeYe[g]g]eYeYGPCPCNBNfPCMe]eYe]gYe[eYeZHPBM[MBMYNYg\\Oe]eYe]gYe[eYe[DNCMfMAMZfMAM[g]eYe[eYeYe]eYeYe[g[eCNYOfZMZgYM[g]g[eYg]eYeYe[g[eYCM[eYeYe[g]gYe[g[eYg]eYe]eYe[eYeDMYeYeYe[eYe[eYeYeYe[g[eYg]g]eYeYeYeYeYEMYeYe[eYe[eYeYeYe[eYe[eYg]eYe]eYeYe[eYeBOf]eYe[eYeYeYe[eYe]eYe]eYe]gYe[gYCNe]gYeYeYgYeYeYeYe]eYe]eYe]gYe[gZEM\\eYeYe[g[eYg]eYe]eYeYe[g]gYeYFMZeYeYe[g[eYgYe[gYe[gYe[gYe[gYeZNEMeYe]g[eYgYe[gYe[gYe[gYe[gYe[Sg]g[eYgYe[gYe[gYe[g]g]e',
+    colors: [7, 8, 9],
     isStatic: true,
   },
   bush: {
@@ -89,7 +157,7 @@ const TILE_DATA = {
     collisionPadding: [8, 8, 8, 8],
   },
   wall: {
-    rle: '112eqXXXXXqePpphPlPqMeddddbeMqMqNexewewerMqNewNqNe[ppppkZeOqMexewewerNqMewMqO[qXXXXRqeZPqexewewerOqexPZqMqpppphqMqeYQpphPlQYeMqfYeYmqgYgqgYeYkYkYjYfqMeYNqNtewewewMqNweNqNYeMjqfYplqfYhqfYhqfYjMeYOqMtewewewNqMweMqOYeMeqkqgYkYoqkqkqhqeMeYPuewewewOxeqPYeMgYpfqkqppeYgMeYMYOpphYOlOYMYeMqiYgqpppmMeYNYNexewewerMYNewNYNYeqMqeYfqkqfYhqfYjYjYlYgYgMeYNqYXXRqYVYqNZeqMrpphqjqlqkMeYNrdd]MrbrNqZeqXXPpPlqeMeYNrppiMrnrOqZpphqMgYfYgMqfqMgYiMeYNrppiMrnrMeNdd^eqMlMqeZeqMlMeYMqMqppiqMqnqMreXXRqYeMlMeYrYeMlMeYMeqXXReqXqe',
+    rle: '112XqXOqXOrQqXP|M||sRYlYMYpeYMYplYMYkYS|M||sQYnMpgMpnMmYOqN|M||sNqNfYTqXOqXVqTYeYOYMqbqMqdYrbqMYOfMdddd`MfPYTqRsQtPqTYPfMdddd`MfOsfqMqpeqMqpqMqfsNqNqdddd`MfNs\\Md[MdZM\\sNfMdddd`MfOr\\Md[qdZM\\rOfMdddd`MfNqMq\\Md[MdZM\\qMqNfMdddd`MfOYM\\MqdZMdYqM\\MYOfMdddd`MfPYqZqRqZqQqMq_qRqZqYPfMdddd`MfOqYQiPiWiQYqOfYQqXRqRbRaqNqMshM]MfM]MmM]MhsNYjYMYphYMYhYM`MYhYM`MfMqMr\\q]qZq]qaq]q\\rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]qaq]q\\qMrUqXRqOYfM`MfZfM`MfMerXXXRre',
     colors: COLOR_SETS.wall,
     isStatic: true,
   },
@@ -176,8 +244,8 @@ const TILE_DATA = {
     animationSpeed: 800,
   },
   sign: {
-    rle: '16XQpfNdZXQAO`OBMYMeNfNeMYMBMYMlMYMBMYMeMeNeMeMYMBMYMlMYMAXQpfXQEM\\MJMYfYMJMYfYMJePeE',
-    colors: ['#000', '#c08018', '#e0b8c0'],
+    rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',
+    colors: COLOR_SETS.sign,
     isStatic: true,
   },
   mushroom: {

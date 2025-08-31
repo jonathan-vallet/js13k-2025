@@ -114,7 +114,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
       element.flipHorizontally = characterX / TILE_SIZE < element.x;
     }
 
-    if (['water', 'road'].includes(displayedTile)) {
+    if (['water', 'road', 'ice'].includes(displayedTile)) {
       const { type, orientation } = getTileTypeAndOrientation(element);
       element.animationFrame = type;
       element.orientation = orientation;

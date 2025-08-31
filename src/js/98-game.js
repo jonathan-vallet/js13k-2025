@@ -21,9 +21,29 @@ window.addEventListener('resize', () => {
   drawLevelBackground();
 });
 
+function initMusic() {
+  // Générer l'intro et la boucle au chargement
+  seasonList.forEach((season, index) => {
+    baseSong.songData[0].i[12] = seasonEnvRelease[index];
+    seasonMusicList[season] = generateMusic(baseSong);
+  });
+}
+
+function playSeasonMusic() {
+  playMusic(seasonMusicList[currentSeason], true);
+
+  if (isSoundActive) {
+    playMusicControl();
+  } else {
+    stopMusic();
+  }
+}
+
 function loadGame() {
   // Adjust the canvas size to fit the level size
   setZoomFactor();
+  preloadSFX();
+  initMusic();
   seasonList.forEach((season) => {
     generateCollisionMapForSeason(season);
   });
@@ -34,6 +54,7 @@ function loadGame() {
   preRenderSeasonBackgrounds();
   drawLevelBackground();
   currentSeason = savedData.currentSeason;
+  playSeasonMusic();
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
   requestAnimationFrame(animate);
@@ -45,6 +66,7 @@ function changeSeason(seasonName) {
 
   startFade(1000, () => {
     currentSeason = seasonName;
+    playSeasonMusic();
     drawLevelBackground();
   });
 

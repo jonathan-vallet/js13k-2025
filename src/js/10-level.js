@@ -35,10 +35,14 @@ function preRenderSeasonBackgrounds() {
     let backgroundColors = TILE_DATA[backgroundTileName].colors.map(
       (colorIndex) => COLOR_SETS[seasonName][colorIndex] || '#000',
     );
+    const plantTile = TILE_DATA['plant'].tiles[0];
+    let plantColors = TILE_DATA['plant'].colors.map((colorIndex) => COLOR_SETS[seasonName][colorIndex] || '#000');
 
     for (let y = 0; y < WORLD_HEIGHT; y++) {
       for (let x = 0; x < WORLD_WIDTH; x++) {
         if (((x - 812347 * y) * 928371 * (x + 156468 + y)) % 17 === 0) {
+          drawTile(plantTile, plantColors, x, y, { context: ctx });
+        } else {
           drawTile(backgroundTile, backgroundColors, x, y, { context: ctx });
         }
       }

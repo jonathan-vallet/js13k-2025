@@ -30,9 +30,9 @@ addSign(29, 16, 'IN WINTER, WATER TURNS|TO ICE');
 addSign(71, 17, 'IN SUMMER, VINES LET|YOU CLIMB');
 addSign(80, 35, 'STAND ON STONE|AND PRESS ACTION');
 addSign(74, 25, 'v AUTUMN TEMPLE|> SUMMER TEMPLE');
+addSign(73, 37, '< SPRING TEMPLE|v AUTUMN TEMPLE');
 
 function addSpecificWorldItems() {
-  console.log(availableSeasons);
   if (!availableSeasons.includes('winter')) {
     addSeasonOrb(10, 4, 'winter');
   }

@@ -10,7 +10,9 @@ function handleGameKeydown(key) {
     if (currentReadingText) {
       currentReadingText = '';
     } else {
-      tryReadSign();
+      if (tryReadSign()) {
+        playActionSound('text');
+      }
       if (!tryChangeSeason() && !currentReadingText && !isFireballLaunched) {
         isFireballLaunched = true;
         launchFireball();

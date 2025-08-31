@@ -85,6 +85,8 @@ function updateAnimations(deltaTime) {
           tile.moveDirection = null; // Stop moving if blocked
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
+          // Stops sound
+          audioElements['follow-trap'].pause();
         }
         if (tile.tile === 'blade-trap') {
           if (!tile.isReturning) {

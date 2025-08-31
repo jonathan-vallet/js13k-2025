@@ -23,6 +23,7 @@ function takeDamage() {
   if (isInvulnerable) {
     return;
   }
+  playActionSound('damage');
   --characterLife;
   isInvulnerable = true;
   invulnerabilityStartTime = performance.now();

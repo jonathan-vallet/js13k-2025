@@ -99,6 +99,8 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
 function triggerFallAnimation(targetX, targetY) {
   isCharacterFalling = true;
   isFallingAnimationActive = true;
+
+  playActionSound('fall');
   fallAnimationStartTime = performance.now();
 
   fallStartX = characterX;
@@ -177,6 +179,9 @@ function tryPerformCharacterAction() {
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
         trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
       }
+      if (trap.tile === 'follow-trap' && trap.moveDirection) {
+        playActionSound('follow-trap', true);
+      }
     });
   }
 }
@@ -200,6 +205,7 @@ function tryReadSign() {
 
   const tile = getTileAt(tileX, tileY, ['sign']);
   currentReadingText = tile?.text;
+  return !!currentReadingText;
 }
 
 /**
