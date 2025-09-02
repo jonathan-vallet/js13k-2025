@@ -220,6 +220,15 @@ const TILE_DATA = {
     rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMqhqMHMqhqMIRLI',
     colors: [0, 5, 2, 6],
   },
+  'stone-flower': {
+    rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNeAMeMYgMe[MeMeMqeMZeMeZMYeMeMqfSYfMfMseYNYgMYeAeQfPYfEmB',
+    colors: COLOR_SETS.wall,
+    isStatic: true,
+  },
+  flower: {
+    rle: '16LJOINAM[MANDMZM]MZMCMZNYMYNZMBOZQZNBMZNqYqYqNZMAMZMqYqYqYqMZMANYNqYqYqNYNBNYSYNBQ]QAMgSgMAMfMgMgMfMBNgOgNDQAQLG',
+    colors: [0, 5, 2, 6],
+  },
 };
 
 // Game constants
@@ -229,5 +238,5 @@ const WORLD_HEIGHT = 62;
 const DISPLAY_WIDTH = 19;
 const DISPLAY_HEIGHT = 11;
 
-const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign', 'mushroom'];
+const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign', 'mushroom', 'stone-flower'];
 const HOLE_PADDING = [11, 7, 5, 7];
