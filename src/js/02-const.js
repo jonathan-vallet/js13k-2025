@@ -234,7 +234,7 @@ const TILE_DATA = {
 // Game constants
 const TILE_SIZE = 16; // Original tile size in pixels
 const WORLD_WIDTH = 100;
-const WORLD_HEIGHT = 62;
+const WORLD_HEIGHT = 63;
 const DISPLAY_WIDTH = 19;
 const DISPLAY_HEIGHT = 11;
 
