@@ -104,8 +104,8 @@ const TILE_DATA = {
     isStatic: true,
   },
   bush: {
-    rle: '16LJOLAMrNHOfqeqNEMqiqfqMCMqhqiqMCMiqiMBMZqgrerMCMYqeqjrMBMqgYrZqeqMBMqfYqeqZfqMBMe[qf[eMDM[f\\eMEM[e\\MH^LI',
-    colors: [0, 4, 5, 6],
+    rle: '16LKNGOCMZMCPZMAM\\MAMZN[N\\N[NYeZMYNYMZeYNYfZMZMZfYN[eYMZMYfZMBQfQCM[ePe[MAMZgMfMgZN[fYfYf[N\\MYfYM\\S\\REM\\MKPF',
+    colors: ['000', 1, 2, 3],
   },
   cat: {
     rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
@@ -116,7 +116,7 @@ const TILE_DATA = {
     colors: COLOR_SETS.fall,
     animationSpeed: 100,
     moveSpeed: 3,
-    collisionPadding: [8, 8, 8, 8],
+    collisionPadding: [7, 7, 7, 7],
   },
   wall: {
     rle: '112XqXOqXOrQqXP|M|sPxRYlYMYpeYMYplYMYkYS|M|sPxQYnMpgMpnMmYOqN|M|sMqNxNqNfYTqXOqXVqTYeYOYMqbqMqdYqNYMq^qMYOfMd\\MZqd[Md\\q[MfPYTqRsQtPYTYPfM_M]qZP]q[sQYtbM[MfOsfqMqpeqMqjNsjsNqNqYqZqZMZqZqZMZMZqZq_q]q`sPYMfNs\\Md[M_Ms`sNfMYqZqZqZrYMZqZqZu^M]MdYqZMfOr\\Md[q_Nr`rOfMYMZMqNZqZNrZMZqZq[sOqPq]q^qZMfNqMq\\Md[M_MqMq`qMqNfMYPZOqZMZqZOqZq]q]M`M^MZMfOYM\\MqdZM_NYM`MYOfMYqZMZqZqZq]MZqZqcq^qOqRqMfPYqZqRqZqQqMq^OYq^qYPfM_qcqdYqOrdZMZMfOqYQiPiWqYTYqOfYQqXRqR\\M]Rq]qZqNqMshM]MfM]MlMslsNYjYMYphYMYhYM[q\\MYhYMYvYMfMqMr\\q]qZq]q`qMr`rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]q`rMq`qMrUqXRqOYfM`MfZfM`MfMYrXXQYrVrY',
@@ -125,7 +125,7 @@ const TILE_DATA = {
   },
   snow: {
     rle: '112eqeYQYgYP\\X\\X\\RYeqeMYevlxkMYezeYMqYNYgYQ[RYlYRYlYRYgYNYqMYftosnMYfxfYMeMYetf[greZf{eZf{eZfueYMeMYm^n]MYpYMYMe||||zeMYMZidYg`MZnZNY|||||YNdd_MdZNe|||||eOdd^NdOe|||||eOdd^NdOe|||||eOdd^NdOe||||{eYOdd^NdOe||||{eMYNdd^NdOe||||{YMeNdd^NdOY||||{YMeYMdd_MdMZMe||||zYMeYNd_P_NbNYeMYe||||yeMYePdYXZeP^PeqYNYo|||yeYMqeXXRqeXeqeqeYX|||yeYMeqeZXQ\\ReqeZRZeqe',
-    colors: [0, 3, 5, 1],
+    colors: [1, 3, 5, 6],
     isStatic: true,
   },
   spikes: {
@@ -133,14 +133,14 @@ const TILE_DATA = {
     animationSpeed: 1200,
     colors: COLOR_SETS.dungeon,
   },
-  'blade-trap': {
+  blade: {
     rle: '16ENBNIMYMBMYMGMZMBMZMEMZePeZMCMZeMhMeZMAMZeMjMeZReMfMeQCNeMfMeNFNjNCRhSZfRfZMAMZfPfZMCMZePeZMEMZMBMZMGMYMBMYMINBNE',
     colors: COLOR_SETS.dungeon,
     moveSpeed: 3,
     returningMoveSpeed: 0.75,
     collisionPadding: [1, 1, 1, 1],
   },
-  'follow-trap': {
+  seeker: {
     rle: '32DPLFNHMgMLEMeMHMZeMHQCMYeMGRCNAMgRYeMFNhPeNeZNhNeMENfNfMZeRfNfODMeMfNfMYfMCNfNfOCMfMYhYMfMCOYhYOBMfYN\\NeNBMYO\\OYMAMe[TYMBNeSYMYMAMeTYNYMBNeYRZQYOf[NYMBNe[O\\eMAMZOfZMZMBNeZOiMBNZfMfYMYNBNeYMgRCSgNDNeUEVFVC',
     colors: COLOR_SETS.dungeon,
     animationSpeed: 100,
@@ -151,7 +151,7 @@ const TILE_DATA = {
     rle: '16LLLLDNCNHMZMAMZMFM\\M\\MEMaMEMaMFM_MHM]MJM[MLMYMLBMLLLLH',
     colors: ['000', 'f00', 'fff'],
   },
-  'dungeon-ground': {
+  ground: {
     rle: '16qYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|uYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|t',
     colors: ['514970', '7676a2', '8686b4', '6a648e'],
     isStatic: true,
@@ -184,12 +184,12 @@ const TILE_DATA = {
   },
   rock: {
     rle: '16F[NINerfMFYMshYNCYvYeYqfMBYsgYseYMBYqhYseZOgYfZfZMeNiZe[MeYNYgsYNYMZN[rgMZMYMYAOqhMYMfYNYqeYeYeZNeYOseYfZNYPreYMe[NYNBMeZOYNYNDOAPYE',
-    colors: ['000', 'c08018', 'e0b8c0'],
+    colors: COLOR_SETS.dungeon,
     isStatic: true,
   },
   root: {
     rle: '16BQFNBMerYPBMqMAN[MerYMAMeMAMYQZeNeYMAMZMCOYMYMBqNqAMBMYeqMDrAMeMAMZeqMFMYMBMZeMEPBOYMDMereMAMZNCMeYNYMAMYfYMBMYMBNAMZeYMBMYMENZNAqOqDqPqBsFtIrG',
-    colors: [0, 4, 5, 6],
+    colors: [0, 1, 2, 3],
     isStatic: true,
   },
   checkpoint: {
@@ -207,21 +207,20 @@ const TILE_DATA = {
   },
   signpanel: {
     rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',
-    colors: [0, 2, 4, 1],
+    colors: COLOR_SETS.dungeon,
     isStatic: true,
   },
   mushroom: {
     rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMqhqMHMqhqMIRLI',
     colors: [0, 5, 2, 6],
   },
-  'stone-flower': {
-    rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNeAMeMYgMe[MeMeMqeMZeMeZMYeMeMqfSYfMfMseYNYgMYeAeQfPYfEmB',
+  stoneflower: {
+    rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNBMeMYgMe[MeMAMqeMZeMeZMYeMAMqfSYfMAeMseYNYgMYBeQBPYLF',
     colors: COLOR_SETS.dungeon,
-    isStatic: true,
   },
   flower: {
     rle: '16LJOINAM[MANDMZM]MZMCMZNYMYNZMBOZQZNBMZNqYqYqNZMAMZMqYqYqYqMZMANYNqYqYqNYNBNYSYNBQ]QAMgSgMAMfMgMgMfMBNgOgNDQAQLG',
-    colors: [0, 5, 2, 6],
+    colors: ['000', 5, 2, 6],
   },
 };
 
@@ -242,6 +241,7 @@ const BLOCKING_TILES = [
   'root',
   'signpanel',
   'mushroom',
-  'stone-flower',
+  'stoneflower',
+  'flower',
 ];
-const HOLE_PADDING = [11, 7, 5, 7];
+const HOLE_PADDING = [10, 7, 5, 7];

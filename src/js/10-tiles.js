@@ -3,7 +3,7 @@
  * @param {number} val - The pixel value
  * @returns {number} - The tile coordinate
  */
-const getTileCoord = (val) => Math.floor(val / TILE_SIZE);
+const getTileCoord = (val) => (val / TILE_SIZE) | 0;
 
 /**
  * Get the tile at the specified position

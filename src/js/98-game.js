@@ -1,7 +1,7 @@
 function setZoomFactor() {
   zoomFactor = Math.min(
-    Math.floor(window.innerWidth / (DISPLAY_WIDTH * TILE_SIZE)),
-    Math.floor((window.innerHeight * 0.89) / (DISPLAY_HEIGHT * TILE_SIZE)),
+    (window.innerWidth / (DISPLAY_WIDTH * TILE_SIZE)) | 0,
+    ((window.innerHeight * 0.89) / (DISPLAY_HEIGHT * TILE_SIZE)) | 0,
   );
   canvas.width = DISPLAY_WIDTH * TILE_SIZE * zoomFactor;
   canvas.height = DISPLAY_HEIGHT * TILE_SIZE * zoomFactor;
@@ -69,10 +69,6 @@ function changeSeason(seasonName) {
     playSeasonMusic();
     drawLevelBackground();
   });
-
-  setTimeout(() => {
-    isInputLocked = false;
-  }, 1000);
 }
 
 function saveGame() {

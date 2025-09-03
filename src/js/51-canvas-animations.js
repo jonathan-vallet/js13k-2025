@@ -75,20 +75,24 @@ function updateAnimations(deltaTime) {
           // Remove fireball from the world
           removeTile('fireball', tile.x, tile.y);
           if (['bush', 'flower'].includes(destinationTile.tile)) {
-            removeTile(destinationTile.tile, destinationTile.x, destinationTile.y);
+            removeTile(
+              destinationTile.tile == 'flower' ? 'stoneflower' : destinationTile.tile,
+              destinationTile.x,
+              destinationTile.y,
+            );
             Object.keys(collisionMaps).forEach((season) => {
               collisionMaps[season][destinationTile.y][destinationTile.x] = null;
             });
           }
         }
-        if (tile.tile === 'follow-trap') {
+        if (tile.tile === 'seeker') {
           tile.moveDirection = null; // Stop moving if blocked
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
           // Stops sound
-          audioElements['follow-trap'].pause();
+          audioElements['seeker'].pause();
         }
-        if (tile.tile === 'blade-trap') {
+        if (tile.tile === 'blade') {
           if (!tile.isReturning) {
             tile.isReturning = true;
             // Moves in opposite direction
@@ -270,8 +274,8 @@ function updateFallAnimation(timestamp) {
     characterScale = 1;
 
     // Respawn 3 pixels en arrière
-    const respawnX = Math.floor(fallTargetX - fallDx * TILE_SIZE * 0.7);
-    const respawnY = Math.floor(fallTargetY - fallDy * TILE_SIZE * 0.7);
+    const respawnX = (fallTargetX - fallDx * TILE_SIZE * 0.7) | 0;
+    const respawnY = (fallTargetY - fallDy * TILE_SIZE * 0.7) | 0;
     respawnCharacter(respawnX, respawnY);
   }
 }

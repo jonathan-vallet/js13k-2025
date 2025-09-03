@@ -9,7 +9,7 @@ function decodeLevel(worldLayers) {
     for (const count of runs) {
       for (let i = 0; i < count; i++) {
         const x = tileIndex % WORLD_WIDTH;
-        const y = Math.floor(tileIndex / WORLD_WIDTH);
+        const y = (tileIndex / WORLD_WIDTH) | 0;
         const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
         if (isFilled) {
           worldData.push({ tile: layerName, x, y, moveDirection });
@@ -37,8 +37,8 @@ function generateCollisionMapForSeason(seasonName) {
 
     const size = tileData.size || [1, 1];
 
-    for (let dx = 0; dx < size[0]; dx++) {
-      for (let dy = 0; dy < size[1]; dy++) {
+    for (let dx = 0; dx < size[0]; ++dx) {
+      for (let dy = 0; dy < size[1]; ++dy) {
         const x = tile.x + dx;
         const y = tile.y + dy;
 

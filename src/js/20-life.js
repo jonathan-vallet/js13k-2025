@@ -54,6 +54,7 @@ function runDieAnimation() {
     // déverrouille un poil après le fade-in
     setTimeout(() => {
       isDying = false;
+      playActionSound('respawn');
     }, 1000);
   }
 

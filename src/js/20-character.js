@@ -15,10 +15,6 @@ let isCharacterMoving;
 let characterMoveFrame = 0; // Frame of the character sprite to show
 let characterMoveElapsedTime;
 
-let characterReturnStartTime; // Start time for the character return animation
-let characterRespawnStartX, characterRespawnStartY; // Start position for the character respawn
-let characterRespawnTargetX, characterRespawnTargetY; // Target position for the character respawn
-
 /**
  * Draw the character sprite on the canvas
  */
@@ -40,11 +36,7 @@ function drawCharacter() {
 
   ctx.save();
   ctx.scale(zoomFactor, zoomFactor);
-  if (characterScale !== 1) {
-    ctx.translate(drawX, drawY);
-  } else {
-    ctx.translate(Math.floor(drawX), Math.floor(drawY));
-  }
+  ctx.translate(drawX, drawY);
   drawTile(characterTile, characterColors, 0, 0, {
     scale: characterScale,
     flipHorizontally: characterFlipHorizontally,
@@ -159,7 +151,6 @@ function tryPerformCharacterAction() {
     if (getTileAt(tileX, tileY, ['orb'])) {
       characterMaxLife += 1;
       let tile = getTileAt(tileX, tileY, ['orb']);
-      console.log('pick orb', tile);
       const unlockedSeason = tile.season;
       changeSeason(unlockedSeason);
       availableSeasons.push(unlockedSeason);
@@ -183,8 +174,8 @@ function tryPerformCharacterAction() {
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
         trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
       }
-      if (trap.tile === 'follow-trap' && trap.moveDirection) {
-        playActionSound('follow-trap', true);
+      if (trap.tile === 'seeker' && trap.moveDirection) {
+        playActionSound('seeker', true);
       }
     });
   }

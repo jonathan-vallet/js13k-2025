@@ -9,16 +9,9 @@ function handleKeyUp(e) {
 }
 
 function handleInput(input) {
-  if (currentScreen === 'game') {
-    handleGameKeydown(input);
-  }
-  if (currentScreen === 'menu') {
-    handleMenuKeydown(input);
-  }
+  handleGameKeydown(input);
 }
 
 function handleRelease(input) {
-  if (currentScreen === 'game') {
-    handleGameKeyup(input);
-  }
+  handleGameKeyup(input);
 }

@@ -62,7 +62,7 @@ function checkDamages() {
 
     const trapPx = trap.x * TILE_SIZE;
     const trapPy = trap.y * TILE_SIZE;
-    const trapBox = getAABB('blade-trap', trapPx, trapPy);
+    const trapBox = getAABB(trap.tile, trapPx, trapPy);
 
     if (aabbOverlap(charBox, trapBox)) {
       takeDamage();

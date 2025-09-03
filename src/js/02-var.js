@@ -5,7 +5,6 @@ const backgroundCanvas = document.getElementById('gameBackgroundCanvas');
 const backgroundCtx = backgroundCanvas.getContext('2d');
 
 const seasonCanvasList = {}; // ex: { summer: canvas, winter: canvas, ... }
-const seasonContextList = {}; // stocke les contextes associés
 
 // Global variables
 let zoomFactor = 1; // Display size for each tile. Zoom whole game depending on screen size
@@ -14,8 +13,6 @@ let keyStack = []; // Stack of keys pressed
 const FPS = 1000 / 60; // ~16.67
 let lastTimestamp = 0;
 let accumulatedTime = 0;
-
-let currentScreen = 'game'; // Current screen state
 
 let initialData = {
   characterX: 50 * TILE_SIZE,
@@ -49,6 +46,11 @@ let collectedCatsNumber = 0;
 let currentReadingText = '';
 let seasonMusicList = {};
 
+/**
+ * Get the opposite direction
+ * @param {number} direction (ORIENTATION_UP | ORIENTATION_DOWN | ORIENTATION_LEFT | ORIENTATION_RIGHT)
+ * @returns {number} - The opposite direction
+ */
 function getOppositeDirection(direction) {
   return { 1: 3, 2: 4, 3: 1, 4: 2 }[direction];
 }

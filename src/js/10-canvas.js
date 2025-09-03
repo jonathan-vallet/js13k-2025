@@ -56,7 +56,7 @@ function drawLevel() {
   ctx.save();
   ctx.scale(zoomFactor, zoomFactor); // Apply global zoom
   ctx.translate(Math.round(-offsetX * TILE_SIZE), Math.round(-offsetY * TILE_SIZE)); // Shift the view
-  drawLevelElements(false, ctx);
+  drawLevelElements(false);
   ctx.restore();
 }
 
@@ -181,29 +181,18 @@ function getColors(colors, seasonName = currentSeason) {
 }
 
 function getSeasonalTile(tileName, season = currentSeason) {
-  if (season === 'fall' && tileName === 'hole') {
-    return 'leaves';
-  }
-  if (season === 'winter' && tileName === 'water') {
-    return 'ice';
-  }
-  if (season !== 'winter' && tileName === 'snow') {
-    return '';
-  }
-  if (season === 'summer' && tileName === 'crack') {
-    return 'liana';
-  }
-  if (season !== 'summer' && tileName === 'root') {
-    return '';
-  }
-  if (season !== 'fall' && tileName === 'mushroom') {
-    return '';
-  }
-  if (season === 'spring' && tileName === 'stone-flower') {
-    return 'flower';
-  }
+  const SEASON_REPLACE = {
+    fall: { hole: 'leaves' },
+    winter: { water: 'ice' },
+    summer: { crack: 'liana' },
+    spring: { stoneflower: 'flower' },
+  };
+  const HIDE_UNLESS = { snow: 'winter', root: 'summer', mushroom: 'fall' };
 
-  return tileName;
+  if (HIDE_UNLESS[tileName] && HIDE_UNLESS[tileName] !== season) {
+    return '';
+  }
+  return (SEASON_REPLACE[season] && SEASON_REPLACE[season][tileName]) || tileName;
 }
 
 /**

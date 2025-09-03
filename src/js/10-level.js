@@ -25,7 +25,6 @@ function preRenderSeasonBackgrounds() {
 
     const ctx = canvas.getContext('2d');
     seasonCanvasList[seasonName] = canvas;
-    seasonContextList[seasonName] = ctx;
 
     ctx.fillStyle = '#' + COLOR_SETS[seasonName][3];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -47,17 +46,15 @@ function preRenderSeasonBackgrounds() {
       }
     }
 
-    // Dessine les éléments statiques
-    if (currentScreen === 'game') {
-      drawLevelElements(true, ctx);
-    }
+    // Draw all static elements
+    drawLevelElements(true, ctx);
   });
 }
 
 const TRAP_LIST = [];
 function setTrapList() {
   world.forEach((tile) => {
-    if (['blade-trap', 'follow-trap'].includes(tile.tile)) {
+    if (['blade', 'seeker'].includes(tile.tile)) {
       TRAP_LIST.push(tile);
     }
   });

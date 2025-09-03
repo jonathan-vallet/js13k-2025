@@ -21,7 +21,7 @@ function decodeRLE(rleString) {
     const charCodeOffset = char.charCodeAt(0) - START_CHAR_CODE;
 
     // Calculating the color index and run length
-    const colorIndex = Math.floor(charCodeOffset / MAX_CHAR_PER_GROUP);
+    const colorIndex = (charCodeOffset / MAX_CHAR_PER_GROUP) | 0;
     const runLength = (charCodeOffset % MAX_CHAR_PER_GROUP) + 1;
 
     pixels.push(...Array(runLength).fill(colorIndex));
