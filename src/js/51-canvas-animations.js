@@ -74,8 +74,8 @@ function updateAnimations(deltaTime) {
           tile.moveDirection = null; // Stop moving if blocked
           // Remove fireball from the world
           removeTile('fireball', tile.x, tile.y);
-          if (destinationTile.tile === 'bush') {
-            removeTile('bush', destinationTile.x, destinationTile.y);
+          if (['bush', 'flower'].includes(destinationTile.tile)) {
+            removeTile(destinationTile.tile, destinationTile.x, destinationTile.y);
             Object.keys(collisionMaps).forEach((season) => {
               collisionMaps[season][destinationTile.y][destinationTile.x] = null;
             });
@@ -162,15 +162,15 @@ function updateAnimations(deltaTime) {
 
       // Check horizontal movement
       if (characterX !== nextX) {
-        if (!getTileAtDestination('witch', nextX, characterY)) {
+        if (!getTileAtDestination('character', nextX, characterY)) {
           characterX = nextX;
           hasMovedHorizontally = true;
         } else if (!isCharacterFalling) {
           // If cannot move but is near a free tile, try to move vertically
-          if (!getTileAtDestination('witch', nextX, characterY + 5)) {
+          if (!getTileAtDestination('character', nextX, characterY + 5)) {
             characterY += 1;
             hasMovedVertically = true;
-          } else if (!getTileAtDestination('witch', nextX, characterY - 5)) {
+          } else if (!getTileAtDestination('character', nextX, characterY - 5)) {
             characterY -= 1;
             hasMovedVertically = true;
           }
@@ -178,12 +178,12 @@ function updateAnimations(deltaTime) {
       }
 
       if (!hasMovedVertically) {
-        if (!getTileAtDestination('witch', characterX, nextY)) {
+        if (!getTileAtDestination('character', characterX, nextY)) {
           characterY = nextY;
         } else if (!hasMovedHorizontally && !isCharacterFalling) {
-          if (!getTileAtDestination('witch', characterX + 5, nextY)) {
+          if (!getTileAtDestination('character', characterX + 5, nextY)) {
             characterX += 1;
-          } else if (!getTileAtDestination('witch', characterX - 5, nextY)) {
+          } else if (!getTileAtDestination('character', characterX - 5, nextY)) {
             characterX -= 1;
           }
         }

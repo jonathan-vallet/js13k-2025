@@ -3,22 +3,20 @@ function decodeLevel(worldLayers) {
   let tileIndex = 0;
 
   for (const [layerName, encodedString] of Object.entries(worldLayers)) {
-    if (/^[\d,\s]+$/.test(encodedString)) {
-      // Nouveau format binaire compressé (vide/plein)
-      const runs = encodedString.split(',').map((s) => parseInt(s.trim(), 10));
-      let isFilled = false; // commence par vide
-      for (const count of runs) {
-        for (let i = 0; i < count; i++) {
-          const x = tileIndex % WORLD_WIDTH;
-          const y = Math.floor(tileIndex / WORLD_WIDTH);
-          const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
-          if (isFilled) {
-            worldData.push({ tile: layerName, x, y, moveDirection });
-          }
-          tileIndex++;
+    // Split on comma, and if string is empty, add 1
+    const runs = encodedString.split(',').map((s) => parseInt(s.trim(), 10) || 1);
+    let isFilled = false; // commence par vide
+    for (const count of runs) {
+      for (let i = 0; i < count; i++) {
+        const x = tileIndex % WORLD_WIDTH;
+        const y = Math.floor(tileIndex / WORLD_WIDTH);
+        const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
+        if (isFilled) {
+          worldData.push({ tile: layerName, x, y, moveDirection });
         }
-        isFilled = !isFilled;
+        tileIndex++;
       }
+      isFilled = !isFilled;
     }
 
     // On reset tileIndex pour chaque layer, pour que tous utilisent la même grille

@@ -28,8 +28,8 @@ function drawCharacter() {
   const drawX = characterX - offsetX * TILE_SIZE;
   const drawY = characterY - offsetY * TILE_SIZE;
 
-  const characterTile = TILE_DATA['witch'].tiles[characterMoveFrame];
-  let characterColors = TILE_DATA['witch'].colors;
+  const characterTile = TILE_DATA['character'].tiles[characterMoveFrame];
+  let characterColors = TILE_DATA['character'].colors;
 
   if (isInvulnerable) {
     const now = performance.now();
@@ -158,10 +158,13 @@ function tryPerformCharacterAction() {
     }
     if (getTileAt(tileX, tileY, ['orb'])) {
       characterMaxLife += 1;
-      const unlockedSeason = getTileAt(tileX, tileY, ['orb']).season;
+      let tile = getTileAt(tileX, tileY, ['orb']);
+      console.log('pick orb', tile);
+      const unlockedSeason = tile.season;
       changeSeason(unlockedSeason);
       availableSeasons.push(unlockedSeason);
       removeTile('orb', tileX, tileY);
+      currentReadingText = tile.text;
     }
     // Sets new respawn point when checkpoint is reached
     if (getTileAt(tileX, tileY, ['checkpoint'])) {
@@ -204,7 +207,7 @@ function tryReadSign() {
   const tileX = getTileCoord(characterX + TILE_SIZE / 2);
   const tileY = getTileCoord(characterY + TILE_SIZE / 4);
 
-  const tile = getTileAt(tileX, tileY, ['sign']);
+  const tile = getTileAt(tileX, tileY, ['signpanel']);
   currentReadingText = tile?.text;
   return !!currentReadingText;
 }
@@ -213,7 +216,7 @@ function tryReadSign() {
  * If player is on a trigger and press action, change to next available season
  */
 function tryChangeSeason() {
-  const charBox = getAABB('witch', characterX, characterY);
+  const charBox = getAABB('character', characterX, characterY);
   for (const { x: tx, y: ty } of getTilesInAABB(charBox)) {
     const tile = getTileAt(tx, ty, ['trigger']);
     let nextSeason = availableSeasons[(availableSeasons.indexOf(currentSeason) + 1) % availableSeasons.length];

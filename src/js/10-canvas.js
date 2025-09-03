@@ -198,6 +198,9 @@ function getSeasonalTile(tileName, season = currentSeason) {
   if (season !== 'fall' && tileName === 'mushroom') {
     return '';
   }
+  if (season === 'spring' && tileName === 'stone-flower') {
+    return 'flower';
+  }
 
   return tileName;
 }

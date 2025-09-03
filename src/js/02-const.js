@@ -55,7 +55,7 @@ let COLOR_SETS = {
     '#c2e8f7',
     '#cfd3e1', // water (ice)
   ],
-  wall: ['#0d1b2a', '#5a5a7c', '#73849c', '#3b2e72'],
+  dungeon: ['#0d1b2a', '#5a5a7c', '#73849c', '#3b2e72'],
   ground: ['#514970', '#7676a2', '#8686b4', '#6a648e'],
 
   heart: ['#000', '#ff0000', '#ffffff'],
@@ -87,7 +87,7 @@ const TILE_DATA = {
     colors: [1, 3, 6],
     isStatic: true,
   },
-  witch: {
+  character: {
     rle: '64LLLLLLLLLLLLLLLLHOLLLLLQIOLFOLLBRGQLDQLOIQHRLCSJQHMfYMJQLAMfNLSCVHVCTYeMKMfNEMbNDNYQYPAN_OETYeMDMZT[MBOeQeRZQ[NCN_ODMYWZQYeOeYRYUZMBMZQ[NCTeQYRYgYRAOeTYMAMYUZMBOePeOeXSBNeQeOYMAOeTYMBNeMeMfMeMeXRDMeMgMeOYMBNeQeOYMAOfMfMfOBXNCMfMhRCMeMgMeOYMBNYjYNDXDMjYQCMfMhRDMYhYMHTGMgZPEMjYQDMeReMFMYNfNeMGQJMgZPEMeOfNfMEMYRYeMGMfNJRHMYSfMFTYMGMfOJMfOHWEVHSHNfQFMhQFWFUFWEVFWFUFWB',
     colors: ['#000', '#e3b38d', '#dfa245', '#017949'],
     collisionPadding: [18, 4, 1, 4],
@@ -126,7 +126,7 @@ const TILE_DATA = {
   },
   wall: {
     rle: '112XqXOqXOrQqXP|M|sPxRYlYMYpeYMYplYMYkYS|M|sPxQYnMpgMpnMmYOqN|M|sMqNxNqNfYTqXOqXVqTYeYOYMqbqMqdYqNYMq^qMYOfMd\\MZqd[Md\\q[MfPYTqRsQtPYTYPfM_M]qZP]q[sQYtbM[MfOsfqMqpeqMqjNsjsNqNqYqZqZMZqZqZMZMZqZq_q]q`sPYMfNs\\Md[M_Ms`sNfMYqZqZqZrYMZqZqZu^M]MdYqZMfOr\\Md[q_Nr`rOfMYMZMqNZqZNrZMZqZq[sOqPq]q^qZMfNqMq\\Md[M_MqMq`qMqNfMYPZOqZMZqZOqZq]q]M`M^MZMfOYM\\MqdZM_NYM`MYOfMYqZMZqZqZq]MZqZqcq^qOqRqMfPYqZqRqZqQqMq^OYq^qYPfM_qcqdYqOrdZMZMfOqYQiPiWqYTYqOfYQqXRqR\\M]Rq]qZqNqMshM]MfM]MlMslsNYjYMYphYMYhYM[q\\MYhYMYvYMfMqMr\\q]qZq]q`qMr`rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]q`rMq`qMrUqXRqOYfM`MfZfM`MfMYrXXQYrVrY',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     isStatic: true,
   },
   snow: {
@@ -137,18 +137,18 @@ const TILE_DATA = {
   spikes: {
     rle: '32LGMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLLLEMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLJ',
     animationSpeed: 1200,
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
   },
   'blade-trap': {
     rle: '16ENBNIMYMBMYMGMZMBMZMEMZePeZMCMZeMhMeZMAMZeMjMeZReMfMeQCNeMfMeNFNjNCRhSZfRfZMAMZfPfZMCMZePeZMEMZMBMZMGMYMBMYMINBNE',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     moveSpeed: 3,
     returningMoveSpeed: 0.75,
     collisionPadding: [1, 1, 1, 1],
   },
   'follow-trap': {
     rle: '32DPLFNHMgMLEMeMHMZeMHQCMYeMGRCNAMgRYeMFNhPeNeZNhNeMENfNfMZeRfNfODMeMfNfMYfMCNfNfOCMfMYhYMfMCOYhYOBMfYN\\NeNBMYO\\OYMAMe[TYMBNeSYMYMAMeTYNYMBNeYRZQYOf[NYMBNe[O\\eMAMZOfZMZMBNeZOiMBNZfMfYMYNBNeYMgRCSgNDNeUEVFVC',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     animationSpeed: 100,
     moveSpeed: 1.3,
     collisionPadding: [1, 1, 1, 1],
@@ -164,7 +164,7 @@ const TILE_DATA = {
   },
   crack: {
     rle: '16eYO^OYf[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYNYeYN^MYfYe[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYN',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     isStatic: true,
   },
   liana: {
@@ -174,7 +174,7 @@ const TILE_DATA = {
   },
   mommy: {
     rle: '16DSFOf[fMDMZMe^eMCMfNYNYMYeNBMZSYeMYMAMfM\\hMZNZMf]eMeYNfMeZfOZeNeZMeZMZeZeMAMeYePZeYeMCMjRBM_iMBMhOe\\MAM\\QhX]MAXO',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     animationSpeed: 400,
     moveSpeed: 0.8,
     moveDirection: ORIENTATION_RIGHT,
@@ -182,7 +182,7 @@ const TILE_DATA = {
   },
   skeleton: {
     rle: '16FRIMjMGMgYhMFMeNZNeMCPeMhMeOAMfMYfNfYMeMAMfOhNfMBMgMeNeMfMBMYMfReMYMAQZNZNYMAMfMYNZNYOAMfNZNZMfMBWfMDMfOZODMgRFQH',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     animationSpeed: 500,
     moveSpeed: 0.8,
     moveDirection: ORIENTATION_DOWN,
@@ -204,14 +204,14 @@ const TILE_DATA = {
   },
   trigger: {
     rle: '16EePeHeNYfYNYEYMe]eYNCYMeYese]AeMeYseYreYeMe[eqfYqfqe[MeYqfYeZfqYeNeYqeYeqeZeqYeNeYeqeYeqYf[NYeYreZfZeYOqeYes[eYNAZeqe\\fYNCYMYfreZNEYN[PGYSLH',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
   },
   orb: {
     rle: '32E^LLbLI\\t\\HtG[x[ExEZrfvZDrfvC[qgv[CqgvCZrgwZBrgwBZ|ZB|BZ|ZB|BZ|ZB|B[z[CzDZzZDzD[x[ExF\\t\\HtIbLL^LI',
     colors: [0, 4, 5, 6],
     animationSpeed: 800,
   },
-  sign: {
+  signpanel: {
     rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',
     colors: [0, 2, 4, 1],
     isStatic: true,
@@ -222,7 +222,7 @@ const TILE_DATA = {
   },
   'stone-flower': {
     rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNeAMeMYgMe[MeMeMqeMZeMeZMYeMeMqfSYfMfMseYNYgMYeAeQfPYfEmB',
-    colors: COLOR_SETS.wall,
+    colors: COLOR_SETS.dungeon,
     isStatic: true,
   },
   flower: {
@@ -238,5 +238,16 @@ const WORLD_HEIGHT = 63;
 const DISPLAY_WIDTH = 19;
 const DISPLAY_HEIGHT = 11;
 
-const BLOCKING_TILES = ['tree', 'bush', 'wall', 'crack', 'rock', 'snow', 'root', 'sign', 'mushroom', 'stone-flower'];
+const BLOCKING_TILES = [
+  'tree',
+  'bush',
+  'wall',
+  'crack',
+  'rock',
+  'snow',
+  'root',
+  'signpanel',
+  'mushroom',
+  'stone-flower',
+];
 const HOLE_PADDING = [11, 7, 5, 7];

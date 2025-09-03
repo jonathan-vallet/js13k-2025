@@ -18,9 +18,9 @@ let accumulatedTime = 0;
 let currentScreen = 'game'; // Current screen state
 
 let initialData = {
-  characterX: 22 * TILE_SIZE,
-  characterY: 24 * TILE_SIZE,
-  currentSeason: 'spring',
+  characterX: 50 * TILE_SIZE,
+  characterY: 20 * TILE_SIZE,
+  currentSeason: 'summer',
   characterMaxLife: 3,
   availableSeasons,
 };
