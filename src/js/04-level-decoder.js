@@ -3,8 +3,8 @@ function decodeLevel(worldLayers) {
   let tileIndex = 0;
 
   for (const [layerName, encodedString] of Object.entries(worldLayers)) {
-    // Split on comma, and if string is empty, add 1
-    const runs = encodedString.split(',').map((s) => parseInt(s.trim(), 10) || 1);
+    // Split on comma, and if string is empty, add 1, except for first
+    const runs = encodedString.split(',').map((s, i) => parseInt(s.trim(), 10) || (i === 0 ? 0 : 1));
     let isFilled = false; // commence par vide
     for (const count of runs) {
       for (let i = 0; i < count; i++) {

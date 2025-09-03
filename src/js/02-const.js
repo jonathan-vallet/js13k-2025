@@ -13,52 +13,46 @@ let availableSeasons = [];
 let currentSeason;
 // spring colors
 let COLOR_SETS = {
-  water: ['#87c7df', '#986b41', '#bd8e64', '#d7b588'],
-  ice: ['#0038d0', '#50b0f8', '#f8f8f8'],
-  cat: ['#000', '#222', '#666', '#e54350'],
   spring: [
-    '#2d2122',
-    '#5f4d2e',
-    '#519034',
-    '#76af2b',
-    '#8ec42b',
-    '#b7c42b',
-    '#6e6e71', // water
-    '#91897f', // water
+    '2d2122',
+    '5f4d2e',
+    '519034',
+    '76af2b',
+    '8ec42b',
+    'b7c42b',
+    '6e6e71', // water
+    '91897f', // water
   ],
   summer: [
-    '#2d2122',
-    '#8b4f44',
-    '#c89132',
-    '#e4b000',
-    '#e4ce00',
-    '#e4ce00',
-    '#6e6e71', // water
-    '#91897f', // water
+    '2d2122',
+    '8b4f44',
+    'c89132',
+    'e4b000',
+    'e4ce00',
+    'e4ce00',
+    '6e6e71', // water
+    '91897f', // water
   ],
   fall: [
-    '#2d2122',
-    '#802c36',
-    '#c16624',
-    '#dc752b',
-    '#e2892c',
-    '#fab770',
-    '#6e5b86', // water
-    '#9b7ba3', // water
+    '2d2122',
+    '802c36',
+    'c16624',
+    'dc752b',
+    'e2892c',
+    'fab770',
+    '6e5b86', // water
+    '9b7ba3', // water
   ],
   winter: [
-    '#2d2122',
-    '#644683',
-    '#7382dd',
-    '#9dace0',
-    '#aac4e1',
-    '#c2e8f7',
-    '#cfd3e1', // water (ice)
+    '2d2122',
+    '644683',
+    '7382dd',
+    '9dace0',
+    'aac4e1',
+    'c2e8f7',
+    'cfd3e1', // water (ice)
   ],
-  dungeon: ['#0d1b2a', '#5a5a7c', '#73849c', '#3b2e72'],
-  ground: ['#514970', '#7676a2', '#8686b4', '#6a648e'],
-
-  heart: ['#000', '#ff0000', '#ffffff'],
+  dungeon: ['0d1b2a', '5a5a7c', '73849c', '3b2e72'],
 };
 
 // Orientation constants
@@ -89,7 +83,7 @@ const TILE_DATA = {
   },
   character: {
     rle: '64LLLLLLLLLLLLLLLLHOLLLLLQIOLFOLLBRGQLDQLOIQHRLCSJQHMfYMJQLAMfNLSCVHVCTYeMKMfNEMbNDNYQYPAN_OETYeMDMZT[MBOeQeRZQ[NCN_ODMYWZQYeOeYRYUZMBMZQ[NCTeQYRYgYRAOeTYMAMYUZMBOePeOeXSBNeQeOYMAOeTYMBNeMeMfMeMeXRDMeMgMeOYMBNeQeOYMAOfMfMfOBXNCMfMhRCMeMgMeOYMBNYjYNDXDMjYQCMfMhRDMYhYMHTGMgZPEMjYQDMeReMFMYNfNeMGQJMgZPEMeOfNfMEMYRYeMGMfNJRHMYSfMFTYMGMfOJMfOHWEVHSHNfQFMhQFWFUFWEVFWFUFWB',
-    colors: ['#000', '#e3b38d', '#dfa245', '#017949'],
+    colors: ['000', 'e3b38d', 'dfa245'],
     collisionPadding: [18, 4, 1, 4],
     size: [1, 1.5],
   },
@@ -115,7 +109,7 @@ const TILE_DATA = {
   },
   cat: {
     rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
-    colors: COLOR_SETS.cat,
+    colors: ['000', '222', '444', 'e54350'],
   },
   fireball: {
     rle: '32LLLLLLLLLLLBPLPKM\\MJMhMIMZfZMHMfZfMHMYhYMHMe\\eMHMYhYMHMe\\eMHMZfZMHMfZfMIM\\MJMhMKPLPLLLLLLLLLLLB',
@@ -155,11 +149,11 @@ const TILE_DATA = {
   },
   heart: {
     rle: '16LLLLDNCNHMZMAMZMFM\\M\\MEMaMEMaMFM_MHM]MJM[MLMYMLBMLLLLH',
-    colors: COLOR_SETS.heart,
+    colors: ['000', 'f00', 'fff'],
   },
   'dungeon-ground': {
     rle: '16qYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|uYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|t',
-    colors: COLOR_SETS.ground,
+    colors: ['514970', '7676a2', '8686b4', '6a648e'],
     isStatic: true,
   },
   crack: {
@@ -190,7 +184,7 @@ const TILE_DATA = {
   },
   rock: {
     rle: '16F[NINerfMFYMshYNCYvYeYqfMBYsgYseYMBYqhYseZOgYfZfZMeNiZe[MeYNYgsYNYMZN[rgMZMYMYAOqhMYMfYNYqeYeYeZNeYOseYfZNYPreYMe[NYNBMeZOYNYNDOAPYE',
-    colors: ['#000', '#c08018', '#e0b8c0'],
+    colors: ['000', 'c08018', 'e0b8c0'],
     isStatic: true,
   },
   root: {

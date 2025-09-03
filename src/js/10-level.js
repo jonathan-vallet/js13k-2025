@@ -27,16 +27,15 @@ function preRenderSeasonBackgrounds() {
     seasonCanvasList[seasonName] = canvas;
     seasonContextList[seasonName] = ctx;
 
-    ctx.fillStyle = COLOR_SETS[seasonName][3];
+    ctx.fillStyle = '#' + COLOR_SETS[seasonName][3];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const backgroundTileName = 'grass'; // Default background tile
 
     const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
-    let backgroundColors = TILE_DATA[backgroundTileName].colors.map(
-      (colorIndex) => COLOR_SETS[seasonName][colorIndex] || '#000',
-    );
+    let backgroundColors = getColors(TILE_DATA[backgroundTileName].colors, seasonName);
+
     const plantTile = TILE_DATA['plant'].tiles[0];
-    let plantColors = TILE_DATA['plant'].colors.map((colorIndex) => COLOR_SETS[seasonName][colorIndex] || '#000');
+    let plantColors = getColors(TILE_DATA['plant'].colors, seasonName);
 
     for (let y = 0; y < WORLD_HEIGHT; y++) {
       for (let x = 0; x < WORLD_WIDTH; x++) {

@@ -29,12 +29,12 @@ function drawCharacter() {
   const drawY = characterY - offsetY * TILE_SIZE;
 
   const characterTile = TILE_DATA['character'].tiles[characterMoveFrame];
-  let characterColors = TILE_DATA['character'].colors;
+  let characterColors = getColors(TILE_DATA['character'].colors);
 
   if (isInvulnerable) {
     const now = performance.now();
     if (Math.floor((now - invulnerabilityStartTime) / 200) % 2 === 0) {
-      characterColors = COLOR_SETS['winter'];
+      characterColors = getColors(COLOR_SETS['winter']);
     }
   }
 

@@ -54,8 +54,8 @@ function drawLevel() {
   );
 
   ctx.save();
-  ctx.scale(zoomFactor, zoomFactor); // Applique le zoom global
-  ctx.translate(Math.round(-offsetX * TILE_SIZE), Math.round(-offsetY * TILE_SIZE)); // Décale la vue
+  ctx.scale(zoomFactor, zoomFactor); // Apply global zoom
+  ctx.translate(Math.round(-offsetX * TILE_SIZE), Math.round(-offsetY * TILE_SIZE)); // Shift the view
   drawLevelElements(false, ctx);
   ctx.restore();
 }
@@ -143,11 +143,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
           thicknessFrameIndex = 6;
         }
         const thicknessFrame = tile.tiles[thicknessFrameIndex];
-        let colors = tile.colors;
-        if (Array.isArray(colors)) {
-          colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
-        }
-
+        let colors = getColors(tile.colors);
         drawTile(thicknessFrame, colors, element.x, belowY, {
           orientation: ORIENTATION_UP,
           flipHorizontally,
@@ -157,12 +153,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     }
 
     const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
-    colors = element.color || TILE_DATA[displayedTile].colors;
-
-    // if colors are numbers, get their corresponding color from the season
-    if (Array.isArray(colors)) {
-      colors = colors.map((colorIndex) => COLOR_SETS[currentSeason][colorIndex] || colorIndex);
-    }
+    colors = getColors(element.color || TILE_DATA[displayedTile].colors);
 
     if (element.tile === 'orb') {
       // Orb color is orb's season
@@ -177,6 +168,16 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     const flipHorizontally = element.flipHorizontally;
     drawTile(frame, colors, x, y, { orientation, scale, context, flipHorizontally });
   });
+}
+
+/**
+ * Get the colors for a tile, taking into account the current season if indexed number, else return the color as is
+ * @param {*} colors
+ * @returns
+ */
+function getColors(colors, seasonName = currentSeason) {
+  // if colors are numbers, get their corresponding color from the season
+  return colors.map((colorIndex) => '#' + (COLOR_SETS[seasonName][colorIndex] || colorIndex));
 }
 
 function getSeasonalTile(tileName, season = currentSeason) {
