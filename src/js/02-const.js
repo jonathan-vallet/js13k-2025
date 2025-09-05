@@ -208,7 +208,6 @@ const TILE_DATA = {
   signpanel: {
     rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',
     colors: COLOR_SETS.dungeon,
-    isStatic: true,
   },
   mushroom: {
     rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMqhqMHMqhqMIRLI',
@@ -228,8 +227,10 @@ const TILE_DATA = {
 const TILE_SIZE = 16; // Original tile size in pixels
 const WORLD_WIDTH = 100;
 const WORLD_HEIGHT = 63;
-const DISPLAY_WIDTH = 19;
-const DISPLAY_HEIGHT = 11;
+// const DISPLAY_WIDTH = 19;
+// const DISPLAY_HEIGHT = 11;
+const DISPLAY_WIDTH = 27;
+const DISPLAY_HEIGHT = 15;
 
 const BLOCKING_TILES = [
   'tree',

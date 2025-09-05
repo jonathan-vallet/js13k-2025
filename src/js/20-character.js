@@ -144,9 +144,13 @@ function tryPerformCharacterAction() {
 
   for (const { x: tileX, y: tileY } of getTilesInAABB(interactBox)) {
     // Cat tile found: collect it
-    if (getTileAt(tileX, tileY, ['cat'])) {
-      removeTile('cat', tileX, tileY);
-      ++collectedCatsNumber;
+    let catTile = getTileAt(tileX, tileY, ['cat']);
+    if (catTile && !catTile.isCollected) {
+      catTile.x = catTile.cx;
+      catTile.y = catTile.cy;
+      catTile.isCollected = true;
+      removeTile('signpanel', catTile.cx, catTile.cy);
+      savedData.collectedCatsList.push(catTile.i);
     }
     if (getTileAt(tileX, tileY, ['orb'])) {
       characterMaxLife += 1;
@@ -207,6 +211,9 @@ function tryReadSign() {
  * If player is on a trigger and press action, change to next available season
  */
 function tryChangeSeason() {
+  if (!availableSeasons.length) {
+    return false;
+  }
   const charBox = getAABB('character', characterX, characterY);
   for (const { x: tx, y: ty } of getTilesInAABB(charBox)) {
     const tile = getTileAt(tx, ty, ['trigger']);

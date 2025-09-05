@@ -68,6 +68,7 @@ function changeSeason(seasonName) {
     currentSeason = seasonName;
     playSeasonMusic();
     drawLevelBackground();
+    saveGame();
   });
 }
 
@@ -78,6 +79,7 @@ function saveGame() {
     currentSeason,
     characterMaxLife,
     availableSeasons,
+    collectedCatsList: savedData.collectedCatsList,
   };
   localStorage.setItem('witchcats', JSON.stringify(savedData));
 }

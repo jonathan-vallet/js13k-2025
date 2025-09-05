@@ -15,11 +15,12 @@ let lastTimestamp = 0;
 let accumulatedTime = 0;
 
 let initialData = {
-  characterX: 50 * TILE_SIZE,
-  characterY: 20 * TILE_SIZE,
+  characterX: 49 * TILE_SIZE,
+  characterY: 21 * TILE_SIZE,
   currentSeason: 'summer',
   characterMaxLife: 3,
   availableSeasons,
+  collectedCatsList: [],
 };
 let savedData;
 
@@ -42,7 +43,6 @@ let fallTargetY = 0;
 let fallDx = 0;
 let fallDy = 0;
 
-let collectedCatsNumber = 0;
 let currentReadingText = '';
 let seasonMusicList = {};
 

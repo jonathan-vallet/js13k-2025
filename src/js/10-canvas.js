@@ -158,7 +158,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     if (element.tile === 'orb') {
       // Orb color is orb's season
       const orbSeason = getTileAt(element.x, element.y, ['orb']).season;
-      colors = COLOR_SETS[orbSeason];
+      colors = getColors(COLOR_SETS[orbSeason]);
     }
 
     const x = element.x;
