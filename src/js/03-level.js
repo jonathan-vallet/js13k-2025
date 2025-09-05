@@ -58,8 +58,7 @@ function addSpecificWorldItems() {
     { x: 49, y: 4, text: 'AT NORTH', cx: 48, cy: 18 },
     { x: 84, y: 2, text: 'IN SUMMER TEMPLE', cx: 50, cy: 18 },
     { x: 97, y: 2, text: 'IN SUMMER TEMPLE', cx: 52, cy: 19 },
-    // { x: 62, y: 21, text: 'AT EAST', cx: 53, cy: 22 },
-    { x: 58, y: 21, text: 'AT EAST', cx: 53, cy: 21 },
+    { x: 62, y: 21, text: 'AT EAST', cx: 53, cy: 21 },
     { x: 85, y: 28, text: 'AT EAST', cx: 53, cy: 23 },
   ];
   catList.forEach((cat, index) => {
