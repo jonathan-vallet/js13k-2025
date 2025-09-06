@@ -21,7 +21,7 @@ const replacements = {
   water: 'w',
   character: 'c',
   tree: 'tr',
-  seeker: 'sk',
+  seeker: 'se',
   blade: 'bt',
   spikes: 's',
   stoneflower: 'sf',
@@ -54,6 +54,7 @@ const replacements = {
   flipHorizontally: '_fH',
   animationFrame: '_aF',
   orientation: '_o',
+  isCollected: '_iC',
 };
 
 // Chemins de fichiers

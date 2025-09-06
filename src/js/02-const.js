@@ -100,7 +100,7 @@ const TILE_DATA = {
   },
   leaves: {
     rle: '16M[R]MYN]MYP[MYNZMYNYMZM[MYMYMYMYM[NYMYN\\NZMZPYP[N^NYM_M[NYNZPZNYMYNZNYM_N[MYNYMZN_NZMYMYNZN^MYNYMZMYMYMYM\\NZMYNYNYMYM\\P[NZO_N[M',
-    colors: [4, 5],
+    colors: [4, 2],
     isStatic: true,
   },
   bush: {
@@ -210,8 +210,8 @@ const TILE_DATA = {
     colors: COLOR_SETS.dungeon,
   },
   mushroom: {
-    rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMqhqMHMqhqMIRLI',
-    colors: [0, 5, 2, 6],
+    rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMYhYMHMYhYMIRLI',
+    colors: [0, 2, 1],
   },
   stoneflower: {
     rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNBMeMYgMe[MeMAMqeMZeMeZMYeMAMqfSYfMAeMseYNYgMYBeQBPYLF',

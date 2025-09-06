@@ -188,7 +188,7 @@ function tryPerformCharacterAction() {
 function launchFireball() {
   let { dx, dy } = getDirectionOffsets(characterDirection);
   let x = characterX / TILE_SIZE + (dx * 0.5 || 0.1);
-  let y = characterY / TILE_SIZE - (dy < 0 ? 0.2 : dy > 0 ? -0.8 : 0) + Math.abs(dx) * 0.5;
+  let y = characterY / TILE_SIZE - (dy > 0 ? -0.8 : 0) + Math.abs(dx) * 0.5;
 
   let fireballTile = addTile('fireball', x, y);
   fireballTile.moveDirection = characterDirection;
