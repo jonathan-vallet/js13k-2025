@@ -78,7 +78,7 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   const fallBox = {
     l: x + HOLE_PADDING[3],
     r: x + TILE_SIZE - HOLE_PADDING[1],
-    t: y + HOLE_PADDING[0] + (TILE_SIZE / 6) * 5,
+    t: y + HOLE_PADDING[0] + (TILE_SIZE / 5) * 4,
     b: y + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE / 2,
   };
 

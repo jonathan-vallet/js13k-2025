@@ -132,7 +132,7 @@ function updateAnimations(deltaTime) {
     }
   });
 
-  if (!isCharacterFalling && !isFading && !isDying && keyStack.length > 0 && !currentReadingText) {
+  if (!isPlayingIntro && !isCharacterFalling && !isFading && !isDying && keyStack.length > 0 && !currentReadingText) {
     let dx = 0;
     let dy = 0;
 

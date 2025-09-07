@@ -59,6 +59,7 @@ function loadGame() {
   document.addEventListener('keyup', handleKeyUp);
   startIntro();
   requestAnimationFrame(animate);
+  new Joystick(document.getElementById('joystick'));
 }
 
 function changeSeason(seasonName) {
