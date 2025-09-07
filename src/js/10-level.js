@@ -31,10 +31,10 @@ function preRenderSeasonBackgrounds() {
     const backgroundTileName = 'grass'; // Default background tile
 
     const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
-    let backgroundColors = getColors(TILE_DATA[backgroundTileName].colors, seasonName);
+    let backgroundColors = getColors(TILE_DATA[backgroundTileName]._colors, seasonName);
 
     const plantTile = TILE_DATA['plant'].tiles[0];
-    let plantColors = getColors(TILE_DATA['plant'].colors, seasonName);
+    let plantColors = getColors(TILE_DATA['plant']._colors, seasonName);
 
     for (let y = 0; y < WORLD_HEIGHT; y++) {
       for (let x = 0; x < WORLD_WIDTH; x++) {

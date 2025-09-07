@@ -4,7 +4,7 @@ const DEATH_SPIN_INTERVAL = 100; // ms
 
 function drawLife() {
   const heartTile = TILE_DATA['heart'].tiles[0];
-  const heartColors = getColors(TILE_DATA['heart'].colors);
+  const heartColors = getColors(TILE_DATA['heart']._colors);
   for (let i = 0; i < characterMaxLife; ++i) {
     const y = 1 * zoomFactor; // Position the hearts at the top
     // and right of canvas

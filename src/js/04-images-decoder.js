@@ -10,7 +10,7 @@
  */
 function decodeRLE(rleString) {
   const START_CHAR_CODE = 'A'.charCodeAt(0); // First character code in the RLE string
-  const MAX_CHAR_PER_GROUP = 12; // colors per group
+  const MAX_CHAR_PER_GROUP = 12; // _colors per group
   const pixels = [];
 
   const imageWidth = parseInt(rleString.match(/^\d+/)[0], 10); // Extract the image width
@@ -74,7 +74,7 @@ function sliceIntoTiles(image2DArray, tileWidth, tileHeight) {
  * @returns {object} - An object containing the tiles of the sprite
  */
 function processSprite(imageKey) {
-  const rleString = TILE_DATA[imageKey].rle;
+  const rleString = TILE_DATA[imageKey]._rle;
   const pixels = decodeRLE(rleString);
   const image2DArray = convertTo2DArray(pixels.pixels, pixels.imageWidth);
 

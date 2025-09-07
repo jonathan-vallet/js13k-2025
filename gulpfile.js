@@ -16,6 +16,12 @@ const replacements = {
   gameBackgroundCanvas: 'gbc',
   gameCanvas: 'gc',
 
+  //save params
+  characterMaxLife: 'cML',
+  collectedCatsList: 'cCL',
+  currentSeason: 'cS',
+  availableSeasons: 'aS',
+
   // tile types
   grass: 'g',
   water: 'w',
@@ -42,19 +48,6 @@ const replacements = {
   summer: 'su',
   fall: 'fa',
   winter: 'wi',
-
-  // tile object properties
-  collisionPadding: '_cp',
-  isStatic: '_iS',
-  colors: '_c',
-  animationSpeed: '_aS',
-  moveSpeed: '_mS',
-  returningMoveSpeed: '_rS',
-  moveDirection: '_mD',
-  flipHorizontally: '_fH',
-  animationFrame: '_aF',
-  orientation: '_o',
-  isCollected: '_iC',
 };
 
 // Chemins de fichiers

@@ -34,6 +34,7 @@ function animate(ts) {
 
   // Un seul rendu par frame écran
   refreshCanvas();
+  updateIntro(frameMs, ts);
   handleGamepadInput();
   requestAnimationFrame(animate);
 }
@@ -45,25 +46,25 @@ function animate(ts) {
 function updateAnimations(deltaTime) {
   world.forEach((tile) => {
     // Checks tiles which have multiple frames to animate them
-    if (TILE_DATA[tile.tile].animationSpeed) {
+    if (TILE_DATA[tile.tile]._animationSpeed) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
-      const interval = TILE_DATA[tile.tile].animationSpeed;
+      const interval = TILE_DATA[tile.tile]._animationSpeed;
       if (tile.elapsed >= interval) {
         if (TILE_DATA[tile.tile].tiles.length < 2) {
-          tile.flipHorizontally = !tile.flipHorizontally;
+          tile._flipHorizontally = !tile._flipHorizontally;
         }
-        tile.animationFrame = (tile.animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
+        tile._animationFrame = (tile._animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
         tile.elapsed = 0;
       }
     }
 
     // Checks tiles which have a direction to move
-    let moveDirection = tile.moveDirection;
-    if (moveDirection) {
-      let { dx, dy } = getDirectionOffsets(moveDirection);
-      let moveSpeed = TILE_DATA[tile.tile][tile.isReturning ? 'returningMoveSpeed' : 'moveSpeed'] || 1;
-      let nextX = tile.x + (dx * moveSpeed) / deltaTime;
-      let nextY = tile.y + (dy * moveSpeed) / deltaTime;
+    let _moveDirection = tile._moveDirection;
+    if (_moveDirection) {
+      let { dx, dy } = getDirectionOffsets(_moveDirection);
+      let _moveSpeed = TILE_DATA[tile.tile][tile.isReturning ? '_returningMoveSpeed' : '_moveSpeed'] || 1;
+      let nextX = tile.x + (dx * _moveSpeed) / deltaTime;
+      let nextY = tile.y + (dy * _moveSpeed) / deltaTime;
 
       tile.x = nextX;
       tile.y = nextY;
@@ -71,7 +72,7 @@ function updateAnimations(deltaTime) {
       let destinationTile = getTileAtDestination(tile.tile, nextX * TILE_SIZE, nextY * TILE_SIZE, false);
       if (destinationTile) {
         if (tile.tile === 'fireball') {
-          tile.moveDirection = null; // Stop moving if blocked
+          tile._moveDirection = null; // Stop moving if blocked
           // Remove fireball from the world
           removeTile('fireball', tile.x, tile.y);
           if (['bush', 'flower'].includes(destinationTile.tile)) {
@@ -86,7 +87,7 @@ function updateAnimations(deltaTime) {
           }
         }
         if (tile.tile === 'seeker') {
-          tile.moveDirection = null; // Stop moving if blocked
+          tile._moveDirection = null; // Stop moving if blocked
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
           // Stops sound
@@ -96,16 +97,16 @@ function updateAnimations(deltaTime) {
           if (!tile.isReturning) {
             tile.isReturning = true;
             // Moves in opposite direction
-            tile.moveDirection = getOppositeDirection(tile.moveDirection);
+            tile._moveDirection = getOppositeDirection(tile._moveDirection);
           } else {
             tile.isReturning = false;
-            tile.moveDirection = null;
+            tile._moveDirection = null;
           }
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
         }
         if (['skeleton', 'mommy'].includes(tile.tile)) {
-          tile.moveDirection = getOppositeDirection(tile.moveDirection);
+          tile._moveDirection = getOppositeDirection(tile._moveDirection);
           tile.x = Math.round(tile.x);
           tile.y = Math.round(tile.y);
         }
@@ -217,7 +218,6 @@ function updateAnimations(deltaTime) {
 
       tryPerformCharacterAction();
 
-      // Mets à jour l’animation du personnage
       updateCharacterWalkAnimation(deltaTime);
     }
   }

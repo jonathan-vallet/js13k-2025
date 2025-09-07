@@ -44,19 +44,20 @@ function loadGame() {
   setZoomFactor();
   preloadSFX();
   initMusic();
-  seasonList.forEach((season) => {
-    generateCollisionMapForSeason(season);
-  });
   setTrapList();
   setEnemyList();
   loadInitialState();
   addSpecificWorldItems();
+  seasonList.forEach((season) => {
+    generateCollisionMapForSeason(season);
+  });
   preRenderSeasonBackgrounds();
   drawLevelBackground();
   currentSeason = savedData.currentSeason;
   playSeasonMusic();
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
+  startIntro();
   requestAnimationFrame(animate);
 }
 
@@ -85,7 +86,8 @@ function saveGame() {
 }
 
 function loadInitialState() {
-  savedData = { ...initialData, ...loadSaveData() };
+  // savedData = { ...initialData, ...loadSaveData() };
+  savedData = initialData;
   ({ characterX, characterY, currentSeason, characterMaxLife, availableSeasons } = savedData);
   characterLife = characterMaxLife;
 }

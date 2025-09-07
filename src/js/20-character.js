@@ -14,18 +14,24 @@ let characterSpeed = 1; // en pixels par frame
 let isCharacterMoving;
 let characterMoveFrame = 0; // Frame of the character sprite to show
 let characterMoveElapsedTime;
+let isCharacterDisplayed = true;
 
 /**
  * Draw the character sprite on the canvas
  */
 function drawCharacter() {
+  if (!isCharacterDisplayed) {
+    // during intro, character is not shown at every frame
+    return;
+  }
+
   const { offsetX, offsetY } = getCameraOffset();
 
   const drawX = characterX - offsetX * TILE_SIZE;
   const drawY = characterY - offsetY * TILE_SIZE;
 
   const characterTile = TILE_DATA['character'].tiles[characterMoveFrame];
-  let characterColors = getColors(TILE_DATA['character'].colors);
+  let characterColors = getColors(TILE_DATA['character']._colors);
 
   if (isInvulnerable) {
     const now = performance.now();
@@ -39,7 +45,7 @@ function drawCharacter() {
   ctx.translate(drawX, drawY);
   drawTile(characterTile, characterColors, 0, 0, {
     scale: characterScale,
-    flipHorizontally: characterFlipHorizontally,
+    _flipHorizontally: characterFlipHorizontally,
   });
   ctx.restore();
 }
@@ -57,7 +63,7 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   const map = collisionMaps[currentSeason];
 
   // 1) Détection de blocage via AABB + tuiles recouvertes
-  const blockBox = getAABB(tileName, x, y); // inclut le collisionPadding du tileName
+  const blockBox = getAABB(tileName, x, y); // inclut le _collisionPadding du tileName
   for (const { x: tx, y: ty } of getTilesInAABB(blockBox)) {
     if (tx < 0 || ty < 0 || tx >= WORLD_WIDTH || ty >= WORLD_HEIGHT) return false;
     const tile = map[ty][tx];
@@ -72,7 +78,7 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   const fallBox = {
     l: x + HOLE_PADDING[3],
     r: x + TILE_SIZE - HOLE_PADDING[1],
-    t: y + HOLE_PADDING[0] + TILE_SIZE / 3,
+    t: y + HOLE_PADDING[0] + (TILE_SIZE / 6) * 5,
     b: y + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE / 2,
   };
 
@@ -145,10 +151,10 @@ function tryPerformCharacterAction() {
   for (const { x: tileX, y: tileY } of getTilesInAABB(interactBox)) {
     // Cat tile found: collect it
     let catTile = getTileAt(tileX, tileY, ['cat']);
-    if (catTile && !catTile.isCollected) {
+    if (catTile && !catTile._isCollected) {
       catTile.x = catTile.cx;
       catTile.y = catTile.cy;
-      catTile.isCollected = true;
+      catTile._isCollected = true;
       removeTile('signpanel', catTile.cx, catTile.cy);
       savedData.collectedCatsList.push(catTile.i);
     }
@@ -159,7 +165,7 @@ function tryPerformCharacterAction() {
       changeSeason(unlockedSeason);
       availableSeasons.push(unlockedSeason);
       removeTile('orb', tileX, tileY);
-      currentReadingText = tile.text;
+      startReadingText(tile.text);
     }
     // Sets new respawn point when checkpoint is reached
     if (getTileAt(tileX, tileY, ['checkpoint'])) {
@@ -168,17 +174,17 @@ function tryPerformCharacterAction() {
 
     // Checks if a trap can be triggered
     TRAP_LIST.forEach((trap) => {
-      if (trap.moveDirection) {
+      if (trap._moveDirection) {
         return;
       }
 
       // Triggers trap if character is at same row or line, and no obstacle is in between
       if (trap.x === tileX && isRowClear(tileX, tileY, trap.y)) {
-        trap.moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
+        trap._moveDirection = tileY < trap.y ? ORIENTATION_UP : ORIENTATION_DOWN;
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
-        trap.moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
+        trap._moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
       }
-      if (trap.tile === 'seeker' && trap.moveDirection) {
+      if (trap.tile === 'seeker' && trap._moveDirection) {
         playActionSound('seeker', true);
       }
     });
@@ -191,7 +197,7 @@ function launchFireball() {
   let y = characterY / TILE_SIZE - (dy > 0 ? -0.8 : 0) + Math.abs(dx) * 0.5;
 
   let fireballTile = addTile('fireball', x, y);
-  fireballTile.moveDirection = characterDirection;
+  fireballTile._moveDirection = characterDirection;
   return true;
 }
 
@@ -203,7 +209,7 @@ function tryReadSign() {
   const tileY = getTileCoord(characterY + TILE_SIZE / 4);
 
   const tile = getTileAt(tileX, tileY, ['signpanel']);
-  currentReadingText = tile?.text;
+  startReadingText(tile?.text);
   return !!currentReadingText;
 }
 

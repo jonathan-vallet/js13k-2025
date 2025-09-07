@@ -6,7 +6,7 @@
  * @returns {Object} - The AABB object with left, right, top, and bottom properties
  */
 function getAABB(tileName, px, py) {
-  const padding = TILE_DATA[tileName].collisionPadding || [0, 0, 0, 0];
+  const padding = TILE_DATA[tileName]._collisionPadding || [0, 0, 0, 0];
   return {
     l: px + padding[3],
     r: px + TILE_SIZE - padding[1],
@@ -56,7 +56,7 @@ function checkDamages() {
   const charBox = getAABB('character', characterX, characterY);
 
   for (const trap of TRAP_LIST) {
-    if (!trap.moveDirection) {
+    if (!trap._moveDirection) {
       continue; // Skip inactive traps
     }
 
@@ -78,7 +78,7 @@ function checkDamages() {
 
     // Spikes don't deal damage at it's first  frame
     const spikeTile = getTileAt(tx, ty);
-    if (!spikeTile || (spikeTile.animationFrame || 0) === 0) {
+    if (!spikeTile || (spikeTile._animationFrame || 0) === 0) {
       continue;
     }
 

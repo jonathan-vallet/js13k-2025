@@ -20,6 +20,7 @@ function playMusic(wave, loop = false) {
   musicAudio.onloadedmetadata = () => {
     // si la position est plus grande que la durée, on module
     musicAudio.currentTime = (currentPos + (performance.now() - musicChangeStartTime) / 100) % musicAudio.duration;
+    musicAudio.volume = isSoundActive ? 0.2 : 0;
     musicAudio.play();
   };
 }

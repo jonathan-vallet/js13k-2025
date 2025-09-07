@@ -27,11 +27,11 @@ function refreshCanvas() {
     );
     ctx.restore();
     writeText({
-      text: currentReadingText,
-      x: 24,
-      y: 9,
-      scale: 2,
-      color: '#fff',
+      _text: currentReadingText,
+      _x: 24,
+      _y: 9,
+      _scale: 2,
+      _color: '#fff',
     });
   }
 }
@@ -93,36 +93,33 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     }
 
     let displayedTile = getSeasonalTile(element.tile);
-    let colors;
+    let _colors;
 
     if (!displayedTile) {
       return;
     }
-    if (element.tile !== displayedTile) {
-      element.animationFrame = 0; // Reset frame if the tile is seasonal
-      element.orientation = ORIENTATION_UP; // Ensure orientation is set
-    }
+
     const tile = TILE_DATA[displayedTile];
 
     // Draw only static or dynamic tiles, depending on isDrawingStatic parameter
-    if ((isDrawingStatic && !tile.isStatic) || (!isDrawingStatic && tile.isStatic)) {
+    if ((isDrawingStatic && !tile._isStatic) || (!isDrawingStatic && tile._isStatic)) {
       return;
     }
 
     // Flip the cat based on the character's position to make it face the right direction
     if (displayedTile === 'cat') {
-      element.flipHorizontally = characterX / TILE_SIZE < element.x;
+      element._flipHorizontally = characterX / TILE_SIZE < element.x;
     }
 
     if (['water', 'road', 'ice'].includes(displayedTile)) {
       const { type, orientation } = getTileTypeAndOrientation(element);
-      element.animationFrame = type;
+      element._animationFrame = type;
       element.orientation = orientation;
     }
 
     if (['wall', 'snow'].includes(element.tile)) {
       const { type, orientation } = getWallTypeAndOrientation(element);
-      element.animationFrame = type;
+      element._animationFrame = type;
       element.orientation = orientation;
       const belowY = element.y + 1;
       if (!getTileAt(element.x, belowY)) {
@@ -131,53 +128,52 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
 
         // Choose the thickness frame based on the wall's surroundings
         let thicknessFrameIndex = 5; // default segment (left+right)
-        let flipHorizontally = false;
+        let _flipHorizontally = false;
 
         if (!leftWall && rightWall) {
           thicknessFrameIndex = 4; // left corner
         } else if (leftWall && !rightWall) {
           thicknessFrameIndex = 4; // right corner = left corner + mirror
-          flipHorizontally = true;
+          _flipHorizontally = true;
         } else if (!leftWall && !rightWall) {
           // isolated: can keep 5 (small segment), or 4 depending on your art.
           thicknessFrameIndex = 6;
         }
         const thicknessFrame = tile.tiles[thicknessFrameIndex];
-        let colors = getColors(tile.colors);
-        drawTile(thicknessFrame, colors, element.x, belowY, {
+        drawTile(thicknessFrame, getColors(tile._colors), element.x, belowY, {
           orientation: ORIENTATION_UP,
-          flipHorizontally,
+          _flipHorizontally,
           context,
         });
       }
     }
 
-    const frame = tile.tiles[element.animationFrame || 0]; // Get the current frame
-    colors = getColors(element.color || TILE_DATA[displayedTile].colors);
+    const frame = tile.tiles[element._animationFrame || 0]; // Get the current frame
+    _colors = getColors(element.color || TILE_DATA[displayedTile]._colors);
 
     if (element.tile === 'orb') {
       // Orb color is orb's season
       const orbSeason = getTileAt(element.x, element.y, ['orb']).season;
-      colors = getColors(COLOR_SETS[orbSeason]);
+      _colors = getColors(COLOR_SETS[orbSeason]);
     }
 
     const x = element.x;
     const y = element.y;
     const orientation = element.orientation || ORIENTATION_UP;
     const scale = element.scale || 1;
-    const flipHorizontally = element.flipHorizontally;
-    drawTile(frame, colors, x, y, { orientation, scale, context, flipHorizontally });
+    const _flipHorizontally = element._flipHorizontally;
+    drawTile(frame, _colors, x, y, { orientation, scale, context, _flipHorizontally });
   });
 }
 
 /**
- * Get the colors for a tile, taking into account the current season if indexed number, else return the color as is
- * @param {*} colors
+ * Get the _colors for a tile, taking into account the current season if indexed number, else return the color as is
+ * @param {*} _colors
  * @returns
  */
-function getColors(colors, seasonName = currentSeason) {
-  // if colors are numbers, get their corresponding color from the season
-  return colors.map((colorIndex) => '#' + (COLOR_SETS[seasonName][colorIndex] || colorIndex));
+function getColors(_colors, seasonName = currentSeason) {
+  // if _colors are numbers, get their corresponding color from the season
+  return _colors.map((colorIndex) => '#' + (COLOR_SETS[seasonName][colorIndex] || colorIndex));
 }
 
 function getSeasonalTile(tileName, season = currentSeason) {
@@ -198,21 +194,21 @@ function getSeasonalTile(tileName, season = currentSeason) {
 /**
  * Draw a tile on the canvas at the specified position, color, and optional transformations
  * @param {number[][]} tile - The tile to draw (required)
- * @param {string[]} colors - The colors for the tile (required)
+ * @param {string[]} _colors - The _colors for the tile (required)
  * @param {number} x - The x-coordinate of the tile (required)
  * @param {number} y - The y-coordinate of the tile (required)
- * @param {Object} [options={}] - Optional parameters: orientation, scale, context, flipHorizontally
+ * @param {Object} [options={}] - Optional parameters: orientation, scale, context, _flipHorizontally
  * @param {number} [options.orientation=ORIENTATION_UP] - The orientation of the tile
  * @param {number} [options.scale=1] - The scale to apply to the tile
  * @param {CanvasRenderingContext2D} [options.context=ctx] - The canvas context to draw on
- * @param {boolean} [options.flipHorizontally=false] - Whether to flip the tile horizontally
+ * @param {boolean} [options._flipHorizontally=false] - Whether to flip the tile horizontally
  */
-function drawTile(tile, colors, x, y, options = {}) {
+function drawTile(tile, _colors, x, y, options = {}) {
   const {
     orientation = ORIENTATION_UP,
     scale = tile.scale || 1,
     context = ctx,
-    flipHorizontally = false,
+    _flipHorizontally = false,
     alpha = 1,
   } = options;
   context.save();
@@ -222,7 +218,7 @@ function drawTile(tile, colors, x, y, options = {}) {
 
   // Apply horizontal flip if necessary
   let scaleDirection = 1;
-  if (flipHorizontally) {
+  if (_flipHorizontally) {
     scaleDirection = -1;
   }
 
@@ -237,7 +233,7 @@ function drawTile(tile, colors, x, y, options = {}) {
       const pixelValue = tile[tileY][tileX];
       if (pixelValue > 0) {
         // Skip transparent pixels (0)
-        context.fillStyle = colors[pixelValue - 1];
+        context.fillStyle = _colors[pixelValue - 1];
         // Draw the pixel
         context.fillRect(tileX, tileY, 1, 1);
       }

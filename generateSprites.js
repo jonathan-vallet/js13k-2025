@@ -6,7 +6,7 @@ const { PNG } = require('pngjs');
 const INPUT_DIR = './assets/images'; // Replace with your actual assets folder
 const OUTPUT_FILE = './assets/sprites.json';
 const START_CHAR_CODE = 'A'.charCodeAt(0); // First character in the range
-const COLORS_PER_GROUP = 12; // colors per group (A to L for transparent, M to X for black, etc.)
+const COLORS_PER_GROUP = 12; // _colors per group (A to L for transparent, M to X for black, etc.)
 
 // Function to encode a PNG file to a RLE string
 function encodePngToRLE(filePath) {

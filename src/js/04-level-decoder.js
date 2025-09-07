@@ -10,9 +10,9 @@ function decodeLevel(worldLayers) {
       for (let i = 0; i < count; i++) {
         const x = tileIndex % WORLD_WIDTH;
         const y = (tileIndex / WORLD_WIDTH) | 0;
-        const moveDirection = TILE_DATA[layerName]?.moveDirection || null;
+        const _moveDirection = TILE_DATA[layerName]?._moveDirection || null;
         if (isFilled) {
-          worldData.push({ tile: layerName, x, y, moveDirection });
+          worldData.push({ tile: layerName, x, y, _moveDirection });
         }
         tileIndex++;
       }

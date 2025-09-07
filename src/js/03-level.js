@@ -64,7 +64,7 @@ function addSpecificWorldItems() {
   catList.forEach((cat, index) => {
     // If cat was already collected, add it as collected (in its corner)
     if (savedData.collectedCatsList.includes(index)) {
-      world.push({ tile: 'cat', x: cat.cx, y: cat.cy, isCollected: true });
+      world.push({ tile: 'cat', x: cat.cx, y: cat.cy, _isCollected: true });
     } else {
       world.push({ tile: 'cat', x: cat.x, y: cat.y, cx: cat.cx, cy: cat.cy, i: index });
       addSign(cat.cx, cat.cy, `${cat.text}`);

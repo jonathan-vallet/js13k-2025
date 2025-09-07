@@ -15,8 +15,8 @@ let lastTimestamp = 0;
 let accumulatedTime = 0;
 
 let initialData = {
-  characterX: 49 * TILE_SIZE,
-  characterY: 21 * TILE_SIZE,
+  characterX: 784, // 49 * TILE_SIZE
+  characterY: 336, // 21 * TILE_SIZE
   currentSeason: 'summer',
   characterMaxLife: 3,
   availableSeasons,
@@ -25,7 +25,7 @@ let initialData = {
 let savedData;
 
 let characterMaxLife;
-let characterLife = characterMaxLife;
+let characterLife;
 let isCharacterFalling = false;
 let isInvulnerable = false;
 let invulnerabilityStartTime = 0; // Start time for invulnerability
@@ -44,6 +44,7 @@ let fallDx = 0;
 let fallDy = 0;
 
 let currentReadingText = '';
+let currentReadingStartTime = 0; // ms from performance.now()
 let seasonMusicList = {};
 
 /**

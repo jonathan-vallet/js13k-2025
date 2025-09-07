@@ -33,12 +33,12 @@ const pixelArtLetters = {
   V: '1000110001010100101000100',
   W: '1010110101101010101001010',
   // X: '10011001011010011001',
-  // Y: '10011001111100011110',
+  Y: '10011001111100011110',
   // Z: '11110001011010001111',
   ' ': '000000000000000',
   ',': '000000000100100',
   // '.': '000000000000001',
-  // '!': '010010010000010',
+  '!': '010010010000010',
   // '/': '0000100010001000100010000',
   // ':': '000010000010000',
   // x: '000000101010101',
@@ -56,8 +56,8 @@ function writeTextLine(opt) {
   const LETTER_HEIGHT = 5;
   let letterX = 0;
 
-  for (let i = 0; i < opt.text.length; i++) {
-    const char = opt.text.charAt(i);
+  for (let i = 0; i < opt._text.length; i++) {
+    const char = opt._text.charAt(i);
     const letter = pixelArtLetters[char];
     const letterWidth = letter.length / LETTER_HEIGHT; // Calculate the width based on the total length divided by the height
     for (let y = 0; y < LETTER_HEIGHT; y++) {
@@ -65,10 +65,10 @@ function writeTextLine(opt) {
         const pixelIndex = y * letterWidth + x;
         if (letter[pixelIndex] === '1') {
           opt.ctx.rect(
-            (opt.x + (x + letterX + i)) * zoomFactor * opt.scale,
-            (opt.y + y) * zoomFactor * opt.scale,
-            zoomFactor * opt.scale,
-            zoomFactor * opt.scale,
+            (opt._x + (x + letterX + i)) * zoomFactor * opt._scale,
+            (opt._y + y) * zoomFactor * opt._scale,
+            zoomFactor * opt._scale,
+            zoomFactor * opt._scale,
           );
         }
       }
@@ -83,31 +83,39 @@ function writeTextLine(opt) {
  */
 function writeText(options) {
   const defaultOptions = {
-    x: 0,
-    y: 0,
-    text: '',
-    color: '#fff',
-    scale: 1,
+    _x: 0,
+    _y: 0,
+    _text: '',
+    _color: '#fff',
+    _scale: 2,
   };
+  const elapsed = performance.now() - currentReadingStartTime;
+  const displayedCharacterNumber = (elapsed * 0.05) | 0;
   const opt = { ...defaultOptions, ...options }; // Merge with defaults
-  const lines = opt.text.split('|');
+  const lines = opt._text.slice(0, displayedCharacterNumber).split('|');
 
   const letterSize = 8;
   // Begin drawing
   ctx.beginPath();
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const x = opt.x;
-    const y = opt.y + letterSize * i;
     writeTextLine({
       ctx,
-      x,
-      y,
-      text: line,
-      scale: opt.scale,
+      _x: opt._x,
+      _y: opt._y + letterSize * i,
+      _text: line,
+      _scale: opt._scale,
     });
   }
 
-  ctx.fillStyle = opt.color;
+  ctx.fillStyle = opt._color;
   ctx.fill();
+}
+
+// Call this when you set/replace the text (e.g., in your intro step apply)
+function startReadingText(text) {
+  console.log('startReadingText', { text });
+  currentReadingText = text || '';
+  playActionSound('text');
+  currentReadingStartTime = performance.now();
 }
