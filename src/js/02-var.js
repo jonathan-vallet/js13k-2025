@@ -53,10 +53,11 @@ let seasonMusicList = {};
  * @returns {number} - The opposite direction
  */
 function getOppositeDirection(direction) {
-  return { 1: 3, 2: 4, 3: 1, 4: 2 }[direction];
+  // If direction is odd (1 or 3), toggle bit 1 (XOR with 2), else toggle bit 2 (XOR with 6)
+  return direction & 1 ? direction ^ 2 : direction ^ 6;
 }
 
 let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
 
-let isSoundActive = getLocalStorage('isSoundActive') === false ? false : true;
+let isSoundActive = true;

@@ -47,9 +47,14 @@ function addTile(tile, x, y, options = {}) {
   return world[options.isUnder ? 0 : world.length - 1];
 }
 
+/**
+ * Get the direction offsets for movement
+ * @param {number} direction - The direction to get offsets for
+ * @returns {object} - The x and y offsets for the direction
+ */
 function getDirectionOffsets(direction) {
   return {
-    dx: direction === ORIENTATION_RIGHT ? 1 : direction === ORIENTATION_LEFT ? -1 : 0,
-    dy: direction === ORIENTATION_DOWN ? 1 : direction === ORIENTATION_UP ? -1 : 0,
+    dx: (direction === ORIENTATION_RIGHT) - (direction === ORIENTATION_LEFT),
+    dy: (direction === ORIENTATION_DOWN) - (direction === ORIENTATION_UP),
   };
 }

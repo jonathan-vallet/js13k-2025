@@ -44,10 +44,10 @@ const replacements = {
   rock: 'r',
   snow: 'sn',
   // // root: 'r',
-  spring: 'sp',
-  summer: 'su',
-  fall: 'fa',
-  winter: 'wi',
+  // spring: 'sp',
+  // summer: 'su',
+  // fall: 'fa',
+  // winter: 'wi',
 };
 
 // Chemins de fichiers

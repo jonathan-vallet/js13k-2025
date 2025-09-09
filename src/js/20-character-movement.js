@@ -51,8 +51,6 @@ function mapKeyToDirection(key) {
     case 'Enter':
     case ' ':
       return 'action';
-    case 'Escape':
-      return 'menu';
     default:
       return key;
   }

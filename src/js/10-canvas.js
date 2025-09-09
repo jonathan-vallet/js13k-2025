@@ -8,16 +8,18 @@
  */
 function refreshCanvas() {
   ctx.imageSmoothingEnabled = false;
+
+  // If not in menu, draw the game
   drawLevel();
   drawCharacter();
   checkDamages();
   drawLife();
+  writeText({ _text: currentSeason.toUpperCase(), _x: 5, _y: 5, _scale: 1.2, _color: '#000' });
   if (isDying) {
     runDieAnimation();
   }
   updateFade();
   if (currentReadingText) {
-    ctx.save();
     ctx.fillStyle = '#000';
     ctx.fillRect(
       40 * zoomFactor,
@@ -25,7 +27,6 @@ function refreshCanvas() {
       DISPLAY_WIDTH * TILE_SIZE * zoomFactor - 80 * zoomFactor,
       40 * zoomFactor,
     );
-    ctx.restore();
     writeText({
       _text: currentReadingText,
       _x: 24,
@@ -111,7 +112,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
       element._flipHorizontally = characterX / TILE_SIZE < element.x;
     }
 
-    if (['water', 'road', 'ice'].includes(displayedTile)) {
+    if (['water', 'ice'].includes(displayedTile)) {
       const { type, orientation } = getTileTypeAndOrientation(element);
       element._animationFrame = type;
       element.orientation = orientation;
@@ -149,12 +150,11 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     }
 
     const frame = tile.tiles[element._animationFrame || 0]; // Get the current frame
-    _colors = getColors(element.color || TILE_DATA[displayedTile]._colors);
+    _colors = getColors(TILE_DATA[displayedTile]._colors);
 
     if (element.tile === 'orb') {
       // Orb color is orb's season
-      const orbSeason = getTileAt(element.x, element.y, ['orb']).season;
-      _colors = getColors(COLOR_SETS[orbSeason]);
+      _colors = getColors(TILE_DATA[displayedTile]._colors, element.season);
     }
 
     const x = element.x;
@@ -177,14 +177,6 @@ function getColors(_colors, seasonName = currentSeason) {
 }
 
 function getSeasonalTile(tileName, season = currentSeason) {
-  const SEASON_REPLACE = {
-    fall: { hole: 'leaves' },
-    winter: { water: 'ice' },
-    summer: { crack: 'liana' },
-    spring: { stoneflower: 'flower' },
-  };
-  const HIDE_UNLESS = { snow: 'winter', root: 'summer', mushroom: 'fall' };
-
   if (HIDE_UNLESS[tileName] && HIDE_UNLESS[tileName] !== season) {
     return '';
   }
@@ -251,7 +243,7 @@ function drawTile(tile, _colors, x, y, options = {}) {
 function getTileTypeAndOrientation(element) {
   let x = element.x;
   let y = element.y;
-  const isSameTile = (tx, ty) => world.some((e) => e.x === tx && e.y === ty && e.tile === element.tile);
+  const isSameTile = (tx, ty) => !!getTileAt(tx, ty, [element.tile]);
 
   const n = isSameTile(x, y - 1);
   const s = isSameTile(x, y + 1);
@@ -323,7 +315,7 @@ function getTileTypeAndOrientation(element) {
 
 function getWallTypeAndOrientation(element) {
   const { x, y, tile } = element;
-  const isSame = (tx, ty) => world.some((e) => e.x === tx && e.y === ty && e.tile === tile);
+  const isSame = (tx, ty) => !!getTileAt(tx, ty, [tile]);
 
   const n = isSame(x, y - 1) ? 1 : 0;
   const e = isSame(x + 1, y) ? 1 : 0;

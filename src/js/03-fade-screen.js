@@ -21,11 +21,10 @@ function updateFade() {
 
   let alpha = fadePhase === 1 ? p : 1 - p;
 
-  ctx.save();
   ctx.globalAlpha = alpha;
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.restore();
+  ctx.globalAlpha = 1;
   // arrivé en fin de phase
   if (p >= 1) {
     if (fadePhase === 1) {

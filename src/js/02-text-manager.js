@@ -36,7 +36,6 @@ const pixelArtLetters = {
   Y: '10011001111100011110',
   // Z: '11110001011010001111',
   ' ': '000000000000000',
-  ',': '000000000100100',
   // '.': '000000000000001',
   '!': '010010010000010',
   // '/': '0000100010001000100010000',
@@ -114,8 +113,7 @@ function writeText(options) {
 
 // Call this when you set/replace the text (e.g., in your intro step apply)
 function startReadingText(text) {
-  console.log('startReadingText', { text });
-  currentReadingText = text || '';
+  currentReadingText = text;
   playActionSound('text');
   currentReadingStartTime = performance.now();
 }

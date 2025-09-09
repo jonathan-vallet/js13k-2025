@@ -6,7 +6,6 @@ const gamepadButtonMapping = {
   14: 'left', // D-Pad Left
   15: 'right', // D-Pad Right
   0: 'action', // Bouton A
-  9: 'menu', // Start button
 };
 
 // Check for gamepad connection

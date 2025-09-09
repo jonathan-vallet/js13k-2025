@@ -186,19 +186,6 @@ let soundList = {
     endPattern: 0, // End pattern
     numChannels: 1, // Number of channels
   },
-  key: {
-    songData: [
-      {
-        i: [0, 255, 152, 0, 0, 255, 152, 12, 0, 0, 12, 17, 28, 0, 0, 0, 0, 0, 0, 0, 2, 255, 0, 0, 32, 47, 3, 0, 0],
-        p: [1],
-        c: [{ n: [135, 147], f: [] }],
-      },
-    ],
-    rowLen: 7350,
-    patternLen: 32,
-    endPattern: 0,
-    numChannels: 1,
-  },
 };
 
 let audioElements = {};

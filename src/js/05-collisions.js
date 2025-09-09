@@ -20,10 +20,10 @@ function getTileAABB(tile) {
 }
 
 function getTilesInAABB(box) {
-  const minX = clamp(getTileCoord(box.l), 0, WORLD_WIDTH - 1);
-  const maxX = clamp(getTileCoord(Math.max(0, box.r - 1)), 0, WORLD_WIDTH - 1);
-  const minY = clamp(getTileCoord(box.t), 0, WORLD_HEIGHT - 1);
-  const maxY = clamp(getTileCoord(Math.max(0, box.b - 1)), 0, WORLD_HEIGHT - 1);
+  const minX = clamp((box.l / TILE_SIZE) | 0, 0, WORLD_WIDTH - 1);
+  const maxX = clamp(((box.r - 1) / TILE_SIZE) | 0, 0, WORLD_WIDTH - 1);
+  const minY = clamp((box.t / TILE_SIZE) | 0, 0, WORLD_HEIGHT - 1);
+  const maxY = clamp(((box.b - 1) / TILE_SIZE) | 0, 0, WORLD_HEIGHT - 1);
 
   const out = [];
   for (let y = minY; y <= maxY; y++) {

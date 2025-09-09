@@ -57,9 +57,7 @@ function loadGame() {
   playSeasonMusic();
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
-  startIntro();
   requestAnimationFrame(animate);
-  new Joystick(document.getElementById('joystick'));
 }
 
 function changeSeason(seasonName) {
@@ -83,19 +81,18 @@ function saveGame() {
     availableSeasons,
     collectedCatsList: savedData.collectedCatsList,
   };
-  localStorage.setItem('witchcats', JSON.stringify(savedData));
+  localStorage.setItem('witchcat', JSON.stringify(savedData));
 }
 
-function loadInitialState() {
-  // savedData = { ...initialData, ...loadSaveData() };
-  savedData = initialData;
+function loadInitialState(isNew = false) {
+  savedData = isNew ? { ...initialData } : { ...initialData, ...loadSaveData() };
   ({ characterX, characterY, currentSeason, characterMaxLife, availableSeasons } = savedData);
   characterLife = characterMaxLife;
 }
 
 function loadSaveData() {
   try {
-    return JSON.parse(localStorage.getItem('witchcats')) || {};
+    return JSON.parse(localStorage.getItem('witchcat')) || {};
   } catch {
     return {};
   }

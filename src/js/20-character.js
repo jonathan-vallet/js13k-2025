@@ -78,10 +78,9 @@ function getTileAtDestination(tileName, x, y, canFall = true) {
   const fallBox = {
     l: x + HOLE_PADDING[3],
     r: x + TILE_SIZE - HOLE_PADDING[1],
-    t: y + HOLE_PADDING[0] + (TILE_SIZE / 5) * 4,
-    b: y + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE / 2,
+    t: y + HOLE_PADDING[0] + TILE_SIZE * 0.8,
+    b: y + TILE_SIZE - HOLE_PADDING[2] + TILE_SIZE * 0.8,
   };
-
   for (const { x: tx, y: ty } of getTilesInAABB(fallBox)) {
     if (tx < 0 || ty < 0 || tx >= WORLD_WIDTH || ty >= WORLD_HEIGHT) continue;
     const tile = map[ty][tx];
@@ -184,7 +183,7 @@ function tryPerformCharacterAction() {
       } else if (trap.y === tileY && isLineClear(tileY, tileX, trap.x)) {
         trap._moveDirection = tileX < trap.x ? ORIENTATION_LEFT : ORIENTATION_RIGHT;
       }
-      if (trap.tile === 'seeker' && trap._moveDirection) {
+      if (trap._moveDirection) {
         playActionSound('seeker', true);
       }
     });
@@ -209,7 +208,9 @@ function tryReadSign() {
   const tileY = getTileCoord(characterY + TILE_SIZE / 4);
 
   const tile = getTileAt(tileX, tileY, ['signpanel']);
-  startReadingText(tile?.text);
+  if (tile?.text) {
+    startReadingText(tile?.text);
+  }
   return !!currentReadingText;
 }
 

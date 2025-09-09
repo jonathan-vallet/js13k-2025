@@ -1,9 +1,3 @@
-let setLocalStorage = (key, value) => localStorage.setItem(key, value);
-let getLocalStorage = (key, defaultValue = null) => {
-  const value = localStorage.getItem(key);
-  return value ? JSON.parse(value) : defaultValue;
-};
-
 function clamp(value, minValue, maxValue) {
   return Math.max(minValue, Math.min(maxValue, value));
 }
@@ -29,7 +23,7 @@ let COLOR_SETS = {
     'c89132',
     'e4b000',
     'e4ce00',
-    'e4ce00',
+    'ffe224',
     '6e6e71', // water
     '91897f', // water
   ],
@@ -53,6 +47,7 @@ let COLOR_SETS = {
     'cfd3e1', // water (ice)
   ],
   dungeon: ['0d1b2a', '5a5a7c', '73849c', '3b2e72'],
+  trap: ['0d1b2a', '73849c', 'c2e8f7', '3b2e72'],
 };
 
 // Orientation constants
@@ -68,8 +63,8 @@ const TILE_DATA = {
     _colors: [2, 4],
   },
   plant: {
-    _rle: '16YL]E[EYAZCYgYE\\AYfAfYCYCZgYfAYA[CYeA[AYM[AMBYAfYAZMAZAYMBYAeBYMBYBZMBMBYMCYB^OCMYA[B[MbCZN^AZCYNZDZAYMBYMZDZCYMBMAYCZAZBMHZA',
-    _colors: [1, 2, 5],
+    _rle: '16B[EPBMB[AMfBRfCfAeCMBeBeBeBeMYCMfAeMAMfRAMfNBPAMAMBOENfAMAZNCZAfAeAZE[AeBeMYBfBZBMfNBfAeAYNBOANeBeNBfAYAYANfNBeBeBYAQCfAeMAYPANBMfNAYJOC',
+    _colors: [2, 4, 5],
   },
   water: {
     _rle: '64LLINYfddZLAMHNCMFMYfddZINBPCOCOFMfddZGPCPCNBM[PCMeddZHPBM[MBMYN`Oedd[DNCMZMAMYgMAMpgdd[CNYOhMjMpgdd\\CMZnddddDMhdddd_EMeddddaBOeddddbCNeddddbEMddddbFMddddaNEMdddd`Sdddda',
@@ -99,13 +94,13 @@ const TILE_DATA = {
     _isStatic: true,
   },
   leaves: {
-    _rle: '16M[R]MYN]MYP[MYNZMYNYMZM[MYMYMYMYM[NYMYN\\NZMZPYP[N^NYM_M[NYNZPZNYMYNZNYM_N[MYNYMZN_NZMYMYNZN^MYNYMZMYMYMYM\\NZMYNYNYMYM\\P[NZO_N[M',
-    _colors: [4, 2],
+    _rle: '16eYPeSf[OfNhMeMYMfNYMfMZQeMYOeMZQeMeYPZNfMgYMhOfYQfMeSfNfMeYNhMgMgYNfMYNePeYOfZMeNfSZNeMeMeYNfTf[MfYNgOeZMgYMgYMePgYNfYNfT[Ne',
+    _colors: [1, 2, 4],
     _isStatic: true,
   },
   bush: {
-    _rle: '16LKNGOCMZMCPZMAM\\MAMZN[N\\N[NYeZMYNYMZeYNYfZMZMZfYN[eYMZMYfZMBQfQCM[ePe[MAMZgMfMgZN[fYfYf[N\\MYfYM\\S\\REM\\MKPF',
-    _colors: ['000', 1, 2, 3],
+    _rle: '16LEPFPBMeZMrBM[MBMe[MrM\\MqAMfYqPrfMqBNqMYfYMqNrAMZMYhYMqYMqAMeYMjMYeMqAMfNYfYNfMqBNYqPqYNrAMqbqMqAM]eMe\\MqAMeZfNfZeMqAMhMrMhMqBPsAPrDtDsA',
+    _colors: ['000', 2, 4, 1],
   },
   cat: {
     _rle: '16IMCMJMYMAMYMHMYqeMeqMGMYkMFMYkMBOAMlMAMZeNfMeYeMeNYeMYNgYqYfNeMAOf]MAMfNZg[MBMf[jNCMnYMCMnYMCMgPgNCMfNCMeMeMCMYMeMCMYMeMB',
@@ -134,15 +129,15 @@ const TILE_DATA = {
     _colors: COLOR_SETS.dungeon,
   },
   blade: {
-    _rle: '16ENBNIMYMBMYMGMZMBMZMEMZePeZMCMZeMhMeZMAMZeMjMeZReMfMeQCNeMfMeNFNjNCRhSZfRfZMAMZfPfZMCMZePeZMEMZMBMZMGMYMBMYMINBNE',
-    _colors: COLOR_SETS.dungeon,
-    _moveSpeed: 3,
+    _rle: '16GNLAMYeMKMYfYMJMqfqMIMqhqMFNrPrNCMYqeMqZqMeqYMAMhM\\MhNYgMqZqMgYOYqeReqYNAOrPrOCOqhqOFNqfqNIMYfYMJNZNKPF',
+    _colors: COLOR_SETS.trap,
+    _moveSpeed: 2.5,
     _returningMoveSpeed: 0.75,
     _collisionPadding: [1, 1, 1, 1],
   },
   seeker: {
     _rle: '32DPLFNHMgMLEMeMHMZeMHQCMYeMGRCNAMgRYeMFNhPeNeZNhNeMENfNfMZeRfNfODMeMfNfMYfMCNfNfOCMfMYhYMfMCOYhYOBMfYN\\NeNBMYO\\OYMAMe[TYMBNeSYMYMAMeTYNYMBNeYRZQYOf[NYMBNe[O\\eMAMZOfZMZMBNeZOiMBNZfMfYMYNBNeYMgRCSgNDNeUEVFVC',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS.trap,
     _animationSpeed: 100,
     _moveSpeed: 1.3,
     _collisionPadding: [1, 1, 1, 1],
@@ -152,18 +147,18 @@ const TILE_DATA = {
     _colors: ['000', 'f00', 'fff'],
   },
   ground: {
-    _rle: '16qYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|uYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjqYjq_q_|t',
+    _rle: '16riseZeYreYeYeZqeZeYfq[e[qZeYeYeq_qYeYeYfq_q\\gq_q[eYfq_q^eqSqSrisgYereYeYgqeYe\\q[eYfqYe]q\\eYeq_q_q^eq_q]eYq_q\\gqSqS',
     _colors: ['514970', '7676a2', '8686b4', '6a648e'],
     _isStatic: true,
   },
   crack: {
-    _rle: '16eYO^OYf[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYNYeYN^MYfYe[M\\MZMZe\\MYM]M_M]MYM_P[N^NYeYQ\\OYeZfYPYP[M[NYN',
+    _rle: '16XSeZMYM[ePYNqNqMtMYNZOrMsYMYNqYNsMsNYXQYfN\\MYNf\\OsMqMq^MYMsOq^MqMrOr[XQYfYMZMZMYfNZrMrMrMqZN[qNqMrNZN[rOsNYO[qNsZO',
     _colors: COLOR_SETS.dungeon,
     _isStatic: true,
   },
   liana: {
-    _rle: '16ZMeOeMfNeMeYNeMYMeMeNfOfMeNeNYMeMYNeNeOeOeNZMYMeMYMeNfMZMYNeReMYNeNeNfOeNhMeMYMfNeMfNeMeMZOYMeOYNePeMYMeM\\MeMfMeMYMeMZMfMYMfNZMeMYfNZPZMeMYNfYMYMeMZMeM[MeYeNeMhMYOeNfNeNeN',
-    _colors: [0, 2, 3],
+    _rle: '16QZMYQYOr[MetfOrZMqfseNrMZNqMeMreNfqZNqMeYMZNgZNrM[fMqgYMgMZMfsNZfNZMqetMZeNZNvMeYNqYMgrPfNqZfPsfMr[NqNsYeMqZMZrNrfYMZOZqNqg\\MqfZOfM\\MqfMYM',
+    _colors: ['0d1b2a', 2, 4, '3b2e72'],
     _isStatic: true,
   },
   mommy: {
@@ -183,13 +178,13 @@ const TILE_DATA = {
     _collisionPadding: [1, 1, 1, 1],
   },
   rock: {
-    _rle: '16F[NINerfMFYMshYNCYvYeYqfMBYsgYseYMBYqhYseZOgYfZfZMeNiZe[MeYNYgsYNYMZN[rgMZMYMYAOqhMYMfYNYqeYeYeZNeYOseYfZNYPreYMe[NYNBMeZOYNYNDOAPYE',
-    _colors: COLOR_SETS.dungeon,
+    _rle: '16DsQqFqYiZMqDqfYgZqNDqg[tMCqjuMqBqf]tMqBqe^uMAqf_tMAqe`tMre`uMqM_vMqM^qMuMqMq\\qOsNAqMqZqTqBqWrD{A',
+    _colors: [0, 2, 5, 1],
     _isStatic: true,
   },
   root: {
-    _rle: '16BQFNBMerYPBMqMAN[MerYMAMeMAMYQZeNeYMAMZMCOYMYMBqNqAMBMYeqMDrAMeMAMZeqMFMYMBMZeMEPBOYMDMereMAMZNCMeYNYMAMYfYMBMYMBNAMZeYMBMYMENZNAqOqDqPqBsFtIrG',
-    _colors: [0, 1, 2, 3],
+    _rle: '16BPKMgYMBQBMg[Nf[MAMfYNYMf]NeYQeZOYN[OeZQBM[NeYOYNCMZNZN[MCMYOZOYeMDUfMDMfZPfMCMf\\OfMBMe^NfYMBM[NZMeZMCMZNAMYMZMDMZMDMZMC',
+    _colors: [0, 1, 2],
     _isStatic: true,
   },
   checkpoint: {
@@ -197,12 +192,12 @@ const TILE_DATA = {
     _colors: [],
   },
   trigger: {
-    _rle: '16EePeHeNYfYNYEYMe]eYNCYMeYese]AeMeYseYreYeMe[eqfYqfqe[MeYqfYeZfqYeNeYqeYeqeZeqYeNeYeqeYeqYf[NYeYreZfZeYOqeYes[eYNAZeqe\\fYNCYMYfreZNEYN[PGYSLH',
+    _rle: '16FPJNqYqYNGMq[qZqMEM\\eqe[MCMqZgYfZqMBMZfYrYfZMAMZfrfrfZNsYqhqYsNZfrfrfZN[fYrYf[Nq[fYg[qNr[eqe\\rMAMr[q\\rMDsYqZsGsMtJqMrF',
     _colors: COLOR_SETS.dungeon,
   },
   orb: {
-    _rle: '32E^LLbLI\\t\\HtG[x[ExEZrfvZDrfvC[qgv[CqgvCZrgwZBrgwBZ|ZB|BZ|ZB|BZ|ZB|B[z[CzDZzZDzD[x[ExF\\t\\HtIbLL^LI',
-    _colors: [0, 4, 5, 6],
+    _rle: '32LDfDhDfAfAlAfAgAlAgAhYPYhBhYPYhCfqM\\MqfDfqMq[MqfCfqMZfZMqfBfqMrYeZMqfBeYM[fsMYeBeYMqf]MYeBeMZeZrerMeAfMqgqYfZMfAeMsYrgYMeAfMresfrMfAeMqftfYMeAfMYyMfAeMqfs\\MeAfMZet[MfAeYMvZMYeBeYM[qfZMYeBfqMZqerMqfBfqMsfYMqfCfqMYsMqfDfqMsYMqfChYPYhBhYPYhBfAlAfAgAlAgLDfDhDf',
+    _colors: [0, 2, 5, 1],
     _animationSpeed: 800,
   },
   signpanel: {
@@ -210,8 +205,8 @@ const TILE_DATA = {
     _colors: COLOR_SETS.dungeon,
   },
   mushroom: {
-    _rle: '16LJPJN\\NGMZeZeZMEMbMCMZe^eZMBM\\eZe\\MBMYe`eYMBN[eZe[NCN`NEVHMhMIMYhYMHMYhYMIRLI',
-    _colors: [0, 2, 1],
+    _rle: '16ERHNhYqNEMqi[qMCM[g^MAMqafZNh]hqNi\\hqNj\\frMAMYh]rMCMq[vMENvNFqTqEsNrNsDtMZMtEzHvE',
+    _colors: [0, 2, 5, 1],
   },
   stoneflower: {
     _rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNBMeMYgMe[MeMAMqeMZeMeZMYeMAMqfSYfMAeMseYNYgMYBeQBPYLF',
@@ -244,3 +239,12 @@ const BLOCKING_TILES = [
   'flower',
 ];
 const HOLE_PADDING = [10, 7, 5, 7];
+
+// Seasonal tile replacements
+const SEASON_REPLACE = {
+  fall: { hole: 'leaves' },
+  winter: { water: 'ice' },
+  summer: { crack: 'liana' },
+  spring: { stoneflower: 'flower' },
+};
+const HIDE_UNLESS = { snow: 'winter', root: 'summer', mushroom: 'fall' };

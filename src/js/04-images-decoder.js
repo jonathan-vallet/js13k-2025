@@ -13,7 +13,7 @@ function decodeRLE(rleString) {
   const MAX_CHAR_PER_GROUP = 12; // _colors per group
   const pixels = [];
 
-  const imageWidth = parseInt(rleString.match(/^\d+/)[0], 10); // Extract the image width
+  const imageWidth = +rleString.match(/^\d+/)[0]; // Extract the image width
   rleString = rleString.replace(/^\d+/, '');
 
   for (let i = 0; i < rleString.length; ++i) {

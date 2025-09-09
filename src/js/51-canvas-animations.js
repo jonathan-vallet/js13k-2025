@@ -96,6 +96,7 @@ function updateAnimations(deltaTime) {
         if (tile.tile === 'blade') {
           if (!tile.isReturning) {
             tile.isReturning = true;
+            audioElements['seeker'].pause();
             // Moves in opposite direction
             tile._moveDirection = getOppositeDirection(tile._moveDirection);
           } else {
