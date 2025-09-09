@@ -55,6 +55,10 @@ function loadGame() {
   drawLevelBackground();
   currentSeason = savedData.currentSeason;
   playSeasonMusic();
+  // if no save, play intro
+  if (!loadSaveData()?.characterMaxLife) {
+    startIntro();
+  }
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);
   requestAnimationFrame(animate);
