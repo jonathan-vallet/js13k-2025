@@ -37,6 +37,7 @@ const pixelArtLetters = {
   // Z: '11110001011010001111',
   ' ': '000000000000000',
   // '.': '000000000000001',
+  ',': '000000000100100',
   '!': '010010010000010',
   // '/': '0000100010001000100010000',
   // ':': '000010000010000',
@@ -81,17 +82,16 @@ function writeTextLine(opt) {
  * @param {object} options - The text rendering options
  */
 function writeText(options) {
-  const defaultOptions = {
-    _x: 0,
-    _y: 0,
-    _text: '',
-    _color: '#fff',
-    _scale: 2,
-  };
+  // const defaultOptions = {
+  //   _x: 0,
+  //   _y: 0,
+  //   _text: '',
+  //   _color: '#fff',
+  //   _scale: 2,
+  // };
   const elapsed = performance.now() - currentReadingStartTime;
   const displayedCharacterNumber = (elapsed * 0.05) | 0;
-  const opt = { ...defaultOptions, ...options }; // Merge with defaults
-  const lines = opt._text.slice(0, displayedCharacterNumber).split('|');
+  const lines = options._text.slice(0, displayedCharacterNumber).split('|');
 
   const letterSize = 8;
   // Begin drawing
@@ -100,14 +100,14 @@ function writeText(options) {
     const line = lines[i];
     writeTextLine({
       ctx,
-      _x: opt._x,
-      _y: opt._y + letterSize * i,
+      _x: options._x,
+      _y: options._y + letterSize * i,
       _text: line,
-      _scale: opt._scale,
+      _scale: options._scale,
     });
   }
 
-  ctx.fillStyle = opt._color;
+  ctx.fillStyle = options._color;
   ctx.fill();
 }
 

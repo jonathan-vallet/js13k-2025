@@ -198,7 +198,7 @@ const TILE_DATA = {
   orb: {
     _rle: '32LDfDhDfAfAlAfAgAlAgAhYPYhBhYPYhCfqM\\MqfDfqMq[MqfCfqMZfZMqfBfqMrYeZMqfBeYM[fsMYeBeYMqf]MYeBeMZeZrerMeAfMqgqYfZMfAeMsYrgYMeAfMresfrMfAeMqftfYMeAfMYyMfAeMqfs\\MeAfMZet[MfAeYMvZMYeBeYM[qfZMYeBfqMZqerMqfBfqMsfYMqfCfqMYsMqfDfqMsYMqfChYPYhBhYPYhBfAlAfAgAlAgLDfDhDf',
     _colors: [0, 2, 5, 1],
-    _animationSpeed: 800,
+    _animationSpeed: 340,
   },
   signpanel: {
     _rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',

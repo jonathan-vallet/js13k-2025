@@ -30,10 +30,10 @@ function preRenderSeasonBackgrounds() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     const backgroundTileName = 'grass'; // Default background tile
 
-    const backgroundTile = TILE_DATA[backgroundTileName].tiles[0];
+    const backgroundTile = TILE_DATA[backgroundTileName]._tiles[0];
     let backgroundColors = getColors(TILE_DATA[backgroundTileName]._colors, seasonName);
 
-    const plantTile = TILE_DATA['plant'].tiles[0];
+    const plantTile = TILE_DATA['plant']._tiles[0];
     let plantColors = getColors(TILE_DATA['plant']._colors, seasonName);
 
     for (let y = 0; y < WORLD_HEIGHT; y++) {

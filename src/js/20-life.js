@@ -3,7 +3,7 @@ let deathStartTime = 0;
 const DEATH_SPIN_INTERVAL = 100; // ms
 
 function drawLife() {
-  const heartTile = TILE_DATA['heart'].tiles[0];
+  const heartTile = TILE_DATA['heart']._tiles[0];
   const heartColors = getColors(TILE_DATA['heart']._colors);
   for (let i = 0; i < characterMaxLife; ++i) {
     const y = 1 * zoomFactor; // Position the hearts at the top
@@ -54,7 +54,6 @@ function runDieAnimation() {
     // déverrouille un poil après le fade-in
     setTimeout(() => {
       isDying = false;
-      playActionSound('respawn');
     }, 1000);
   }
 

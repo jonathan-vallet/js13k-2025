@@ -108,7 +108,6 @@ function isLineClear(y, x1, x2) {
   const map = collisionMaps[currentSeason];
   const step = x2 > x1 ? 1 : -1;
   for (let x = x1 + step; x !== x2; x += step) {
-    if (x < 0 || x >= WORLD_WIDTH) return false;
     if (BLOCKING_TILES.includes(map[y][x])) return false;
   }
   return true;
@@ -119,7 +118,6 @@ function isRowClear(x, y1, y2) {
   const map = collisionMaps[currentSeason];
   const step = y2 > y1 ? 1 : -1;
   for (let y = y1 + step; y !== y2; y += step) {
-    if (y < 0 || y >= WORLD_HEIGHT) return false;
     if (BLOCKING_TILES.includes(map[y][x])) return false;
   }
   return true;

@@ -140,7 +140,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
           // isolated: can keep 5 (small segment), or 4 depending on your art.
           thicknessFrameIndex = 6;
         }
-        const thicknessFrame = tile.tiles[thicknessFrameIndex];
+        const thicknessFrame = tile._tiles[thicknessFrameIndex];
         drawTile(thicknessFrame, getColors(tile._colors), element.x, belowY, {
           orientation: ORIENTATION_UP,
           _flipHorizontally,
@@ -149,7 +149,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
       }
     }
 
-    const frame = tile.tiles[element._animationFrame || 0]; // Get the current frame
+    const frame = tile._tiles[element._animationFrame || 0]; // Get the current frame
     _colors = getColors(TILE_DATA[displayedTile]._colors);
 
     if (element.tile === 'orb') {

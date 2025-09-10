@@ -87,7 +87,7 @@ function processSprite(imageKey) {
 // Processing all sprites
 function processAllSprites() {
   for (const imageKey in TILE_DATA) {
-    TILE_DATA[imageKey].tiles = processSprite(imageKey);
+    TILE_DATA[imageKey]._tiles = processSprite(imageKey);
   }
 }
 

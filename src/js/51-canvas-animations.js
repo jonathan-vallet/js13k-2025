@@ -50,10 +50,10 @@ function updateAnimations(deltaTime) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const interval = TILE_DATA[tile.tile]._animationSpeed;
       if (tile.elapsed >= interval) {
-        if (TILE_DATA[tile.tile].tiles.length < 2) {
+        if (TILE_DATA[tile.tile]._tiles.length < 2) {
           tile._flipHorizontally = !tile._flipHorizontally;
         }
-        tile._animationFrame = (tile._animationFrame + 1) % TILE_DATA[tile.tile].tiles.length || 0;
+        tile._animationFrame = (tile._animationFrame + 1) % TILE_DATA[tile.tile]._tiles.length || 0;
         tile.elapsed = 0;
       }
     }

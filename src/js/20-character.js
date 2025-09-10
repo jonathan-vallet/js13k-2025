@@ -30,7 +30,7 @@ function drawCharacter() {
   const drawX = characterX - offsetX * TILE_SIZE;
   const drawY = characterY - offsetY * TILE_SIZE;
 
-  const characterTile = TILE_DATA['character'].tiles[characterMoveFrame];
+  const characterTile = TILE_DATA['character']._tiles[characterMoveFrame];
   let characterColors = getColors(TILE_DATA['character']._colors);
 
   if (isInvulnerable) {
