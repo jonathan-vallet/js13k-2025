@@ -68,3 +68,12 @@ function setEnemyList() {
     }
   });
 }
+
+let CAT_LIST = [];
+function setCatList() {
+  world.forEach((tile) => {
+    if (['cat'].includes(tile.tile)) {
+      CAT_LIST.push(tile);
+    }
+  });
+}

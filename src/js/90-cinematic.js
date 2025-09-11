@@ -1,21 +1,15 @@
 // Continuous FX flags for a step
-const FX_FLIP = 1; // toggle characterFlipHorizontally
-const FX_CYCLE_SEASONS = 2; // currentSeason = seasonList[(elapsed/800)|0 % seasonList.length]
-
+const FX_FLIP = 1; // 0001 toggle characterFlipHorizontally
+const FX_CYCLE_SEASONS = 2; // 0010 currentSeason = seasonList[(elapsed/800)|0 % seasonList.length]
+const FX_DANSE = 4; // 0100
 let isPlayingCinematic = false;
 let introStepIndex = -1;
 let introTimeLeft = 0;
 let introFxMask = 0;
 let introIsTransitioning = false; // true while a fade is in progress
+let currentCinematic;
 
-function startIntro() {
-  isPlayingCinematic = true;
-  introStepIndex = -1;
-  introIsTransitioning = false;
-  _cinematicNextStep(INTRO_STEPS);
-}
-
-// Introduction Steps:
+// Cinematic Steps:
 //  _dur(ms) | _x | _y | _season | _text (-1 clears) | _showChar(0/1) | _orientation | _fx | _fade(ms)
 const INTRO_STEPS = [
   { _dur: 2000, _x: 784, _y: 336, _orientation: ORIENTATION_LEFT, _showChar: 1, _fx: FX_FLIP, _season: 2 },
@@ -39,6 +33,36 @@ const INTRO_STEPS = [
   { _dur: 2000, _text: '', _season: 1 },
 ];
 
+const OUTRO_STEPS = [
+  {
+    _dur: 20000000, // Long duration, no one will wait that long
+    _x: 784,
+    _y: 336,
+    _orientation: ORIENTATION_LEFT,
+    _showChar: 1,
+    _fx: FX_DANSE,
+    _season: 2,
+    _fade: 1000,
+    _text: 'CONGRATS! YOU FOUND ALL THE CATS!',
+  },
+];
+
+function startIntro() {
+  isPlayingCinematic = true;
+  introStepIndex = -1;
+  introIsTransitioning = false;
+  currentCinematic = INTRO_STEPS;
+  _cinematicNextStep();
+}
+
+function startOutro() {
+  isPlayingCinematic = true;
+  introStepIndex = -1;
+  introIsTransitioning = false;
+  currentCinematic = OUTRO_STEPS;
+  _cinematicNextStep();
+}
+
 function updateCinematic(deltaMs, elapsedSinceIntroStartMs) {
   // If intro is not active, do nothing
   if (!isPlayingCinematic) {
@@ -55,24 +79,38 @@ function updateCinematic(deltaMs, elapsedSinceIntroStartMs) {
     characterFlipHorizontally = elapsedSinceIntroStartMs % 500 < 250;
   }
   if (introFxMask & FX_CYCLE_SEASONS) {
-    const i = ((elapsedSinceIntroStartMs / 800) | 0) % seasonList.length;
+    let frequency = 800;
+    const i = ((elapsedSinceIntroStartMs / frequency) | 0) % seasonList.length;
     currentSeason = seasonList[i];
   }
+  if (introFxMask & FX_DANSE) {
+    let frequency = 5000;
+    const i = ((elapsedSinceIntroStartMs / frequency) | 0) % seasonList.length;
+    currentSeason = seasonList[i];
+    // flip and change direction
+    characterFlipHorizontally = elapsedSinceIntroStartMs % 500 < 250;
+    setCharacterDirection((((elapsedSinceIntroStartMs / 1400) | 0) % 3) + 1);
+    CAT_LIST.forEach((cat) => {
+      cat._flipHorizontally = ((elapsedSinceIntroStartMs / 700) | 0) % 2;
+    });
+  }
 
-  if (introTimeLeft <= 0) _cinematicNextStep(INTRO_STEPS);
+  if (introTimeLeft <= 0) {
+    _cinematicNextStep();
+  }
 }
 
 // --- Internal ----------------------------------------------------------------
 
-function _cinematicNextStep(stepList) {
+function _cinematicNextStep() {
   ++introStepIndex;
-  if (introStepIndex >= stepList.length) {
+  if (introStepIndex >= currentCinematic.length) {
     currentReadingText = '';
     isPlayingCinematic = false;
     return;
   }
 
-  const step = stepList[introStepIndex];
+  const step = currentCinematic[introStepIndex];
 
   // Applies the step content and arms the timer AFTER the fade (if any)
   const applyStep = () => {

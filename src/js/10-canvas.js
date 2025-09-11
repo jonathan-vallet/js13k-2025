@@ -108,20 +108,20 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
     }
 
     // Flip the cat based on the character's position to make it face the right direction
-    if (displayedTile === 'cat') {
+    if (displayedTile === 'cat' && !isPlayingCinematic) {
       element._flipHorizontally = characterX / TILE_SIZE < element.x;
     }
 
     if (['water', 'ice'].includes(displayedTile)) {
-      const { type, orientation } = getTileTypeAndOrientation(element);
+      const { type, _orientation } = getTileTypeAndOrientation(element);
       element._animationFrame = type + 4 * (element._animationStep || 0); // Use animation step for water animation
-      element.orientation = orientation;
+      element._orientation = _orientation;
     }
 
     if (['wall', 'snow'].includes(element.tile)) {
-      const { type, orientation } = getWallTypeAndOrientation(element);
+      const { type, _orientation } = getWallTypeAndOrientation(element);
       element._animationFrame = type;
-      element.orientation = orientation;
+      element._orientation = _orientation;
       const belowY = element.y + 1;
       if (!getTileAt(element.x, belowY)) {
         const leftWall = getTileAt(element.x - 1, element.y)?.tile === element.tile;
@@ -142,7 +142,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
         }
         const thicknessFrame = tile._tiles[thicknessFrameIndex];
         drawTile(thicknessFrame, getColors(tile._colors), element.x, belowY, {
-          orientation: ORIENTATION_UP,
+          _orientation: ORIENTATION_UP,
           _flipHorizontally,
           context,
         });
@@ -159,10 +159,10 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
 
     const x = element.x;
     const y = element.y;
-    const orientation = element.orientation || ORIENTATION_UP;
-    const scale = element.scale || 1;
+    const _orientation = element._orientation || ORIENTATION_UP;
+    const _scale = element.scale || 1;
     const _flipHorizontally = element._flipHorizontally;
-    drawTile(frame, _colors, x, y, { orientation, scale, context, _flipHorizontally });
+    drawTile(frame, _colors, x, y, { _orientation, _scale, context, _flipHorizontally });
   });
 }
 
@@ -189,16 +189,16 @@ function getSeasonalTile(tileName, season = currentSeason) {
  * @param {string[]} _colors - The _colors for the tile (required)
  * @param {number} x - The x-coordinate of the tile (required)
  * @param {number} y - The y-coordinate of the tile (required)
- * @param {Object} [options={}] - Optional parameters: orientation, scale, context, _flipHorizontally
- * @param {number} [options.orientation=ORIENTATION_UP] - The orientation of the tile
- * @param {number} [options.scale=1] - The scale to apply to the tile
+ * @param {Object} [options={}] - Optional parameters: _orientation, _scale, context, _flipHorizontally
+ * @param {number} [options._orientation=ORIENTATION_UP] - The _orientation of the tile
+ * @param {number} [options._scale=1] - The _scale to apply to the tile
  * @param {CanvasRenderingContext2D} [options.context=ctx] - The canvas context to draw on
  * @param {boolean} [options._flipHorizontally=false] - Whether to flip the tile horizontally
  */
 function drawTile(tile, _colors, x, y, options = {}) {
   const {
-    orientation = ORIENTATION_UP,
-    scale = tile.scale || 1,
+    _orientation = ORIENTATION_UP,
+    _scale = tile._scale || 1,
     context = ctx,
     _flipHorizontally = false,
     alpha = 1,
@@ -214,8 +214,8 @@ function drawTile(tile, _colors, x, y, options = {}) {
     scaleDirection = -1;
   }
 
-  context.scale(scale * scaleDirection, scale); // Apply scaling
-  context.rotate(((orientation - 1) * Math.PI) / 2); // Apply rotation
+  context.scale(_scale * scaleDirection, _scale); // Apply scaling
+  context.rotate(((_orientation - 1) * Math.PI) / 2); // Apply rotation
   context.translate(-halfTileSize, -halfTileSize); // Move to the top-left corner of the tile
   context.globalAlpha = alpha;
 
@@ -236,9 +236,9 @@ function drawTile(tile, _colors, x, y, options = {}) {
 }
 
 /**
- * Get the tile type and orientation for a given element
+ * Get the tile type and _orientation for a given element
  * @param {*} element - The element to check
- * @returns {Object} - An object containing the tile type and orientation
+ * @returns {Object} - An object containing the tile type and _orientation
  */
 function getTileTypeAndOrientation(element) {
   let x = element.x;
@@ -255,62 +255,62 @@ function getTileTypeAndOrientation(element) {
   const se = isSameTile(x + 1, y + 1);
 
   let type = 3; // fill by default
-  let orientation = 0;
+  let _orientation = 0;
 
   const neighbors = { nw, ne, sw, se, n, s, e, w };
 
   // Every neighbor is water: fill
   if (Object.values(neighbors).every(Boolean)) {
-    return { type: 3, orientation: ORIENTATION_UP };
+    return { type: 3, _orientation: ORIENTATION_UP };
   }
 
   // Inner corner: one empty among the corners
   const corners = [
-    { key: 'nw', orientation: ORIENTATION_UP },
-    { key: 'ne', orientation: ORIENTATION_RIGHT },
-    { key: 'se', orientation: ORIENTATION_DOWN },
-    { key: 'sw', orientation: ORIENTATION_LEFT },
+    { key: 'nw', _orientation: ORIENTATION_UP },
+    { key: 'ne', _orientation: ORIENTATION_RIGHT },
+    { key: 'se', _orientation: ORIENTATION_DOWN },
+    { key: 'sw', _orientation: ORIENTATION_LEFT },
   ];
 
   const emptyCorners = corners.filter((c) => !neighbors[c.key]);
   const filledEdges = [n, s, e, w].filter(Boolean).length;
 
   if (emptyCorners.length === 1 && filledEdges === 4) {
-    const { orientation } = emptyCorners[0];
-    return { type: 2, orientation };
+    const { _orientation } = emptyCorners[0];
+    return { type: 2, _orientation };
   }
 
   // Edge: one side empty among N/S/E/W
   const cardinal = [
-    { key: 'n', orientation: ORIENTATION_UP },
-    { key: 'e', orientation: ORIENTATION_RIGHT },
-    { key: 's', orientation: ORIENTATION_DOWN },
-    { key: 'w', orientation: ORIENTATION_LEFT },
+    { key: 'n', _orientation: ORIENTATION_UP },
+    { key: 'e', _orientation: ORIENTATION_RIGHT },
+    { key: 's', _orientation: ORIENTATION_DOWN },
+    { key: 'w', _orientation: ORIENTATION_LEFT },
   ];
 
   const emptyCardinal = cardinal.filter((c) => !neighbors[c.key]);
   const filledCardinal = cardinal.filter((c) => neighbors[c.key]);
 
   if (emptyCardinal.length === 1 && filledCardinal.length === 3) {
-    const { orientation } = emptyCardinal[0];
-    return { type: 1, orientation };
+    const { _orientation } = emptyCardinal[0];
+    return { type: 1, _orientation };
   }
 
   // Outer corner: two adjacent sides + their corner filled
   if (n && w && nw) {
-    return { type: 0, orientation: ORIENTATION_DOWN };
+    return { type: 0, _orientation: ORIENTATION_DOWN };
   }
   if (n && e && ne) {
-    return { type: 0, orientation: ORIENTATION_LEFT };
+    return { type: 0, _orientation: ORIENTATION_LEFT };
   }
   if (s && e && se) {
-    return { type: 0, orientation: ORIENTATION_UP };
+    return { type: 0, _orientation: ORIENTATION_UP };
   }
   if (s && w && sw) {
-    return { type: 0, orientation: ORIENTATION_RIGHT };
+    return { type: 0, _orientation: ORIENTATION_RIGHT };
   }
 
-  return { type, orientation };
+  return { type, _orientation };
 }
 
 function getWallTypeAndOrientation(element) {
@@ -328,30 +328,30 @@ function getWallTypeAndOrientation(element) {
   if (bits === 1) {
     return {
       type: 0,
-      orientation: e ? ORIENTATION_UP : s ? ORIENTATION_RIGHT : w ? ORIENTATION_DOWN : ORIENTATION_LEFT,
+      _orientation: e ? ORIENTATION_UP : s ? ORIENTATION_RIGHT : w ? ORIENTATION_DOWN : ORIENTATION_LEFT,
     };
   }
 
   // 2 neighbors: segment
-  if (e && w && !n && !s) return { type: 1, orientation: ORIENTATION_UP }; // horizontal
-  if (n && s && !e && !w) return { type: 1, orientation: ORIENTATION_RIGHT }; // vertical
+  if (e && w && !n && !s) return { type: 1, _orientation: ORIENTATION_UP }; // horizontal
+  if (n && s && !e && !w) return { type: 1, _orientation: ORIENTATION_RIGHT }; // vertical
 
   // 3 neighbors: T
   if (bits === 3) {
     return {
       type: 2,
-      orientation: !n ? ORIENTATION_UP : !e ? ORIENTATION_RIGHT : !s ? ORIENTATION_DOWN : ORIENTATION_LEFT,
+      _orientation: !n ? ORIENTATION_UP : !e ? ORIENTATION_RIGHT : !s ? ORIENTATION_DOWN : ORIENTATION_LEFT,
     };
   }
 
   // corners (2 adjacent neighbors)
   if (bits === 2) {
-    if (e && s) return { type: 3, orientation: ORIENTATION_LEFT }; // ES
-    if (s && w) return { type: 3, orientation: ORIENTATION_UP }; // SW
-    if (w && n) return { type: 3, orientation: ORIENTATION_RIGHT }; // WN
-    if (n && e) return { type: 3, orientation: ORIENTATION_DOWN }; // NE
+    if (e && s) return { type: 3, _orientation: ORIENTATION_LEFT }; // ES
+    if (s && w) return { type: 3, _orientation: ORIENTATION_UP }; // SW
+    if (w && n) return { type: 3, _orientation: ORIENTATION_RIGHT }; // WN
+    if (n && e) return { type: 3, _orientation: ORIENTATION_DOWN }; // NE
   }
 
   // fallback
-  return { type: 1, orientation: ORIENTATION_UP };
+  return { type: 1, _orientation: ORIENTATION_UP };
 }

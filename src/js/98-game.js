@@ -48,6 +48,7 @@ function loadGame() {
   setEnemyList();
   loadInitialState();
   addSpecificWorldItems();
+  setCatList();
   seasonList.forEach((season) => {
     generateCollisionMapForSeason(season);
   });

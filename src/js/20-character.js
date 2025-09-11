@@ -44,7 +44,7 @@ function drawCharacter() {
   ctx.scale(zoomFactor, zoomFactor);
   ctx.translate(drawX, drawY);
   drawTile(characterTile, characterColors, 0, 0, {
-    scale: characterScale,
+    _scale: characterScale,
     _flipHorizontally: characterFlipHorizontally,
   });
   ctx.restore();
@@ -156,6 +156,10 @@ function tryPerformCharacterAction() {
       catTile._isCollected = true;
       removeTile('signpanel', catTile.cx, catTile.cy);
       savedData.collectedCatsList.push(catTile.i);
+      // if last cat collected, start outro
+      if (savedData.collectedCatsList.length >= CAT_LIST.length) {
+        startOutro();
+      }
     }
     if (getTileAt(tileX, tileY, ['orb'])) {
       characterMaxLife += 1;

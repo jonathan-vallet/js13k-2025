@@ -6,7 +6,7 @@ function handleGameKeydown(key) {
     keyStack.push(key);
   }
 
-  if (key === 'action') {
+  if (key === 'action' && !isPlayingCinematic) {
     if (currentReadingText) {
       currentReadingText = '';
     } else {

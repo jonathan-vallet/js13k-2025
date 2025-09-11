@@ -46,8 +46,8 @@ let COLOR_SETS = {
     'c2e8f7',
     'cfd3e1', // water (ice)
   ],
-  dungeon: ['0d1b2a', '5a5a7c', '73849c', '3b2e72'],
-  trap: ['0d1b2a', '73849c', 'c2e8f7', '3b2e72'],
+  _dungeon: ['0d1b2a', '5a5a7c', '73849c', '3b2e72'],
+  _trap: ['0d1b2a', '73849c', 'c2e8f7', '3b2e72'],
 };
 
 // Orientation constants
@@ -118,7 +118,7 @@ const TILE_DATA = {
   },
   wall: {
     _rle: '112XqXOqXOrQqXP|M|sPxRYlYMYpeYMYplYMYkYS|M|sPxQYnMpgMpnMmYOqN|M|sMqNxNqNfYTqXOqXVqTYeYOYMqbqMqdYqNYMq^qMYOfMd\\MZqd[Md\\q[MfPYTqRsQtPYTYPfM_M]qZP]q[sQYtbM[MfOsfqMqpeqMqjNsjsNqNqYqZqZMZqZqZMZMZqZq_q]q`sPYMfNs\\Md[M_Ms`sNfMYqZqZqZrYMZqZqZu^M]MdYqZMfOr\\Md[q_Nr`rOfMYMZMqNZqZNrZMZqZq[sOqPq]q^qZMfNqMq\\Md[M_MqMq`qMqNfMYPZOqZMZqZOqZq]q]M`M^MZMfOYM\\MqdZM_NYM`MYOfMYqZMZqZqZq]MZqZqcq^qOqRqMfPYqZqRqZqQqMq^OYq^qYPfM_qcqdYqOrdZMZMfOqYQiPiWqYTYqOfYQqXRqR\\M]Rq]qZqNqMshM]MfM]MlMslsNYjYMYphYMYhYM[q\\MYhYMYvYMfMqMr\\q]qZq]q`qMr`rMqNYjMpjMjM`MjM`MfMrMq\\q]qZq]q`rMq`qMrUqXRqOYfM`MfZfM`MfMYrXXQYrVrY',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
     _isStatic: true,
   },
   snow: {
@@ -129,18 +129,18 @@ const TILE_DATA = {
   spikes: {
     _rle: '32LGMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLLLEMGMLJMYMEMYMLIMYMEMYMDQCQCNYNCNYNCNYNCNYNCMeYeMCMeYeMCNYNCNYNCMqYqMCMqYqMCQCQCQCQLLJ',
     _animationSpeed: 1200,
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
   },
   blade: {
     _rle: '16GNLAMYeMKMYfYMJMqfqMIMqhqMFNrPrNCMYqeMqZqMeqYMAMhM\\MhNYgMqZqMgYOYqeReqYNAOrPrOCOqhqOFNqfqNIMYfYMJNZNKPF',
-    _colors: COLOR_SETS.trap,
+    _colors: COLOR_SETS._trap,
     _moveSpeed: 2.5,
     _returningMoveSpeed: 0.75,
     _collisionPadding: [1, 1, 1, 1],
   },
   seeker: {
     _rle: '32DPLFNHMgMLEMeMHMZeMHQCMYeMGRCNAMgRYeMFNhPeNeZNhNeMENfNfMZeRfNfODMeMfNfMYfMCNfNfOCMfMYhYMfMCOYhYOBMfYN\\NeNBMYO\\OYMAMe[TYMBNeSYMYMAMeTYNYMBNeYRZQYOf[NYMBNe[O\\eMAMZOfZMZMBNeZOiMBNZfMfYMYNBNeYMgRCSgNDNeUEVFVC',
-    _colors: COLOR_SETS.trap,
+    _colors: COLOR_SETS._trap,
     _animationSpeed: 100,
     _moveSpeed: 1.3,
     _collisionPadding: [1, 1, 1, 1],
@@ -156,7 +156,7 @@ const TILE_DATA = {
   },
   crack: {
     _rle: '16XSeZMYM[ePYNqNqMtMYNZOrMsYMYNqYNsMsNYXQYfN\\MYNf\\OsMqMq^MYMsOq^MqMrOr[XQYfYMZMZMYfNZrMrMrMqZN[qNqMrNZN[rOsNYO[qNsZO',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
     _isStatic: true,
   },
   liana: {
@@ -166,7 +166,7 @@ const TILE_DATA = {
   },
   mommy: {
     _rle: '16DSFOf[fMDMZMe^eMCMfNYNYMYeNBMZSYeMYMAMfM\\hMZNZMf]eMeYNfMeZfOZeNeZMeZMZeZeMAMeYePZeYeMCMjRBM_iMBMhOe\\MAM\\QhX]MAXO',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
     _animationSpeed: 400,
     _moveSpeed: 0.8,
     _moveDirection: ORIENTATION_RIGHT,
@@ -174,7 +174,7 @@ const TILE_DATA = {
   },
   skeleton: {
     _rle: '16FRIMjMGMgYhMFMeNZNeMCPeMhMeOAMfMYfNfYMeMAMfOhNfMBMgMeNeMfMBMYMfReMYMAQZNZNYMAMfMYNZNYOAMfNZNZMfMBWfMDMfOZODMgRFQH',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
     _animationSpeed: 500,
     _moveSpeed: 0.8,
     _moveDirection: ORIENTATION_DOWN,
@@ -197,7 +197,7 @@ const TILE_DATA = {
   },
   trigger: {
     _rle: '16FPJNYfYNGMe]eYMEMeYeYre[MCMqZrZreYqMAM[q^qeZNeYqYe[fYqYeNeYqeqeYfqYqYeNeYeqe]q[NYeZrZrZeYMAMqeYeYr[eqMCMeqe\\eqYMEMYfreZMGN\\NJPLJ',
-    _colors: [...COLOR_SETS.dungeon],
+    _colors: [...COLOR_SETS._dungeon],
     _animationSpeed: 900,
   },
   orb: {
@@ -207,7 +207,7 @@ const TILE_DATA = {
   },
   signpanel: {
     _rle: '16AXNAMYpYNqdqXRqMYlYMqNqMeMYeMeOeMqNYMkMfMYNYMePYeNeMeNYMYlYMYXRq[j[qMAXNGMrMKqMrMqIrMZMrIvE',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
   },
   mushroom: {
     _rle: '16ERHNhYqNEMqi[qMCM[g^MAMqafZNh]hqNi\\hqNj\\frMAMYh]rMCMq[vMENvNFqTqEsNrNsDtMZMtEzHvE',
@@ -216,7 +216,7 @@ const TILE_DATA = {
   },
   stoneflower: {
     _rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNBMeMYgMe[MeMAMqeMZeMeZMYeMAMqfSYfMAeMseYNYgMYBeQBPYLF',
-    _colors: COLOR_SETS.dungeon,
+    _colors: COLOR_SETS._dungeon,
   },
   flower: {
     _rle: '16LJOINAM[MANDMZM]MZMCMZNYMYNZMBOZQZNBMZNqYqYqNZMAMZMqYqYqYqMZMANYNqYqYqNYNBNYSYNBQ]QAMgSgMAMfMgMgMfMBNgOgNDQAQLG',
