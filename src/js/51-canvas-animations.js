@@ -34,7 +34,7 @@ function animate(ts) {
 
   // Un seul rendu par frame écran
   refreshCanvas();
-  updateIntro(frameMs, ts);
+  updateCinematic(frameMs, ts);
   handleGamepadInput();
   requestAnimationFrame(animate);
 }
@@ -43,6 +43,7 @@ function animate(ts) {
  * Update the animation frames of all animated tiles
  * @param {number} deltaTime - The time elapsed since the last frame
  */
+let triggerCurrentSeasonIndex = 0;
 function updateAnimations(deltaTime) {
   world.forEach((tile) => {
     // Checks tiles which have multiple frames to animate them
@@ -50,10 +51,18 @@ function updateAnimations(deltaTime) {
       tile.elapsed = (tile.elapsed || 0) + deltaTime;
       const interval = TILE_DATA[tile.tile]._animationSpeed;
       if (tile.elapsed >= interval) {
-        if (TILE_DATA[tile.tile]._tiles.length < 2) {
+        if (tile.tile === 'trigger') {
+          if (availableSeasons.length > 1) {
+            // Trigger animation change it's 4th colour between all available seasons
+            triggerCurrentSeasonIndex = (triggerCurrentSeasonIndex + 1) % availableSeasons.length;
+            TILE_DATA[tile.tile]._colors[3] = COLOR_SETS[availableSeasons[triggerCurrentSeasonIndex]][4];
+            // tile._colors[3] = COLOR_SETS[availableSeasons[triggerCurrentSeasonIndex]];
+          }
+        } else if (TILE_DATA[tile.tile]._tiles.length < 2) {
           tile._flipHorizontally = !tile._flipHorizontally;
         }
         tile._animationFrame = (tile._animationFrame + 1) % TILE_DATA[tile.tile]._tiles.length || 0;
+        tile._animationStep = ((tile._animationStep || 0) + 1) % 2;
         tile.elapsed = 0;
       }
     }
@@ -133,7 +142,14 @@ function updateAnimations(deltaTime) {
     }
   });
 
-  if (!isPlayingIntro && !isCharacterFalling && !isFading && !isDying && keyStack.length > 0 && !currentReadingText) {
+  if (
+    !isPlayingCinematic &&
+    !isCharacterFalling &&
+    !isFading &&
+    !isDying &&
+    keyStack.length > 0 &&
+    !currentReadingText
+  ) {
     let dx = 0;
     let dy = 0;
 

@@ -67,12 +67,14 @@ function loadGame() {
 function changeSeason(seasonName) {
   // Heals while changing season
   characterLife = characterMaxLife;
+  isChangingSeason = true;
 
   startFade(1000, () => {
     currentSeason = seasonName;
     playSeasonMusic();
     drawLevelBackground();
     saveGame();
+    isChangingSeason = false;
   });
 }
 

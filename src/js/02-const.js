@@ -14,8 +14,8 @@ let COLOR_SETS = {
     '76af2b',
     '8ec42b',
     'b7c42b',
-    '6e6e71', // water
-    '91897f', // water
+    '576c87', // water
+    '6b94ab', // water
   ],
   summer: [
     '2d2122',
@@ -24,8 +24,8 @@ let COLOR_SETS = {
     'e4b000',
     'e4ce00',
     'ffe224',
-    '6e6e71', // water
-    '91897f', // water
+    '576c87', // water
+    '6b94ab', // water
   ],
   fall: [
     '2d2122',
@@ -61,15 +61,18 @@ const TILE_DATA = {
   grass: {
     _rle: '16MD[ESB[AMDMAMANBZAMAMKYAO[QZAYO[NAMA[OAMZMCM[NAMBYNDZNA[AYDMAYEZCZAMAYCYBZAZAZMCZBZAZM[AM[ANYMYNAZNZMAPZAMAYBYPANZMBYDMAMDYANLYA',
     _colors: [2, 4],
+    _isStatic: true,
   },
   plant: {
     _rle: '16B[EPBMB[AMfBRfCfAeCMBeBeBeBeMYCMfAeMAMfRAMfNBPAMAMBOENfAMAZNCZAfAeAZE[AeBeMYBfBZBMfNBfAeAYNBOANeBeNBfAYAYANfNBeBeBYAQCfAeMAYPANBMfNAYJOC',
     _colors: [2, 4, 5],
+    _isStatic: true,
   },
   water: {
-    _rle: '64LLINYfddZLAMHNCMFMYfddZINBPCOCOFMfddZGPCPCNBM[PCMeddZHPBM[MBMYN`Oedd[DNCMZMAMYgMAMpgdd[CNYOhMjMpgdd\\CMZnddddDMhdddd_EMeddddaBOeddddbCNeddddbEMddddbFMddddaNEMdddd`Sdddda',
+    _rle: '128LLINYfddZLLINZfddYLAMHNCMFMYfddZLAMHNCMFMZfddYINBPCOCOFMfddZINBPCOCOFMYfddYGPCPCNBM[PCMeddZGPCPCNBM[PCMfddYHPBM[MBMYN`Oedd[HPBM[MBMYN`OfddZDNCMZMAMYgMAMpgdd[DNCMZMAM\\MAMdZfddZCNYOhMjMpgdd\\CNYO\\MYiMphdd[CMZnddddCM]ppgdd\\DMhdddd_DMZlddddYEMeddddaEMgdddd_BOeddddbBOYfdddd`CNeddddbCNYeddddaEMddddbEMeddddaFMddddaFMddddaNEMdddd`NEMdddd`SddddaSdddda',
     _colors: [1, 6, 7],
-    _isStatic: true,
+    _animationSpeed: 900,
+    _animationStep: 0,
   },
   ice: {
     _rle: '64LLIN[gYe[g]eYe]fLAMHNCMFMZeYeYe[g]eYe]gINBPCOCOFMeYeYe[g]g]eYeYGPCPCNBNfPCMe]eYe]gYe[eYeZHPBM[MBMYNYg\\Oe]eYe]gYe[eYe[DNCMfMAMZfMAM[g]eYe[eYeYe]eYeYe[g[eCNYOfZMZgYM[g]g[eYg]eYeYe[g[eYCM[eYeYe[g]gYe[g[eYg]eYe]eYe[eYeDMYeYeYe[eYe[eYeYeYe[g[eYg]g]eYeYeYeYeYEMYeYe[eYe[eYeYeYe[eYe[eYg]eYe]eYeYe[eYeBOf]eYe[eYeYeYe[eYe]eYe]eYe]gYe[gYCNe]gYeYeYgYeYeYeYe]eYe]eYe]gYe[gZEM\\eYeYe[g[eYg]eYe]eYeYe[g]gYeYFMZeYeYe[g[eYgYe[gYe[gYe[gYe[gYeZNEMeYe]g[eYgYe[gYe[gYe[gYe[gYe[Sg]g[eYgYe[gYe[gYe[g]g]e',
@@ -77,8 +80,8 @@ const TILE_DATA = {
     _isStatic: true,
   },
   character: {
-    _rle: '64LLLLLLLLLLLLLLLLHOLLLLLQIOLFOLLBRGQLDQLOIQHRLCSJQHMfYMJQLAMfNLSCVHVCTYeMKMfNEMbNDNYQYPAN_OETYeMDMZT[MBOeQeRZQ[NCN_ODMYWZQYeOeYRYUZMBMZQ[NCTeQYRYgYRAOeTYMAMYUZMBOePeOeXSBNeQeOYMAOeTYMBNeMeMfMeMeXRDMeMgMeOYMBNeQeOYMAOfMfMfOBXNCMfMhRCMeMgMeOYMBNYjYNDXDMjYQCMfMhRDMYhYMHTGMgZPEMjYQDMeReMFMYNfNeMGQJMgZPEMeOfNfMEMYRYeMGMfNJRHMYSfMFTYMGMfOJMfOHWEVHSHNfQFMhQFWFUFWEVFWFUFWB',
-    _colors: ['000', 'e3b38d', 'dfa245'],
+    _rle: '64LLLLLLLLLLLLLLLLHOLLLLLQIOLFOLLBRGQLDQLOIQHRLCSJQHM[MJQLAMZNLSCVHVCTZMKMZNEMbNDNYQYPAN_OETZMDMZT[MBOYQYRZQ[NCN_ODMYWZQZOZRYUZMBMZQ[NCTeQYR]RAOeTYMAMYUZMBOePeOeXSBNeQeOYMAOeTYMBNeMeMfMeMeXRDMeMgMeOYMBNeQeOYMAOfMfMfOBXNCMfMhRCMeMgMeOYMBNlNDXDMkQCMfMhRDMjMHTGMiPEMkQDMeReMFMeNfNeMGQJMiPEMeOfNfMEMeRfMGMfNJRHMeSfMFTeMGMfOJMfOHWEVHSHNfQFMgRFWFUFWEVFWFUFWB',
+    _colors: ['000', 3, 'ffaa87'],
     _collisionPadding: [18, 4, 1, 4],
     size: [1, 1.5],
   },
@@ -190,10 +193,12 @@ const TILE_DATA = {
   checkpoint: {
     _rle: '16LLLLLLLLLLLLLLLLLLLLLD',
     _colors: [],
+    _isStatic: true,
   },
   trigger: {
-    _rle: '16FPJNqYqYNGMq[qZqMEM\\eqe[MCMqZgYfZqMBMZfYrYfZMAMZfrfrfZNsYqhqYsNZfrfrfZN[fYrYf[Nq[fYg[qNr[eqe\\rMAMr[q\\rMDsYqZsGsMtJqMrF',
-    _colors: COLOR_SETS.dungeon,
+    _rle: '16FPJNYfYNGMe]eYMEMeYeYre[MCMqZrZreYqMAM[q^qeZNeYqYe[fYqYeNeYqeqeYfqYqYeNeYeqe]q[NYeZrZrZeYMAMqeYeYr[eqMCMeqe\\eqYMEMYfreZMGN\\NJPLJ',
+    _colors: [...COLOR_SETS.dungeon],
+    _animationSpeed: 900,
   },
   orb: {
     _rle: '32LDfDhDfAfAlAfAgAlAgAhYPYhBhYPYhCfqM\\MqfDfqMq[MqfCfqMZfZMqfBfqMrYeZMqfBeYM[fsMYeBeYMqf]MYeBeMZeZrerMeAfMqgqYfZMfAeMsYrgYMeAfMresfrMfAeMqftfYMeAfMYyMfAeMqfs\\MeAfMZet[MfAeYMvZMYeBeYM[qfZMYeBfqMZqerMqfBfqMsfYMqfCfqMYsMqfDfqMsYMqfChYPYhBhYPYhBfAlAfAgAlAgLDfDhDf',
@@ -207,6 +212,7 @@ const TILE_DATA = {
   mushroom: {
     _rle: '16ERHNhYqNEMqi[qMCM[g^MAMqafZNh]hqNi\\hqNj\\frMAMYh]rMCMq[vMENvNFqTqEsNrNsDtMZMtEzHvE',
     _colors: [0, 2, 5, 1],
+    _isStatic: true,
   },
   stoneflower: {
     _rle: '16GYOIPqeMGOqMeZNFNYeqMYMeMFMqMYeqMeZMEMeqMYMeZNEMfqMeZMeMEMeYeqMYMeYMEMeqeqNeZMDNgqMeYMYNBMeMYgMe[MeMAMqeMZeMeZMYeMAMqfSYfMAeMseYNYgMYBeQBPYLF',

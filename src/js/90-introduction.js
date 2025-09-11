@@ -2,17 +2,17 @@
 const FX_FLIP = 1; // toggle characterFlipHorizontally
 const FX_CYCLE_SEASONS = 2; // currentSeason = seasonList[(elapsed/800)|0 % seasonList.length]
 
-let isPlayingIntro = false;
+let isPlayingCinematic = false;
 let introStepIndex = -1;
 let introTimeLeft = 0;
 let introFxMask = 0;
 let introIsTransitioning = false; // true while a fade is in progress
 
 function startIntro() {
-  isPlayingIntro = true;
+  isPlayingCinematic = true;
   introStepIndex = -1;
   introIsTransitioning = false;
-  _introNextStep();
+  _cinematicNextStep(INTRO_STEPS);
 }
 
 // Introduction Steps:
@@ -39,9 +39,9 @@ const INTRO_STEPS = [
   { _dur: 2000, _text: '', _season: 1 },
 ];
 
-function updateIntro(deltaMs, elapsedSinceIntroStartMs) {
+function updateCinematic(deltaMs, elapsedSinceIntroStartMs) {
   // If intro is not active, do nothing
-  if (!isPlayingIntro) {
+  if (!isPlayingCinematic) {
     return;
   }
 
@@ -59,20 +59,20 @@ function updateIntro(deltaMs, elapsedSinceIntroStartMs) {
     currentSeason = seasonList[i];
   }
 
-  if (introTimeLeft <= 0) _introNextStep();
+  if (introTimeLeft <= 0) _cinematicNextStep(INTRO_STEPS);
 }
 
 // --- Internal ----------------------------------------------------------------
 
-function _introNextStep() {
+function _cinematicNextStep(stepList) {
   ++introStepIndex;
-  if (introStepIndex >= INTRO_STEPS.length) {
+  if (introStepIndex >= stepList.length) {
     currentReadingText = '';
-    isPlayingIntro = false;
+    isPlayingCinematic = false;
     return;
   }
 
-  const step = INTRO_STEPS[introStepIndex];
+  const step = stepList[introStepIndex];
 
   // Applies the step content and arms the timer AFTER the fade (if any)
   const applyStep = () => {

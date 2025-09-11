@@ -61,3 +61,4 @@ let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
 
 let isSoundActive = true;
+let isChangingSeason = false;

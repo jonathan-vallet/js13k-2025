@@ -218,7 +218,7 @@ function tryReadSign() {
  * If player is on a trigger and press action, change to next available season
  */
 function tryChangeSeason() {
-  if (!availableSeasons.length) {
+  if (!availableSeasons.length || isChangingSeason) {
     return false;
   }
   const charBox = getAABB('character', characterX, characterY);

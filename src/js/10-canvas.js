@@ -114,7 +114,7 @@ function drawLevelElements(isDrawingStatic = false, context = ctx) {
 
     if (['water', 'ice'].includes(displayedTile)) {
       const { type, orientation } = getTileTypeAndOrientation(element);
-      element._animationFrame = type;
+      element._animationFrame = type + 4 * (element._animationStep || 0); // Use animation step for water animation
       element.orientation = orientation;
     }
 
