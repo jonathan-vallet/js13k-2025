@@ -88,6 +88,15 @@ In the end, I chose to design around **4 seasonal temples**, each granting a pow
 
 The southern zone, initially empty, became _endgame content_ → a cat requiring all seasonal powers to reach.
 
+### Music and Sounds
+
+I used [Soundbox](https://sb.bitsnbites.eu/) to compose a simple tune, heavily inspired by _Zelda: Oracle of Seasons_.  
+I created fewer **sound effects** than last year, mainly due to space limitations.  
+I would have liked to include sounds to help locate cats (using stereo balance) or when collecting them — and maybe a dedicated sound for fireballs.
+
+While experimenting with audio, I accidentally changed a sound’s **length parameter**, which gave me the idea to vary it depending on the season.  
+Spring and Summer have a drier, snappier tone, while Autumn and Winter have a more resonant, echoing one.
+
 ### Cat placement
 
 I wanted to guide players without arrows or intrusive HUD.  
@@ -147,3 +156,33 @@ In just **13312 bytes**, the game still contains:
   → for a total of **24800 hand-designed tiles**.
 
 A huge thanks to [Lylouf](https://x.com/lylouf13) for creating all the pixel art assets and color palettes!
+
+## Feedback Analysis
+
+The game was very well received, placing **Witchcat** in **3rd place overall** in the [JS13K](https://js13kgames.com/) competition.  
+Many players were impressed by the size of the world and especially the number of different assets. That was the core of my technical challenge, and I’m really proud of how it turned out.
+
+Everyone praised the **art direction**, **colors**, and **overall atmosphere** — Lylouf’s work was widely appreciated!
+
+The **sound changes across seasons** were also well received, even though it was just a small code tweak I discovered while experimenting with audio. Personally, I love those subtle immersive details — like when background music slightly muffles underwater, adding depth to the experience.
+
+The **level design** received a lot of positive feedback too.  
+Thanks to early playtests, I could refine it beforehand — and that was my biggest concern. It’s not easy to balance puzzles that are accessible to casual players while still engaging for more experienced ones.
+
+The idea of using **signposts for hints** felt right to me, as it kept everything diegetic. However, feedback was mixed.  
+Some players didn’t realize they could kill enemies with fireballs, even though there’s a sign early in the game and a mummy nearby that can’t hurt you — meant as a safe way to “practice” after destroying the first flowers.  
+Maybe I should have forced that mummy into the main path to ensure players understood the mechanic.
+
+Similarly, some players thought there was **no way to locate the cats**, even though the signs were arranged in a circle and replaced by collected cats.  
+Perhaps the signs’ design and interactivity weren’t obvious enough.  
+I could have given them a solid black border to make them stand out — and match the destructible stone flowers’ outline (also interactive), a convention borrowed from the old Game Boy _Zelda_ titles.
+
+Only one person reported having **trouble finding their way** and asked for a minimap.  
+The map wasn’t very large and was fairly linear, so I thought it wouldn’t be necessary — but I understand that some players enjoy having one for orientation.  
+A potential confusion point is right after exiting the **Autumn Temple**, where you can backtrack (notably to find a cat), even though the main path continues left across the leaf-covered pits.  
+I had placed signs showing the direction of the temples, but again, I don’t think many players paid attention to them.
+
+There were also **two comments about the seasonal stones**.  
+That part had already been improved both visually and functionally: the animation makes it intuitive enough, and players naturally walk onto it and press the action button.  
+A sign nearby also explains it, but again, signs were underused.  
+From a level design perspective, I could have made a small dead end with the stone in the center, forcing the player to interact with it — but that would have slightly constrained the open-world layout.
