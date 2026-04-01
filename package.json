@@ -9,7 +9,9 @@
     "dev:13-steps": "npx gulp default --game=13-steps-to-escape",
     "zip:13-steps": "npx gulp zip --game=13-steps-to-escape",
     "zip-only:13-steps": "npx gulp zip-only --game=13-steps-to-escape",
-    "watch:13-steps": "npx gulp watch --game=13-steps-to-escape"
+    "watch:13-steps": "npx gulp watch --game=13-steps-to-escape",
+    "electron:dev:13-steps": "npx gulp zip --game=13-steps-to-escape && cross-env GAME=13-steps-to-escape electron desktop/main.js",
+    "electron:build:13-steps": "npx gulp zip --game=13-steps-to-escape && electron-builder --config games/13-steps-to-escape/desktop/electron-builder.yml"
   },
   "devDependencies": {
     "browser-sync": "^3.0.2",

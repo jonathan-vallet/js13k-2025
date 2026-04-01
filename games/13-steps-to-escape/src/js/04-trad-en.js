@@ -11,7 +11,7 @@ const TRAD_EN = {
   reset: 'R: RESET',
   congratulations: 'CONGRATULATIONS!',
   allLevelsCompleted: 'YOU ESCAPED ALL LEVELS WITHIN 13 STEPS!',
-  selectGender: 'SELECT GENDER',
+  selectGender: 'SELECT CHARACTER',
   selectSkin: 'SELECT SKIN COLOR',
   selectHair: 'SELECT HAIR COLOR',
   selectOutfit: 'SELECT OUTFIT COLOR',

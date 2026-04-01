@@ -8,11 +8,7 @@ module.exports = {
     // html elements
     gameBackgroundCanvas: 'gBC',
     gameCanvas: 'gC',
-    editorOrientationSelect: 'eOS',
-    editorTileSelect: 'eTS',
-    editorCanvas: 'eC',
     uiCanvas: 'uC',
-    editorTestLevelButton: 'eTLB',
 
     // Character parameters
     skin: 's',
@@ -53,11 +49,7 @@ module.exports = {
     endPattern: 'eP',
     rowLen: 'rL',
 
-    // Storage data
-    isSoundActive: 'iSA',
-
     // Menu names
-    levelEditor: 'lE',
     characterSelection: 'cS',
     newGame: 'nG',
     levelSelector: 'lS',

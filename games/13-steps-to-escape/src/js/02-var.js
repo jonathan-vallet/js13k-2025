@@ -20,7 +20,10 @@ let musicAudio = document.createElement('audio');
 let musicplayer = new CPlayer();
 
 let currentLanguageIndex = getLocalStorage('language') || 0;
-let isSoundActive = getLocalStorage('isSoundActive') === false ? false : true;
+let musicVolume = getLocalStorage('musicVolume') ?? 100;
+let soundVolume = getLocalStorage('soundVolume') ?? 100;
+function toVolume(v) { return (v / 100) * (v / 100); }
+
 let levelSelectionIndex = 1; // Index of the currently selected level
 let totalLevelNumber = encodedLevels.length - 1; // Total number of levels
 const levelsPerRow = 4; // Define how many levels per row

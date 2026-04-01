@@ -86,7 +86,54 @@ let soundList = {
   lock: sharedBlockSound,
   'block-trigger': sharedBlockSound,
   block: sharedBlockSound,
+  wall: sharedBlockSound,
   boulder: {
+    songData: [
+      {
+        // Instrument 0
+        i: [
+          3, // OSC1_WAVEFORM
+          0, // OSC1_VOL
+          128, // OSC1_SEMI
+          0, // OSC1_XENV
+          2, // OSC2_WAVEFORM
+          0, // OSC2_VOL
+          128, // OSC2_SEMI
+          6, // OSC2_DETUNE
+          0, // OSC2_XENV
+          101, // NOISE_VOL
+          24, // ENV_ATTACK
+          61, // ENV_SUSTAIN
+          37, // ENV_RELEASE
+          0, // ENV_EXP_DECAY
+          0, // ARP_CHORD
+          0, // ARP_SPEED
+          3, // LFO_WAVEFORM
+          125, // LFO_AMT
+          0, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          2, // FX_FILTER
+          66, // FX_FREQ
+          94, // FX_RESONANCE
+          62, // FX_DIST
+          64, // FX_DRIVE
+          119, // FX_PAN_AMT
+          12, // FX_PAN_FREQ
+          67, // FX_DELAY_AMT
+          2, // FX_DELAY_TIME
+        ],
+        // Patterns
+        p: [1],
+        // Columns
+        c: [{ n: [123], f: [] }],
+      },
+    ],
+    rowLen: 6300, // In sample lengths
+    patternLen: 32, // Rows per pattern
+    endPattern: 0, // End pattern
+    numChannels: 1, // Number of channels
+  },
+  menuMove: {
     songData: [
       {
         // Instrument 0
@@ -247,6 +294,7 @@ function preloadSFX() {
 function playActionSound(tile) {
   if (audioElements[tile]) {
     audioElements[tile].currentTime = 0; // Remet à zéro pour rejouer
+    audioElements[tile].volume = toVolume(soundVolume);
     audioElements[tile].play();
   }
 }

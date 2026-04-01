@@ -9,10 +9,6 @@ function drawUI() {
   uiCtx.fillStyle = COLOR_TEXT;
   uiCtx.fillRect(0, 0, uiCanvas.width, uiCanvas.height);
 
-  let soundTileName = isSoundActive ? 'sound-on' : 'sound-off';
-  const soundTile = TILE_DATA[soundTileName].tiles[0];
-  const soundColors = TILE_DATA[soundTileName].colors;
-  drawTile(soundTile, soundColors, 18.8, 0.1, { context: uiCtx });
   let title = '';
   let scale = 1.5;
   if (currentScreen === 'menu') {
@@ -112,19 +108,3 @@ function getStepColor(stepsPerformed) {
   }
 }
 
-function toggleSound() {
-  isSoundActive = !isSoundActive;
-  setLocalStorage('isSoundActive', isSoundActive);
-  if (isSoundActive) {
-    playMusicControl();
-  } else {
-    stopMusic();
-  }
-}
-
-uiCanvas.addEventListener('click', function (event) {
-  // if click on sound icon, toggle sound
-  if (event.offsetX > 18 * TILE_SIZE * zoomFactor) {
-    toggleSound();
-  }
-});

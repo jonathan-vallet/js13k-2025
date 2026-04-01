@@ -1,0 +1,8 @@
+{
+  "name": "13-steps-to-escape",
+  "version": "1.0.0",
+  "description": "13 Steps to Escape — a puzzle game with triskaidekaphobia",
+  "main": "main.js",
+  "author": "Music and Bits",
+  "license": "MIT"
+}

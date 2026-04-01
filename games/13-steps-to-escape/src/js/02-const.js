@@ -155,16 +155,6 @@ const TILE_DATA = {
     colors: [COLOR_SETS.purple, COLOR_SETS.bronze, COLOR_SETS.silver, COLOR_SETS.gold],
     useOrientationForColor: true,
   },
-  'sound-off': {
-    rle: '16LIOLMfMBMCMDMgMAMYMAMYMANhMAMYMAMYNjMBMYMYMAMjMBM[MAMeYeYeYMCMYMBMYeYeYeMCMYMBM^MBM[MAM^MBMYMYMBN\\MAMYMAMYMCM[MAMYMAMYMDMZMBMCMFOLL',
-    colors: COLOR_SETS.purple,
-    limit: 0,
-  },
-  'sound-on': {
-    rle: '16LIOLMfMBNGMgMAMfMDNhMBMfMBMjMCMfMAMjMDMeMAMeYeYeYMDMfNYeYeYeMDMfN^MDMeMAM^MCMfMBN\\MBMfMEM[MAMfMGMZMBNIOLL',
-    colors: COLOR_SETS.green,
-    limit: 0,
-  },
   star: {
     rle: '16GNLAMZMLMZMKMeZeMJMereMEQeteRZfqMrMqfZMAMeYrMrMrYeMCMfvfMEMeqPqeMEMesNseMDMfvfMDMfZrZfMCMeZfNfZeMBMeYeNBNeYeMBPFPA',
     colors: COLOR_SETS.gold,

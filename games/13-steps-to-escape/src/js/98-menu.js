@@ -62,10 +62,6 @@ function drawStartScreen() {
 }
 
 function handleMenuAction(action) {
-  if (isSoundActive) {
-    playMusicControl();
-  }
-
   switch (action) {
     case 'continue':
       currentLevel = parseInt(getLocalStorage('currentLevel'));
@@ -73,7 +69,8 @@ function handleMenuAction(action) {
       break;
     case 'newGame':
       setTimeout(() => {
-        currentMenuIndex = 0;
+        selectionStageIndex = 0;
+        currentMenuIndex = characterData.gender || 0;
         // Reset all local storage
         setLocalStorage('completedLevelList', []);
         setLocalStorage('currentLevel', null);

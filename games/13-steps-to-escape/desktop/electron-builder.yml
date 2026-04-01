@@ -1,0 +1,35 @@
+appId: com.musicandbits.13steptoescape
+productName: 13 Steps to Escape
+directories:
+  app: desktop
+  output: games/13-steps-to-escape/release
+
+files:
+  - main.js
+  - preload.js
+  - package.json
+  - from: ../games/13-steps-to-escape/dist
+    to: dist
+    filter:
+      - "**/*"
+  - from: ../games/13-steps-to-escape/desktop/splash.html
+    to: splash.html
+
+extraMetadata:
+  main: main.js
+
+win:
+  target: nsis
+  icon: games/witchcat/assets/cover-big.png
+
+mac:
+  target: dmg
+  icon: games/witchcat/assets/cover-big.png
+
+linux:
+  target: AppImage
+  icon: games/witchcat/assets/cover-big.png
+
+nsis:
+  oneClick: true
+  perMachine: false

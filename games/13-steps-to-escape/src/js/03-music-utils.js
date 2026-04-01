@@ -13,6 +13,7 @@ function generateMusic(song) {
 function playMusic(wave, loop = false) {
   musicAudio.src = URL.createObjectURL(new Blob([wave], { type: 'audio/wav' }));
   musicAudio.loop = loop; // Indiquer si la musique doit boucler ou non
+  musicAudio.volume = toVolume(musicVolume);
   musicAudio.play(); // Jouer la musique
 }
 
@@ -20,6 +21,7 @@ function playMusic(wave, loop = false) {
  * Play the music control
  */
 function playMusicControl() {
+  musicAudio.volume = toVolume(musicVolume);
   musicAudio.play();
 }
 

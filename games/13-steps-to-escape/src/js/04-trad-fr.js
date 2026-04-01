@@ -11,7 +11,7 @@ const TRAD_FR = {
   reset: 'R: RECOMMENCER',
   congratulations: 'FELICITATIONS!',
   allLevelsCompleted: 'VOUS AVEZ ECHAPPE A TOUS LES NIVEAUX EN 13 PAS!',
-  selectGender: 'CHOISIR LE GENRE',
+  selectGender: 'CHOISIS TON PERSONNAGE',
   selectSkin: 'COULEUR DE PEAU',
   selectHair: 'COULEUR DE CHEVEUX',
   selectOutfit: 'COULEUR DE TENUE',
