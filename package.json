@@ -1,6 +1,21 @@
 {
+  "scripts": {
+    "dev:witchcat": "npx gulp default --game=witchcat",
+    "zip:witchcat": "npx gulp zip --game=witchcat",
+    "zip-only:witchcat": "npx gulp zip-only --game=witchcat",
+    "watch:witchcat": "npx gulp watch --game=witchcat",
+    "electron:dev:witchcat": "npx gulp zip --game=witchcat && cross-env GAME=witchcat electron desktop/main.js",
+    "electron:build:witchcat": "npx gulp zip --game=witchcat && electron-builder --config games/witchcat/desktop/electron-builder.yml",
+    "dev:13-steps": "npx gulp default --game=13-steps-to-escape",
+    "zip:13-steps": "npx gulp zip --game=13-steps-to-escape",
+    "zip-only:13-steps": "npx gulp zip-only --game=13-steps-to-escape",
+    "watch:13-steps": "npx gulp watch --game=13-steps-to-escape"
+  },
   "devDependencies": {
     "browser-sync": "^3.0.2",
+    "cross-env": "^7.0.3",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",

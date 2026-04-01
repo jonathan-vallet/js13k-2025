@@ -1,0 +1,8 @@
+{
+  "name": "witchcat",
+  "version": "1.0.0",
+  "description": "Witchcat — an open-world adventure game with seasonal mechanics",
+  "main": "main.js",
+  "author": "Music and Bits",
+  "license": "MIT"
+}

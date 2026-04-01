@@ -4,6 +4,7 @@
 
 /node_modules
 /www
-/dist
-/zip
 /sources
+games/*/dist
+games/*/zip
+games/*/release

@@ -1,0 +1,67 @@
+module.exports = {
+  name: 'witchcat',
+  title: 'Witchcat',
+  appId: 'com.musicandbits.witchcat',
+  description: 'An open-world adventure game with seasonal mechanics',
+  author: 'Music and Bits',
+  version: '1.0.0',
+  window: { width: 1280, height: 720 },
+  replacements: {
+    // element ids
+    gameBackgroundCanvas: 'gbc',
+    gameCanvas: 'gc',
+
+    // save params
+    characterMaxLife: 'cML',
+    collectedCatsList: 'cCL',
+    currentSeason: 'cS',
+    availableSeasons: 'aS',
+
+    // tile types
+    grass: 'g',
+    water: 'w',
+    character: 'c',
+    tree: 'tr',
+    seeker: 'se',
+    blade: 'bt',
+    spikes: 's',
+    stoneflower: 'sf',
+    ground: 'dg',
+    liana: 'l',
+    mommy: 'm',
+    skeleton: 'sk',
+    heart: 'h',
+    mushroom: 'msh',
+    signpanel: 'sg',
+    bush: 'b',
+    crack: 'cr',
+    rock: 'r',
+    snow: 'sn',
+  },
+  terserOptions: {
+    ecma: 2020,
+    module: false,
+    toplevel: true,
+    compress: {
+      passes: 3,
+      unsafe: true,
+      unsafe_arrows: true,
+      unsafe_methods: true,
+      unsafe_math: true,
+      booleans_as_integers: true,
+      pure_getters: true,
+      hoist_vars: true,
+      hoist_props: true,
+      join_vars: true,
+      switches: true,
+      dead_code: true,
+      drop_console: true,
+    },
+    mangle: {
+      toplevel: true,
+      properties: {
+        regex: /^_/,
+      },
+    },
+  },
+};

@@ -58,7 +58,7 @@ function loadGame() {
   playSeasonMusic();
   // if no save, play intro
   if (!loadSaveData()?.characterMaxLife) {
-    startIntro();
+    // startIntro();
   }
   document.addEventListener('keydown', handleKeyDown);
   document.addEventListener('keyup', handleKeyUp);

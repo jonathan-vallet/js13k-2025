@@ -1,34 +1,72 @@
-# JS13K 2025
+# JS13K Electron
 
-This repository allow you to quick start your JS13K project to develop, compile, minify and zip you JS13K project.
+Monorepo for JS13K competition games, each packaged as a standalone Electron desktop app. Each game (HTML, CSS, JS, assets) must compress into a ZIP under **13,312 bytes (13 KB)**.
 
 Uses gulp to concat JS, minify assets...
 
+## Games
+
+- **Witchcat** — an open-world adventure game with seasonal mechanics (JS13K 2025)
+
 ## Installing
 
-node: v20+
+Node v20+ required.
 
-Run `npm install` in the project directory to install all needed packages.
+```bash
+npm install
+```
 
-## Coding fr JS13K
+## Running a game (browser)
 
-Create/update files in `src` folder.
+Launch a local dev server with live reload:
 
-- use functions instead of objects, for a better minification of JS and take less place (so more place for more content).
-- use global variable (there is a closure to keep in game environment)
+```bash
+npm run dev:witchcat
+```
 
-In src/js, files a prefixed with numbers to set the loading order of your files.
+Other commands:
 
-## Gulp commands
+| Command | Description |
+|---|---|
+| `npm run dev:witchcat` | Dev server with live reload |
+| `npm run watch:witchcat` | Watch files and rebuild (no server) |
+| `npm run zip:witchcat` | Production build: minify, concatenate, ZIP |
+| `npm run zip-only:witchcat` | Re-create ZIP from already-built dist |
 
-`npx gulp serve` will host the game on a local web server
+All commands also work via gulp directly with `--game=<name>`:
 
-## Generate you final game
+```bash
+npx gulp default --game=witchcat
+npx gulp zip --game=witchcat
+```
 
-`npx gulp zip` creates the zip file for competition and concatenates css/js in a single html file to add more optimisation
+## Running a game (Electron)
 
-Once done, go to https://lifthrasiir.github.io/roadroller/ and paste &lt;script&gt; content from index.html in dist folder. Replace it with output eval.
+Build the game and launch it in Electron:
 
-Then run `npx gulp zip-only` to create a zip under 13kb
+```bash
+npm run electron:dev:witchcat
+```
 
-Your game.zip file will be generated in `/dist` and `/zip` folder.
+Package as a desktop installer:
+
+```bash
+npm run electron:build:witchcat
+```
+
+## Coding for JS13K
+
+Create/update files in `games/<game>/src/` folder.
+
+- Use functions instead of objects, for a better minification of JS and takes less place (so more place for more content).
+- Use global variables (there is a closure to keep the game environment).
+
+In `src/js`, files are prefixed with numbers to set the loading order.
+
+## Generate your final game
+
+1. `npm run zip:witchcat` — creates the zip file and concatenates css/js in a single html file
+2. Go to https://lifthrasiir.github.io/roadroller/ and paste `<script>` content from `games/witchcat/dist/index.html`. Replace it with the output eval.
+3. `npm run zip-only:witchcat` — re-create the zip under 13 KB
+
+Your `game.zip` file will be generated in the game's `dist/` and `zip/` folders.

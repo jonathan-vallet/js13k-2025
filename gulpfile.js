@@ -10,55 +10,26 @@ const browserSync = require('browser-sync').create();
 const cleanCSS = require('gulp-clean-css');
 const replace = require('gulp-replace');
 
-// Define replacements for shortening the code
-const replacements = {
-  // element ids
-  gameBackgroundCanvas: 'gbc',
-  gameCanvas: 'gc',
-
-  //save params
-  characterMaxLife: 'cML',
-  collectedCatsList: 'cCL',
-  currentSeason: 'cS',
-  availableSeasons: 'aS',
-
-  // tile types
-  grass: 'g',
-  water: 'w',
-  character: 'c',
-  tree: 'tr',
-  seeker: 'se',
-  blade: 'bt',
-  spikes: 's',
-  stoneflower: 'sf',
-  ground: 'dg',
-  liana: 'l',
-  mommy: 'm',
-  skeleton: 'sk',
-  heart: 'h',
-  mushroom: 'msh',
-  signpanel: 'sg',
-  tree: 'tr',
-  bush: 'b',
-  crack: 'cr',
-  rock: 'r',
-  snow: 'sn',
-  // // root: 'r',
-  // spring: 'sp',
-  // summer: 'su',
-  // fall: 'fa',
-  // winter: 'wi',
-};
+// Parse --game=<name> from CLI args (default: witchcat)
+const gameName = (process.argv.find((a) => a.startsWith('--game=')) || '--game=witchcat').split('=')[1];
+const gameDir = `./games/${gameName}`;
+const gameConfig = require(`${gameDir}/game.config.js`);
+const replacements = gameConfig.replacements;
+const terserOptions = gameConfig.terserOptions;
 
 // Chemins de fichiers
 const paths = {
-  html: './src/index.html',
-  scripts: './src/js/**/*.js',
-  dist: './dist',
-  zipDest: './zip/game.zip',
+  html: `${gameDir}/src/index.html`,
+  scripts: `${gameDir}/src/js/**/*.js`,
+  dist: `${gameDir}/dist`,
+  zipDest: `${gameDir}/zip/game.zip`,
 };
 
 const MAX_SIZE = 13312; // 13,312 bytes = 13 KB
+
+// Ensure dist and zip directories exist
+if (!fs.existsSync(paths.dist)) fs.mkdirSync(paths.dist, { recursive: true });
+if (!fs.existsSync(path.dirname(paths.zipDest))) fs.mkdirSync(path.dirname(paths.zipDest), { recursive: true });
 
 // Concaténer les scripts JS sans minification (pour le développement)
 gulp.task('scripts-dev', function () {
@@ -76,35 +47,7 @@ gulp.task('scripts-prod', function () {
   return gulp
     .src(paths.scripts)
     .pipe(concat('bundle.js'))
-    .pipe(
-      terser({
-        ecma: 2020,
-        module: false,
-        toplevel: true,
-        compress: {
-          passes: 3,
-          unsafe: true,
-          unsafe_arrows: true,
-          unsafe_methods: true,
-          unsafe_math: true, // n’écrira pas >>4 tout seul, mais aide d’autres folds
-          booleans_as_integers: true,
-          pure_getters: true,
-          hoist_vars: true,
-          hoist_props: true,
-          join_vars: true,
-          switches: true,
-          dead_code: true,
-          drop_console: true, // si tu n’as pas de logs en prod
-        },
-        mangle: {
-          toplevel: true,
-          properties: {
-            // utilise un préfixe _ sur tes props internes pour autoriser le mangle
-            regex: /^_/,
-          },
-        },
-      }),
-    )
+    .pipe(terser(terserOptions))
     .pipe(gulp.dest(paths.dist))
     .on('error', function (err) {
       console.error('Error in scripts-prod task', err.toString());
@@ -116,8 +59,8 @@ gulp.task('minify-html', function () {
   return new Promise((resolve, reject) => {
     gulp
       .src(paths.html)
-      .pipe(inlineSource({ compress: false, rootpath: paths.dist })) // Inline le fichier généré
-      .on('error', reject) // Gestion des erreurs pour l'inlining
+      .pipe(inlineSource({ compress: false, rootpath: paths.dist }))
+      .on('error', reject)
       .pipe(
         htmlmin({
           collapseWhitespace: true,
@@ -126,10 +69,10 @@ gulp.task('minify-html', function () {
           minifyCSS: true,
         }),
       )
-      .on('error', reject) // Gestion des erreurs pour la minification HTML
+      .on('error', reject)
       .pipe(gulp.dest(paths.dist))
-      .on('end', resolve) // Résoudre la Promise lorsque c'est terminé
-      .on('error', reject); // Gestion des erreurs finales
+      .on('end', resolve)
+      .on('error', reject);
   });
 });
 
@@ -162,7 +105,7 @@ gulp.task('make-zip', function (done) {
 
 // Apply the replacements to the minified files
 gulp.task('replace', function () {
-  let stream = gulp.src(path.join(paths.dist, '**/*.{js,html}')); // Apply to all JS and HTML files in the dist folder
+  let stream = gulp.src(path.join(paths.dist, '**/*.{js,html}'));
   for (const [original, replacement] of Object.entries(replacements)) {
     stream = stream.pipe(replace(original, replacement));
   }
@@ -186,28 +129,23 @@ gulp.task('zip-html', function (done) {
   });
 
   archive.pipe(output);
-
-  // Archive uniquement le fichier index.html dans le dossier dist
   archive.file(path.join(paths.dist, 'index.html'), { name: 'index.html' });
-
   archive.finalize();
 });
 
 // Serveur de développement avec BrowserSync et LiveReload
 gulp.task('serve', function () {
-  // Initialiser BrowserSync et servir le dossier dist
   browserSync.init({
     server: {
       baseDir: paths.dist,
     },
   });
 
-  // Regarder les changements et rafraîchir automatiquement
   gulp.watch(paths.scripts, gulp.series('scripts-dev', 'minify-html')).on('change', browserSync.reload);
   gulp.watch(paths.html, gulp.series('minify-html')).on('change', browserSync.reload);
 });
 
-// Tâche 'watch' : Surveille les fichiers et régénère à la volée (sans zip, sans minification JS)
+// Tâche 'watch' : Surveille les fichiers et régénère à la volée
 gulp.task('watch', function () {
   gulp.watch(paths.scripts, gulp.series('scripts-dev', 'minify-html'));
   gulp.watch(paths.html, gulp.series('minify-html'));
@@ -216,7 +154,7 @@ gulp.task('watch', function () {
 // Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
 gulp.task('zip', gulp.series('scripts-prod', 'minify-html', 'replace', 'make-zip'));
 
-// Tâche 'zip' : Exécuter tout (scripts, minify-html, zip)
+// Tâche 'zip-only' : Re-créer le ZIP depuis le dist existant
 gulp.task('zip-only', gulp.series('zip-html'));
 
 // Tâche par défaut : Utiliser la tâche 'serve' pour le développement avec live reload

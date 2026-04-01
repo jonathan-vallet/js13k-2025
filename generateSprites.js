@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { PNG } = require('pngjs');
 
-// Path to the input directory and output file
-const INPUT_DIR = './assets/images'; // Replace with your actual assets folder
-const OUTPUT_FILE = './assets/sprites.json';
+// Parse --game=<name> from CLI args (default: witchcat)
+const gameName = (process.argv.find((a) => a.startsWith('--game=')) || '--game=witchcat').split('=')[1];
+const INPUT_DIR = `./games/${gameName}/assets/images`;
+const OUTPUT_FILE = `./games/${gameName}/assets/sprites.json`;
 const START_CHAR_CODE = 'A'.charCodeAt(0); // First character in the range
 const COLORS_PER_GROUP = 12; // _colors per group (A to L for transparent, M to X for black, etc.)
 

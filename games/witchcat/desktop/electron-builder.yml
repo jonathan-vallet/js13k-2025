@@ -1,0 +1,35 @@
+appId: com.musicandbits.witchcat
+productName: Witchcat
+directories:
+  app: desktop
+  output: games/witchcat/release
+
+files:
+  - main.js
+  - preload.js
+  - package.json
+  - from: ../games/witchcat/dist
+    to: dist
+    filter:
+      - "**/*"
+  - from: ../games/witchcat/desktop/splash.html
+    to: splash.html
+
+extraMetadata:
+  main: main.js
+
+win:
+  target: nsis
+  icon: games/witchcat/assets/cover.png
+
+mac:
+  target: dmg
+  icon: games/witchcat/assets/cover.png
+
+linux:
+  target: AppImage
+  icon: games/witchcat/assets/cover.png
+
+nsis:
+  oneClick: true
+  perMachine: false
